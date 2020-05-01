@@ -4,8 +4,9 @@ import App from './App';
 import {BrowserRouter} from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
+import './css/font-awesome.min.css';
 // Import Main styles for this application
-import './scss/style.scss'
+import './scss/style.scss';
 
 ReactDOM.render(
     <React.StrictMode>
