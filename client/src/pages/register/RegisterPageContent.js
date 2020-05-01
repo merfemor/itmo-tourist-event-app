@@ -1,20 +1,54 @@
 import React from "react";
 import {useForm} from 'react-hook-form';
+import {UserRole} from "../../api/enums";
+import {BACKEND_ROOT_PATH} from "../../utils/constants";
+import {Redirect} from "react-router-dom";
 
-const onSubmitRegistration = (data) => {
-    console.log(data)
+const onSubmitRegistration = (formData) => {
+    console.log(formData)
+    const person = {
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        middleName: formData.middleName,
+        isMale: formData.isMale,
+        role: UserRole.PARTICIPANT.name,
+        password: formData.password
+    }
+    postNewPerson(person)
+        .then(response => {
+            // TODO: store cookies, and etc
+            console.log(JSON.stringify(response));
+        })
 }
 
-export default function RegisterPageContent() {
-    const {register, handleSubmit, errors, getValues } = useForm();
+async function postNewPerson(person) {
+    const response = await fetch(BACKEND_ROOT_PATH + "/person", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(person)
+    })
+    return response.json();
+}
 
+function RegisterPageForm(props) {
+    const {register, handleSubmit, errors, getValues } = useForm();
+    const propsRequestFinishCallback = props.onRegisterFinish;
+    const formDataSubmitCallback = (data) => {
+        onSubmitRegistration(data);
+        if (propsRequestFinishCallback) {
+            propsRequestFinishCallback.call();
+        }
+    }
     return (
         <div className="row">
             <div className="col-md-8 col-xs-12 mx-auto">
                 <div className="card">
                     <div className="card-header"><strong>Регистрация участника</strong></div>
                     <div className="card-body card-block">
-                        <form onSubmit={handleSubmit(onSubmitRegistration)}>
+                        <form onSubmit={handleSubmit(formDataSubmitCallback)}>
                             <div className="form-group">
                                 <label htmlFor="email-input" className="form-control-label">Email</label>
                                 <input type="email" id="email-input" placeholder="Введите email"
@@ -49,16 +83,18 @@ export default function RegisterPageContent() {
                             </div>
                             <div className="form-group">
                                 <label htmlFor="middle-name-input" className="form-control-label">Пол</label>
-                                <select id="is-male-select"
+                                <select id="is-male-select" defaultValue=""
                                         className={ "form-control" + (errors.isMale ? " is-invalid" : "")}
                                         name="isMale" ref={register({
                                     required: true
                                 })}>
-                                    <option selected>Выберите пол</option>
+                                    <option value="">Выберите пол</option>
                                     <option value="true">Мужской</option>
                                     <option value="false">Женский</option>
                                 </select>
                             </div>
+
+                            {  /* TODO: add birthday date chooser */ }
                             <div className="form-group">
                                 <label htmlFor="password-input-main" className="form-control-label">Пароль</label>
                                 <input type="password" id="password-input-main" placeholder="Введите пароль"
@@ -92,4 +128,23 @@ export default function RegisterPageContent() {
             </div>
         </div>
     );
+}
+
+export default class RegisterPageContent extends React.Component {
+    state = {
+        performRedirect: false
+    }
+
+    onRegisterFinish = () => {
+        this.setState({
+            performRedirect: true
+        })
+    }
+
+    render() {
+        if (this.state.performRedirect) {
+            return <Redirect to="/contests"/>
+        }
+        return <RegisterPageForm onRegisterFinish={this.onRegisterFinish}/>
+    }
 }

@@ -21,7 +21,6 @@ public class Person {
     private String middleName;
     @Column(nullable = false)
     private boolean isMale = false;
-    @Column(nullable = false)
     private Date birthDate;
     @Column(nullable = false)
     private UserRole role;
