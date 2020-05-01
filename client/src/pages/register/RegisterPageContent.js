@@ -5,6 +5,7 @@ import {BACKEND_ROOT_PATH} from "../../utils/constants";
 import {Redirect} from "react-router-dom";
 
 const onSubmitRegistration = (formData) => {
+    console.log("Submit registration")
     console.log(formData)
     const person = {
         email: formData.email,
