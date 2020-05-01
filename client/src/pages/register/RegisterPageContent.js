@@ -1,56 +1,95 @@
 import React from "react";
+import {useForm} from 'react-hook-form';
 
-class RegisterPageContent extends React.Component {
-    render() {
-        return (
-            <div className="card">
-                <div className="card-header">Регистрация участника</div>
-                <div className="card-body card-block">
-                    <form>
-                        <div className="form-group">
-                            <label htmlFor="email-input" className="form-control-label">Email</label>
-                            <input type="email" id="email-input" placeholder="Введите email"
-                                   className="form-control"/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="first-name-input" className="form-control-label">Имя</label>
-                            <input type="text" id="first-name-input" placeholder="Введите имя"
-                                   className="form-control"/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="last-name-input" className="form-control-label">Фамилия</label>
-                            <input type="text" id="last-name-input" placeholder="Введите фамилию" className="form-control"/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="middle-name-input" className="form-control-label">Отчество</label>
-                            <input type="text" id="middle-name-input" placeholder="Введите отчество" className="form-control"/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="middle-name-input" className="form-control-label">Пол</label>
-                            <select id="is-male-select" className="form-control">
-                                <option>Выберите пол</option>
-                                <option value="true">Мужской</option>
-                                <option value="false">Женский</option>
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="password-input-main" className="form-control-label">Пароль</label>
-                            <input type="password" id="password-input-main" placeholder="Введите пароль"
-                                   className="form-control"/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="password-input-repeat" className="form-control-label">Повторите пароль</label>
-                            <input type="password" id="password-input-repeat" placeholder="Повторите пароль"
-                                   className="form-control"/>
-                        </div>
-                    </form>
-                </div>
-                <div className="card-footer">
-                    <button className="btn btn-primary">Зарегистрироваться</button>
-                </div>
-            </div>
-        );
-    }
+const onSubmitRegistration = (data) => {
+    console.log(data)
 }
 
-export default RegisterPageContent;
+export default function RegisterPageContent() {
+    const {register, handleSubmit, errors, getValues } = useForm();
+
+    return (
+        <div className="row">
+            <div className="col-md-8 col-xs-12 mx-auto">
+                <div className="card">
+                    <div className="card-header"><strong>Регистрация участника</strong></div>
+                    <div className="card-body card-block">
+                        <form onSubmit={handleSubmit(onSubmitRegistration)}>
+                            <div className="form-group">
+                                <label htmlFor="email-input" className="form-control-label">Email</label>
+                                <input type="email" id="email-input" placeholder="Введите email"
+                                       className={ "form-control" + (errors.email ? " is-invalid" : "")}
+                                       name="email"
+                                       ref={register({
+                                           required: true
+                                       })}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="first-name-input" className="form-control-label">Имя</label>
+                                <input type="text" id="first-name-input" placeholder="Введите имя"
+                                       className={ "form-control" + (errors.firstName ? " is-invalid" : "")}
+                                       name="firstName" ref={register({
+                                    required: true
+                                })}/>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="last-name-input" className="form-control-label">Фамилия</label>
+                                <input type="text" id="last-name-input" placeholder="Введите фамилию"
+                                       className={ "form-control" + (errors.lastName ? " is-invalid" : "")}
+                                       name="lastName"
+                                       ref={register({
+                                           required: true
+                                       })}/>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="middle-name-input" className="form-control-label">Отчество</label>
+                                <input type="text" id="middle-name-input" placeholder="Введите отчество"
+                                       className="form-control" name="middleName" ref={register}/>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="middle-name-input" className="form-control-label">Пол</label>
+                                <select id="is-male-select"
+                                        className={ "form-control" + (errors.isMale ? " is-invalid" : "")}
+                                        name="isMale" ref={register({
+                                    required: true
+                                })}>
+                                    <option selected>Выберите пол</option>
+                                    <option value="true">Мужской</option>
+                                    <option value="false">Женский</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="password-input-main" className="form-control-label">Пароль</label>
+                                <input type="password" id="password-input-main" placeholder="Введите пароль"
+                                       className={ "form-control" + (errors.password ? " is-invalid" : "")}
+                                       name="password"
+                                       ref={register({
+                                           required: true,
+                                           minLength: 8
+                                       })}
+                                />
+                                <small className="form-text text-muted">Минимальная длина пароля - 8 символов</small>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="password-input-repeat" className="form-control-label">
+                                    Повторите пароль
+                                </label>
+                                <input type="password" id="password-input-repeat" placeholder="Повторите пароль"
+                                       className={ "form-control" + (errors.passwordRepeat ? " is-invalid" : "")}
+                                       name="passwordRepeat"
+                                       ref={register({
+                                           validate: passwordRepeat => getValues().password === passwordRepeat
+                                       })}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <button type="submit" className="btn btn-primary">Зарегистрироваться</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
