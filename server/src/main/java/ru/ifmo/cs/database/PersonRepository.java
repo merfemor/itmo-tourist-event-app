@@ -4,4 +4,5 @@ import org.springframework.data.repository.CrudRepository;
 import ru.ifmo.cs.entity.Person;
 
 public interface PersonRepository extends CrudRepository<Person, Long> {
+    Person findByEmail(String email);
 }
