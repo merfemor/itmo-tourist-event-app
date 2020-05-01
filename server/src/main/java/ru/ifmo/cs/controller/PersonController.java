@@ -12,6 +12,7 @@ import java.util.Objects;
 
 // TODO: implement validation of requests
 @RestController
+@CrossOrigin
 public class PersonController {
     private final PersonRepository personRepository;
 
