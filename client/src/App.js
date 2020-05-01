@@ -1,23 +1,14 @@
 import React from 'react';
 
-import {BrowserRouter as Router, Route, Switch, Link} from 'react-router-dom';
+import {Route, Switch} from 'react-router-dom';
 import ContestsPageContent from "./pages/contests/ContestsPageContent";
 import ParticipantsPageContent from "./pages/participants/ParticipantsPageContent";
+import Header from "./components/header/Header";
 
 function App() {
     return (
-        <Router>
-            <header>
-                <ul>
-                    <li>
-                        <Link to="/participants">Participants</Link>
-                    </li>
-                    <li>
-                        <Link to="/contests">Contests</Link>
-                    </li>
-                </ul>
-            </header>
-
+        <div className="app">
+            <Header/>
             <Switch>
                 <Route path="/participants">
                     <ParticipantsPageContent/>
@@ -29,7 +20,7 @@ function App() {
                     <ContestsPageContent/>
                 </Route>
             </Switch>
-        </Router>
+        </div>
     );
 }
 
