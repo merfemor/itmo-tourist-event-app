@@ -9,7 +9,6 @@ import ru.ifmo.cs.entity.Contest;
 
 
 @RestController
-@CrossOrigin
 public class ContestController {
     private final ContestRepository contestRepository;
 

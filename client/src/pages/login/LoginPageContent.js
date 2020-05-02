@@ -1,21 +1,16 @@
-import React from "react";
+import React, {useState} from "react";
 import {Redirect} from "react-router-dom";
 import {useForm} from "react-hook-form";
-
-const onSubmitLogin = (formData) => {
-    console.log("Submit login")
-    console.log(formData)
-    // TODO: implement auth
-}
+import {useAuth} from "../../auth/AuthStateHolder";
 
 function LoginForm(props) {
     const {register, handleSubmit, errors} = useForm();
-    const formDataSubmitCallback = (data) => {
-        onSubmitLogin(data);
-        if (props.onLoginFinish) {
-            props.onLoginFinish.call();
-        }
-    }
+
+    const renderServerValidationError = () => (
+        <div className="form-group">
+            <div className="alert alert-danger">Неверный email или пароль</div>
+        </div>
+    );
 
     return (
         <div className="row">
@@ -23,7 +18,8 @@ function LoginForm(props) {
                 <div className="card">
                     <div className="card-header"><strong>Войти</strong></div>
                     <div className="card-body card-block">
-                        <form onSubmit={handleSubmit(formDataSubmitCallback)}>
+                        <form onSubmit={handleSubmit(props.onSubmitLogin)}>
+                            {props.serverSideValidationError && renderServerValidationError()}
                             <div className="form-group">
                                 <label htmlFor="email-input" className="form-control-label">Email</label>
                                 <input type="email" id="email-input" placeholder="Введите email"
@@ -51,21 +47,20 @@ function LoginForm(props) {
     );
 }
 
-export default class LoginPageContent extends React.Component {
-    state = {
-        performRedirect: false
-    }
+export default function LoginPageContent() {
+    const { loginWithEmailAndPassword } = useAuth();
+    const [performRedirect, setPerformRedirect] = useState(false);
+    const [serverSideValidationError, setServerSideValidationError] = useState(false);
 
-    onRegisterFinish = () => {
-        this.setState({
-            performRedirect: true
-        })
+    const onSubmitLogin = (formData) => {
+        setServerSideValidationError(false);
+        loginWithEmailAndPassword(formData)
+            .then(() => setPerformRedirect(true))
+            .catch(() => setServerSideValidationError(true));
     }
-
-    render() {
-        if (this.state.performRedirect) {
-            return <Redirect to="/contests"/>
-        }
-        return <LoginForm onLoginFinish={this.onRegisterFinish}/>
+    if (performRedirect) {
+        return <Redirect to="/contests"/>;
     }
+    return <LoginForm onSubmitLogin={onSubmitLogin}
+                      serverSideValidationError={serverSideValidationError}/>;
 }

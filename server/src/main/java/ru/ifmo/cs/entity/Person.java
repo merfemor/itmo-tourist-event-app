@@ -13,6 +13,7 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String email;
+    // TODO: should be unique, since used in authentication search
     private String password;
     @Column(nullable = false)
     private String firstName;

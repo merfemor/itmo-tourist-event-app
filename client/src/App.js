@@ -7,37 +7,39 @@ import Header from "./components/header/Header";
 import Sidebar from "./components/sidebar/Sidebar";
 import LoginPageContent from "./pages/login/LoginPageContent";
 import RegisterPageContent from "./pages/register/RegisterPageContent";
+import PrivateRoute from "./auth/PrivateRoute";
+import AuthStateHolder from "./auth/AuthStateHolder";
 
-function App() {
+export default function App() {
     return (
-        <div className="app">
-            <Header/>
-            <div className="app-body">
-                <Sidebar/>
-                <main className="main">
-                    <div className="container-fluid">
-                        <Switch>
-                            <Route path="/login">
-                                <LoginPageContent/>
-                            </Route>
-                            <Route path="/register">
-                                <RegisterPageContent/>
-                            </Route>
-                            <Route path="/participants">
-                                <ParticipantsPageContent/>
-                            </Route>
-                            <Route path="/contests">
-                                <ContestsPageContent/>
-                            </Route>
-                            <Route path="/">
-                                <ContestsPageContent/>
-                            </Route>
-                        </Switch>
-                    </div>
-                </main>
+        <AuthStateHolder>
+            <div className="app">
+                <Header/>
+                <div className="app-body">
+                    <Sidebar/>
+                    <main className="main">
+                        <div className="container-fluid">
+                            <Switch>
+                                <Route path="/login">
+                                    <LoginPageContent/>
+                                </Route>
+                                <Route path="/register">
+                                    <RegisterPageContent/>
+                                </Route>
+                                <PrivateRoute path="/participants">
+                                    <ParticipantsPageContent/>
+                                </PrivateRoute>
+                                <Route path="/contests">
+                                    <ContestsPageContent/>
+                                </Route>
+                                <Route path="/">
+                                    <ContestsPageContent/>
+                                </Route>
+                            </Switch>
+                        </div>
+                    </main>
+                </div>
             </div>
-        </div>
+        </AuthStateHolder>
     );
 }
-
-export default App;

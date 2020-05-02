@@ -5,8 +5,6 @@ import {BACKEND_ROOT_PATH} from "../../utils/constants";
 import {Redirect} from "react-router-dom";
 
 const onSubmitRegistration = (formData) => {
-    console.log("Submit registration")
-    console.log(formData)
     const person = {
         email: formData.email,
         firstName: formData.firstName,
@@ -19,7 +17,6 @@ const onSubmitRegistration = (formData) => {
     postNewPerson(person)
         .then(response => {
             // TODO: store cookies, and etc
-            console.log(JSON.stringify(response));
         })
 }
 
