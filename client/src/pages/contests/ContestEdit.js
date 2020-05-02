@@ -2,21 +2,16 @@ import React, {useState} from "react";
 import {Redirect} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {ParticipantType, RegistrationType, ResultStructure} from "../../api/enums";
-import {BACKEND_ROOT_PATH} from "../../utils/constants";
 import {Log} from "../../utils/Log";
 import {useAuth} from "../../auth/AuthStateHolder";
+import {httpRequest} from "../../api/http";
 
 const TAG = "CreateContestPage";
 
-function submitContest(contestFormData, addAuthorizationHeaderToParams) {
+function submitContest(contestFormData) {
     Log.d(TAG, "submitContest: start");
-    return fetch(BACKEND_ROOT_PATH + "contest", addAuthorizationHeaderToParams({
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(contestFormData)
-    })).then(response => {
+    return httpRequest("POST", "contest", contestFormData)
+        .then(response => {
         if (response.status === 200) {
             Log.d(TAG, "submitContest: ok response, returning");
             return Promise.resolve()
@@ -26,7 +21,7 @@ function submitContest(contestFormData, addAuthorizationHeaderToParams) {
     })
 }
 
-export default function CreateContest() {
+export default function ContestEdit() {
     const {addAuthorizationHeaderToParams} = useAuth();
     const {register, handleSubmit, errors} = useForm();
     const [isRedirect, setRedirect] = useState(false);
@@ -36,7 +31,7 @@ export default function CreateContest() {
     }
 
     function onFormSubmit(formData) {
-        submitContest(formData, addAuthorizationHeaderToParams)
+        submitContest(formData)
             .then(() => setRedirect(true));
     }
 

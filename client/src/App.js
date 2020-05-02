@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {Redirect, Route, Switch} from 'react-router-dom';
-import ContestsPageContent from "./pages/contests/ContestsPageContent";
+import ContestPageContent from "./pages/contests/ContestPageContent";
 import ParticipantsPageContent from "./pages/participants/ParticipantsPageContent";
 import Header from "./components/header/Header";
 import Sidebar from "./components/sidebar/Sidebar";
@@ -33,7 +33,7 @@ export default function App() {
                                 <ParticipantsPageContent/>
                             </PrivateRoute>
                             <Route path="/contests">
-                                <ContestsPageContent/>
+                                <ContestPageContent/>
                             </Route>
                             <Route path="/">
                                 <Redirect to="/contests"/>

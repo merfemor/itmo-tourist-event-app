@@ -1,6 +1,7 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {BACKEND_ROOT_PATH} from "../utils/constants";
 import {Log} from "../utils/Log";
+import {GlobalState} from "../utils/global_cache";
 
 const TAG = "AuthStateHolder";
 
@@ -16,9 +17,10 @@ function restoreTokenFromStorage() {
 function setTokenInStorage(token) {
     // TODO: save token in cookies
     localStorage.setItem("token", token)
+    GlobalState.authToken = token
 }
 
-function addAuthorizationHeaderToParams(params, token) {
+export function addAuthorizationHeaderToParams(params, token) {
     if (params.headers == null) {
         params.headers = {}
     }
@@ -115,6 +117,7 @@ export default function AuthStateHolder(props) {
 
     useEffect(() => {
         const token = restoreTokenFromStorage()
+        GlobalState.authToken = token;
         if (token == null) {
             Log.d(TAG, "Restore session finished, token is null, nothing to do");
             return
