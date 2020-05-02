@@ -30,7 +30,12 @@ public class PersonController {
     }
 
     @PostMapping(value = "/person", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Person createPerson(@RequestBody Person person) {
+    @ResponseBody
+    public Person createPerson(@RequestBody Person person) {
+        // TODO: use unique constraint instead
+        if (personRepository.findByEmail(person.getEmail()) != null) {
+            throw new IllegalStateException("Person with this email already exists");
+        }
         return personRepository.save(person);
     }
 
