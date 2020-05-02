@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Route, Switch} from 'react-router-dom';
+import {Redirect, Route, Switch} from 'react-router-dom';
 import ContestsPageContent from "./pages/contests/ContestsPageContent";
 import ParticipantsPageContent from "./pages/participants/ParticipantsPageContent";
 import Header from "./components/header/Header";
@@ -18,25 +18,27 @@ export default function App() {
                 <div className="app-body">
                     <Sidebar/>
                     <main className="main">
-                        <div className="container-fluid">
-                            <Switch>
-                                <Route path="/login">
+                        <Switch>
+                            <Route path="/login">
+                                <div className="container-fluid">
                                     <LoginPageContent/>
-                                </Route>
-                                <Route path="/register">
+                                </div>
+                            </Route>
+                            <Route path="/register">
+                                <div className="container-fluid">
                                     <RegisterPageContent/>
-                                </Route>
-                                <PrivateRoute path="/participants">
-                                    <ParticipantsPageContent/>
-                                </PrivateRoute>
-                                <Route path="/contests">
-                                    <ContestsPageContent/>
-                                </Route>
-                                <Route path="/">
-                                    <ContestsPageContent/>
-                                </Route>
-                            </Switch>
-                        </div>
+                                </div>
+                            </Route>
+                            <PrivateRoute path="/participants">
+                                <ParticipantsPageContent/>
+                            </PrivateRoute>
+                            <Route path="/contests">
+                                <ContestsPageContent/>
+                            </Route>
+                            <Route path="/">
+                                <Redirect to="/contests"/>
+                            </Route>
+                        </Switch>
                     </main>
                 </div>
             </div>

@@ -124,6 +124,7 @@ export default function AuthStateHolder(props) {
 
     return <AuthContext.Provider value={{
         authInfo,
+        addAuthorizationHeaderToParams: (params) => addAuthorizationHeaderToParams(params, authInfo.token),
         loginWithEmailAndPassword: (formData) => loginWithEmailAndPassword(formData, setAuthInfo),
         logout: () => logout(setAuthInfo)
     }}>

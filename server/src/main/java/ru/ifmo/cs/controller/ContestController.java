@@ -17,22 +17,25 @@ public class ContestController {
     }
 
     @GetMapping(value = "/contest", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Iterable<Contest> getAllContests() {
+    @ResponseBody
+    public Iterable<Contest> getAllContests() {
         return contestRepository.findAll();
     }
 
     @GetMapping(value = "/contest/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     public ResponseEntity<Contest> getContestById(@PathVariable Long id) {
         return ResponseEntity.of(contestRepository.findById(id));
     }
 
     @PostMapping(value = "/contest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    Contest createContest(@RequestBody Contest contest) {
+    @ResponseBody
+    public Contest createContest(@RequestBody Contest contest) {
         return contestRepository.save(contest);
     }
 
     @PutMapping(value = "/contest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     public ResponseEntity<Contest> modifyContest(@RequestBody Contest newContest) {
         Contest oldContest = contestRepository.findById(newContest.getId()).orElse(null);
         if (oldContest == null) {
