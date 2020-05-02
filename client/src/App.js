@@ -7,7 +7,6 @@ import Header from "./components/header/Header";
 import Sidebar from "./components/sidebar/Sidebar";
 import LoginPageContent from "./components/pages/login/LoginPageContent";
 import RegisterPageContent from "./components/pages/register/RegisterPageContent";
-import PrivateRoute from "./auth/PrivateRoute";
 import AuthStateHolder from "./auth/AuthStateHolder";
 
 export default function App() {
@@ -29,9 +28,9 @@ export default function App() {
                                     <RegisterPageContent/>
                                 </div>
                             </Route>
-                            <PrivateRoute path="/participants">
+                            <Route path="/participants">
                                 <ParticipantsPageContent/>
-                            </PrivateRoute>
+                            </Route>
                             <Route path="/contests">
                                 <ContestPageContent/>
                             </Route>

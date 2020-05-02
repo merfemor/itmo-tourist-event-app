@@ -1,5 +1,4 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
-import {BACKEND_ROOT_PATH} from "../utils/constants";
 import {Log} from "../utils/Log";
 import {GlobalState} from "../utils/global_cache";
 import {httpRequest} from "../utils/http";
