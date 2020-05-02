@@ -22,6 +22,11 @@ public class ContestController {
         return contestRepository.findAll();
     }
 
+    @DeleteMapping(value = "/contest/{id}")
+    public void deleteContest(@PathVariable Long id) {
+        contestRepository.deleteById(id);
+    }
+
     @GetMapping(value = "/contest/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Contest> getContestById(@PathVariable Long id) {

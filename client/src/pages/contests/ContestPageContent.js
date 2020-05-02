@@ -2,6 +2,7 @@ import React from 'react';
 import {Route, Switch, useRouteMatch} from "react-router-dom";
 import ContestEdit from "./ContestEdit";
 import ContestTable from "./ContestTable";
+import ContestCreate from "./ContestCreate";
 
 export default function ContestPageContent() {
     const match = useRouteMatch();
@@ -9,7 +10,7 @@ export default function ContestPageContent() {
         <div className="container-fluid">
             <Switch>
                 <Route path={`${match.path}/new`}>
-                    <ContestEdit/>
+                    <ContestCreate/>
                 </Route>
                 <Route path={`${match.path}/:contestId`}>
                     <ContestEdit/>

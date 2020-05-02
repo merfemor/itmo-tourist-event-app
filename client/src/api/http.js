@@ -7,7 +7,6 @@ export function httpRequest(method, relativePath, bodyObject) {
     const params = {
         method: method
     };
-    console.log(token)
     if (bodyObject != null) {
         params.headers = {
             'Content-Type': 'application/json'
