@@ -57,8 +57,8 @@ export default class ParticipantsTable extends React.Component {
                             this.state.participants.map((participant) =>
                                 <tr key={participant.id}>
                                     <td>{participant.id}</td>
-                                    <td>{participant.lastName}</td>
                                     <td>{participant.email}</td>
+                                    <td>{participant.lastName}</td>
                                     <td>{participant.firstName}</td>
                                     <td>{participant.middleName}</td>
                                     <td>{participant.isMale ? "М" : "Ж"}</td>

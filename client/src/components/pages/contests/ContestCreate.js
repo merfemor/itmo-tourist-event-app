@@ -25,7 +25,7 @@ export default function ContestCreate() {
     const [isRedirect, setRedirect] = useState(false);
 
     if (isRedirect) {
-        return <Redirect to="/contest"/>
+        return <Redirect to="/contests"/>
     }
 
     function onFormSubmit(formData) {

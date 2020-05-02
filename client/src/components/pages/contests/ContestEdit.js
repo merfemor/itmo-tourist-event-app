@@ -96,7 +96,7 @@ export default function ContestEdit() {
         <div className="row">
             <div className="col-md-8 col-xs-12 mx-auto">
                 <div className="card">
-                    <div className="card-header"><strong>Создать новую дистанцию</strong></div>
+                    <div className="card-header"><strong>Редактировать дистанцию</strong></div>
                     <div className="card-body card-block">
                         <form
                             onSubmit={handleSubmit(onFormSubmit)}>

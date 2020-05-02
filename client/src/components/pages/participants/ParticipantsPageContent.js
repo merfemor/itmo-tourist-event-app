@@ -2,7 +2,7 @@ import React from 'react';
 import ParticipantsTable from "./ParticipantsTable";
 import {Route, Switch, useRouteMatch} from "react-router-dom";
 import ParticipantEditForm from "./ParticipantEditForm";
-import ContestCreate from "../contests/ContestCreate";
+import ParticipantRegisterForm from "./ParticipantRegisterForm";
 
 export default function ParticipantsPageContent() {
     const match = useRouteMatch();
@@ -11,7 +11,7 @@ export default function ParticipantsPageContent() {
             <div className="row">
                 <Switch>
                     <Route path={`${match.path}/new`}>
-                        Participant register form
+                        <ParticipantRegisterForm/>
                     </Route>
                     <Route path={`${match.path}/:participantId`}>
                         <ParticipantEditForm/>
