@@ -1,12 +1,17 @@
 import React from 'react';
 import ParticipantsTable from "./ParticipantsTable";
+import {Route, Switch} from "react-router-dom";
 
-function ParticipantsPageContent() {
+export default function ParticipantsPageContent() {
     return (
-        <div>
-            <ParticipantsTable/>
+        <div className="container-fluid">
+            <div className="row">
+                <Switch>
+                    <Route path="/">
+                        <ParticipantsTable/>
+                    </Route>
+                </Switch>
+            </div>
         </div>
-    );
+    )
 }
-
-export default ParticipantsPageContent;

@@ -1,6 +1,7 @@
 import React from 'react';
 import {userRoleToString} from "../../../utils/language_utils";
 import {httpRequest} from "../../../utils/http";
+import {Link} from "react-router-dom";
 
 export default class ParticipantsTable extends React.Component {
     state = {
@@ -8,10 +9,6 @@ export default class ParticipantsTable extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchData();
-    }
-
-    fetchData() {
         httpRequest("GET", "person")
             .then(response => response.json())
             .then(data => {
@@ -25,18 +22,19 @@ export default class ParticipantsTable extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="col-12 mt-3">
                 <div className="table-responsive">
-                    <table className="table-outline mb-0 d-none d-sm-table table table-hover">
+                    <table className="table table-sm table-bordered table-striped table-hover">
                         <thead className="thead-default">
                         <tr>
-                            <th>Номер участника</th>
+                            <th>№</th>
+                            <th>email</th>
                             <th>Фамилия</th>
                             <th>Имя</th>
                             <th>Отчество</th>
                             <th>Пол</th>
                             <th>Роль</th>
-                            <th>email</th>
+                            <th>Действия</th>
                             <th>raw json</th>
                         </tr>
                         </thead>
@@ -46,11 +44,16 @@ export default class ParticipantsTable extends React.Component {
                                 <tr>
                                     <td>{index}</td>
                                     <td>{participant.lastName}</td>
+                                    <td>{participant.email}</td>
                                     <td>{participant.firstName}</td>
                                     <td>{participant.middleName}</td>
                                     <td>{participant.isMale ? "М" : "Ж"}</td>
                                     <td> {userRoleToString(participant.role)} </td>
-                                    <td>{participant.email}</td>
+                                    <td>
+                                        <Link to={`/participants/${participant.id}`} className="btn btn-primary">
+                                            Редактировать
+                                        </Link>
+                                    </td>
                                     <td>{JSON.stringify(participant)} </td>
                                 </tr>
                             )
