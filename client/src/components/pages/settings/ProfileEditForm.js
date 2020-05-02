@@ -2,20 +2,37 @@ import {useForm} from "react-hook-form";
 import React, {useState} from "react";
 import {useAuth} from "../../../auth/AuthStateHolder";
 import {httpJsonRequest} from "../../../utils/http";
+import {UserRole} from "../../../api/enums";
 
 export default function ProfileEditForm() {
     const {authInfo, setUserInfo} = useAuth();
-    const {register, handleSubmit, errors, getValues} = useForm();
+    const {register, handleSubmit, errors} = useForm();
     const [state, setState] = useState({
         isError: false,
         isSuccess: false
     });
 
     const formDataSubmitCallback = (data) => {
-        httpJsonRequest("PUT", "person", {
+        let newRole;
+        if (authInfo.role === UserRole.ORGANIZER.name) {
+            newRole = UserRole.ORGANIZER.name;
+        } else if (data.wantToBeVolunteer) {
+            newRole = UserRole.VOLUNTEER.name
+        } else {
+            newRole = UserRole.PARTICIPANT.name
+        }
+        const requestData = {
             ...authInfo.user,
-            ...data
+            firstName: data.firstName,
+            lastName: data.lastName,
+            middleName: data.middleName,
+            role: newRole
+        };
+        setState({
+            isError: false,
+            isSuccess: false
         })
+        httpJsonRequest("PUT", "person", requestData)
             .then((person) => {
                 setState({
                     isError: false,
@@ -30,6 +47,7 @@ export default function ProfileEditForm() {
                 })
             })
     }
+
     function renderErrorAlert() {
         return <div className="form-group">
             <div className="alert alert-danger">Не удалось</div>
@@ -47,8 +65,8 @@ export default function ProfileEditForm() {
             <div className="card-header"><strong>Редактирование данных профиля</strong></div>
             <div className="card-body card-block">
                 <form onSubmit={handleSubmit(formDataSubmitCallback)}>
-                    { state.isError && renderErrorAlert() }
-                    { state.isSuccess && renderSuccessAlert() }
+                    {state.isError && renderErrorAlert()}
+                    {state.isSuccess && renderSuccessAlert()}
                     <div className="form-group">
                         <label htmlFor="email-input" className="form-control-label">Email</label>
                         <input type="email" id="email-input" placeholder="Введите email"
@@ -86,6 +104,18 @@ export default function ProfileEditForm() {
                                defaultValue={authInfo.user.middleName}
                                className="form-control" name="middleName" ref={register}/>
                     </div>
+                    {authInfo.user.role !== UserRole.ORGANIZER.name &&
+                    <div className="form-group">
+                        <label htmlFor="volunteer-checkbox" className="form-check-label">
+                            <input type="checkbox" id="volunteer-checkbox" name="wantToBeVolunteer"
+                                   defaultChecked={authInfo.user.role === UserRole.VOLUNTEER.name}
+                                   className="form-check-input"
+                                   ref={register}
+                            />
+                            Я - волонтер
+                        </label>
+                    </div>
+                    }
                     <div className="form-group">
                         <label htmlFor="middle-name-input" className="form-control-label">Пол</label>
                         <select id="is-male-select"

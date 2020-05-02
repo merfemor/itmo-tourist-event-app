@@ -5,7 +5,9 @@ export default function SettingsPageContent() {
     return (
         <div className="container-fluid">
             <div className="row">
-                <ProfileEditForm/>
+                <div className="col-md-8 col-sm-12 mx-auto col-lg-6">
+                    <ProfileEditForm/>
+                </div>
             </div>
         </div>
     )
