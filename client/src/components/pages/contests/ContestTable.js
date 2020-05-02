@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Link, useRouteMatch} from "react-router-dom";
-import {httpRequest} from "../../api/http";
+import {httpRequest} from "../../../utils/http";
 import ContestTableCard from "./ContestTableCard";
 
 export default function ContestTable() {

@@ -1,7 +1,7 @@
 import React from "react";
 import {useForm} from 'react-hook-form';
-import {UserRole} from "../../api/enums";
-import {BACKEND_ROOT_PATH} from "../../utils/constants";
+import {UserRole} from "../../../api/enums";
+import {BACKEND_ROOT_PATH} from "../../../utils/constants";
 import {Redirect} from "react-router-dom";
 
 const onSubmitRegistration = (formData) => {

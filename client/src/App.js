@@ -1,12 +1,12 @@
 import React from 'react';
 
 import {Redirect, Route, Switch} from 'react-router-dom';
-import ContestPageContent from "./pages/contests/ContestPageContent";
-import ParticipantsPageContent from "./pages/participants/ParticipantsPageContent";
+import ContestPageContent from "./components/pages/contests/ContestPageContent";
+import ParticipantsPageContent from "./components/pages/participants/ParticipantsPageContent";
 import Header from "./components/header/Header";
 import Sidebar from "./components/sidebar/Sidebar";
-import LoginPageContent from "./pages/login/LoginPageContent";
-import RegisterPageContent from "./pages/register/RegisterPageContent";
+import LoginPageContent from "./components/pages/login/LoginPageContent";
+import RegisterPageContent from "./components/pages/register/RegisterPageContent";
 import PrivateRoute from "./auth/PrivateRoute";
 import AuthStateHolder from "./auth/AuthStateHolder";
 

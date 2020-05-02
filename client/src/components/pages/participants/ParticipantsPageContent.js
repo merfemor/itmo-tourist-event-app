@@ -1,5 +1,5 @@
 import React from 'react';
-import ParticipantsTable from "../../components/participants/ParticipantsTable";
+import ParticipantsTable from "./ParticipantsTable";
 
 function ParticipantsPageContent() {
     return (

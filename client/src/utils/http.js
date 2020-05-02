@@ -1,5 +1,5 @@
-import {BACKEND_ROOT_PATH} from "../utils/constants";
-import {GlobalState} from "../utils/global_cache";
+import {BACKEND_ROOT_PATH} from "./constants";
+import {GlobalState} from "./global_cache";
 import {addAuthorizationHeaderToParams} from "../auth/AuthStateHolder";
 
 export function httpRequest(method, relativePath, bodyObject) {

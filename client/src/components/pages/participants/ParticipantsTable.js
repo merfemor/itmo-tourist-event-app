@@ -1,7 +1,7 @@
 import React from 'react';
 
-import * as Constants from '../../utils/constants';
-import {userRoleToString} from "../../utils/language_utils";
+import * as Constants from '../../../utils/constants';
+import {userRoleToString} from "../../../utils/language_utils";
 
 class ParticipantsTable extends React.Component {
     constructor(props) {

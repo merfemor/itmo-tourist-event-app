@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Redirect} from "react-router-dom";
 import {useForm} from "react-hook-form";
-import {useAuth} from "../../auth/AuthStateHolder";
+import {useAuth} from "../../../auth/AuthStateHolder";
 
 function LoginForm(props) {
     const {register, handleSubmit, errors} = useForm();
