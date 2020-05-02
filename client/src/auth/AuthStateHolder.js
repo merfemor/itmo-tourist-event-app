@@ -61,9 +61,13 @@ function loginWithToken(token, setAuthInfo) {
             return response.json()
         }).then(response => {
         Log.d(TAG, "loginWithToken(): success, set user info");
-        setAuthInfo({
-            token: token,
-            user: response
+        setAuthInfo(state => {
+            return {
+                ...state,
+                token: token,
+                user: response,
+                authorizeAttemptWasDone: true
+            }
         });
         return Promise.resolve(response);
     })
@@ -72,7 +76,13 @@ function loginWithToken(token, setAuthInfo) {
 function logout(setAuthInfo) {
     Log.d(TAG, "logout")
     setTokenInStorage(null)
-    setAuthInfo({token: null, user: null})
+    setAuthInfo((state) => {
+        return {
+            ...state,
+            token: null,
+            user: null
+        }
+    })
 }
 
 function loginWithEmailAndPassword(formData, setAuthInfo) {
@@ -94,7 +104,10 @@ function loginWithEmailAndPassword(formData, setAuthInfo) {
             }
             Log.d(TAG, "loginWithEmailAndPassword: set token and user info")
             setTokenInStorage(response.token);
-            setAuthInfo(response);
+            setAuthInfo({
+                ...response,
+                authorizeAttemptWasDone: true
+            });
             return Promise.resolve(response)
         })
 }
@@ -107,19 +120,31 @@ export function useAuth() {
 
 export default function AuthStateHolder(props) {
     const [authInfo, setAuthInfo] = useState({
+        authorizeAttemptWasDone: false,
         token: null,
         user: null
     });
 
     useEffect(() => {
-        const token = restoreTokenFromStorage()
+        const token = restoreTokenFromStorage();
         GlobalState.authToken = token;
         if (token == null) {
             Log.d(TAG, "Restore session finished, token is null, nothing to do");
+            setAuthInfo((state) => {
+                return {
+                    ...state,
+                    authorizeAttemptWasDone: true
+                }
+            })
             return
         }
         loginWithToken(token, setAuthInfo)
     }, []);
+
+    if (authInfo.authorizeAttemptWasDone !== true) {
+        // authorize in progress
+        return <div/>
+    }
 
     return <AuthContext.Provider value={{
         authInfo,
