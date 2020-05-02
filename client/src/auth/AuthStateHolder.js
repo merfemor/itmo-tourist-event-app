@@ -55,7 +55,6 @@ function loginWithToken(token, setAuthInfo) {
                 logout();
                 return errorPromiseFromResponse(response);
             } else if (response.status !== 200) {
-                Log.d(TAG, "loginWithToken(): server returned " + response.status);
                 return errorPromiseFromResponse(response);
             }
             return response.json()
@@ -93,7 +92,6 @@ function loginWithEmailAndPassword(formData, setAuthInfo) {
                 Log.d(TAG, "loginWithEmailAndPassword: server returned ok")
                 return response.json()
             }
-            Log.d(TAG, "loginWithEmailAndPassword: server returned error, status = " + response.status)
             logout()
             return errorPromiseFromResponse(response)
 
@@ -149,6 +147,12 @@ export default function AuthStateHolder(props) {
     return <AuthContext.Provider value={{
         authInfo,
         loginWithEmailAndPassword: (formData) => loginWithEmailAndPassword(formData, setAuthInfo),
+        setUserInfo: (userInfo) => setAuthInfo((state) => {
+            return {
+                ...state,
+                user: userInfo
+            }
+        }),
         logout: () => logout(setAuthInfo)
     }}>
         {props.children}

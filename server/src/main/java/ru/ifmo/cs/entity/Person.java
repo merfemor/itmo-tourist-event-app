@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Optional;
 
 @Entity
 public class Person {
@@ -142,7 +143,9 @@ public class Person {
 
     public void updateFields(Person newPerson) {
         this.email = newPerson.email;
-        this.password = newPerson.password;
+        if (newPerson.password != null) {
+            this.password = newPerson.password;
+        }
         this.firstName = newPerson.firstName;
         this.lastName = newPerson.lastName;
         this.middleName = newPerson.middleName;

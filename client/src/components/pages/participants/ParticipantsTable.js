@@ -18,7 +18,6 @@ export default class ParticipantsTable extends React.Component {
                 if (response.ok) {
                     return response.json()
                 }
-                Log.d(TAG, "loadParticipants: server returned error, status " + response.status)
                 // TODO: handle HTTP errors
                 return Promise.reject()
             })

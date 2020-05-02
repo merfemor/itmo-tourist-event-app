@@ -15,7 +15,6 @@ function submitContest(contestFormData) {
             Log.d(TAG, "submitContest: ok response, returning");
             return Promise.resolve()
         }
-        Log.d(TAG, "submitContest: server returned error, status = " + response.status);
         return Promise.reject()
     })
 }

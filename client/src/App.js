@@ -8,6 +8,7 @@ import Sidebar from "./components/sidebar/Sidebar";
 import LoginPageContent from "./components/pages/login/LoginPageContent";
 import RegisterPageContent from "./components/pages/register/RegisterPageContent";
 import AuthStateHolder from "./auth/AuthStateHolder";
+import SettingsPageContent from "./components/pages/settings/SettingsPageContent";
 
 export default function App() {
     return (
@@ -27,6 +28,9 @@ export default function App() {
                                 <div className="container-fluid">
                                     <RegisterPageContent/>
                                 </div>
+                            </Route>
+                            <Route path="/settings">
+                                <SettingsPageContent/>
                             </Route>
                             <Route path="/participants">
                                 <ParticipantsPageContent/>

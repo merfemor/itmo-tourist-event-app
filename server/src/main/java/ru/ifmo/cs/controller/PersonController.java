@@ -39,14 +39,18 @@ public class PersonController {
         return personRepository.save(person);
     }
 
+    private static boolean isForbiddenChange(String oldValue, String newValue) {
+        return newValue != null && !Objects.equals(oldValue, newValue);
+    }
+
     @PutMapping(value = "/person", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> modifyPerson(@RequestBody Person newPerson) {
         Person oldPerson = personRepository.findById(newPerson.getId()).orElse(null);
         if (oldPerson == null) {
             return ResponseEntity.notFound().build();
         }
-        boolean emailChanged = !Objects.equals(oldPerson.getEmail(), newPerson.getEmail());
-        boolean passwordChanged = !Objects.equals(oldPerson.getPassword(), newPerson.getPassword());
+        boolean emailChanged = isForbiddenChange(oldPerson.getEmail(), newPerson.getEmail());
+        boolean passwordChanged = isForbiddenChange(oldPerson.getPassword(), newPerson.getPassword());
         if (emailChanged || passwordChanged) {
             // TODO: implement password and email change
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();

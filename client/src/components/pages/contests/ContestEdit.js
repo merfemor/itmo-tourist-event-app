@@ -15,7 +15,6 @@ function submitContest(contestFormData) {
             Log.d(TAG, "submitContest: ok response, returning");
             return response.json()
         }
-        Log.d(TAG, "submitContest: server returned error, status = " + response.status);
         return Promise.reject()
     })
 }
@@ -28,7 +27,6 @@ function loadContestById(id) {
                 Log.d(TAG, "loadContest: success")
                 return response.json()
             }
-            Log.d(TAG, "loadContest: server returned error, status = " + response.status)
             return Promise.reject()
         })
 }
@@ -41,7 +39,6 @@ function deleteContestById(id) {
                 Log.d(TAG, "loadContest: success")
                 return;
             }
-            Log.d(TAG, "loadContest: server returned error, status = " + response.status)
             return Promise.reject()
         })
 }
