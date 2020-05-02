@@ -1,14 +1,10 @@
 import React from 'react';
-
-import * as Constants from '../../../utils/constants';
 import {userRoleToString} from "../../../utils/language_utils";
+import {httpRequest} from "../../../utils/http";
 
-class ParticipantsTable extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            participants: []
-        }
+export default class ParticipantsTable extends React.Component {
+    state = {
+        participants: []
     }
 
     componentDidMount() {
@@ -16,9 +12,7 @@ class ParticipantsTable extends React.Component {
     }
 
     fetchData() {
-        fetch(Constants.BACKEND_ROOT_PATH + 'person', {
-            method: "GET"
-        })
+        httpRequest("GET", "person")
             .then(response => response.json())
             .then(data => {
                 // TODO: handle HTTP errors
@@ -68,5 +62,3 @@ class ParticipantsTable extends React.Component {
         );
     }
 }
-
-export default ParticipantsTable;

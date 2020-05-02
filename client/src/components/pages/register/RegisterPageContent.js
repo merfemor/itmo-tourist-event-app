@@ -1,8 +1,8 @@
 import React from "react";
 import {useForm} from 'react-hook-form';
 import {UserRole} from "../../../api/enums";
-import {BACKEND_ROOT_PATH} from "../../../utils/constants";
 import {Redirect} from "react-router-dom";
+import {httpRequest} from "../../../utils/http";
 
 const onSubmitRegistration = (formData) => {
     const person = {
@@ -14,21 +14,11 @@ const onSubmitRegistration = (formData) => {
         role: UserRole.PARTICIPANT.name,
         password: formData.password
     }
-    postNewPerson(person)
+    httpRequest("POST", "person", person)
+        .then(response => response.json())
         .then(response => {
             // TODO: store cookies, and etc
         })
-}
-
-async function postNewPerson(person) {
-    const response = await fetch(BACKEND_ROOT_PATH + "/person", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(person)
-    })
-    return response.json();
 }
 
 function RegisterPageForm(props) {

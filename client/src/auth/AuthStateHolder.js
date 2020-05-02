@@ -2,6 +2,7 @@ import React, {createContext, useContext, useEffect, useState} from "react";
 import {BACKEND_ROOT_PATH} from "../utils/constants";
 import {Log} from "../utils/Log";
 import {GlobalState} from "../utils/global_cache";
+import {httpRequest} from "../utils/http";
 
 const TAG = "AuthStateHolder";
 
@@ -48,19 +49,18 @@ function errorPromiseFromUncaughtError(e) {
 
 function loginWithToken(token, setAuthInfo) {
     Log.d(TAG, "loginWithToken(): start")
-    fetch(BACKEND_ROOT_PATH + "auth",
-        addAuthorizationHeaderToParams({method: 'GET'}, token))
+    httpRequest("GET", "auth")
         .then(response => {
-        if (response.status === 401) {
-            Log.d(TAG, "loginWithToken(): bad or expired token, clear in storage and logout");
-            logout();
-            return errorPromiseFromResponse(response);
-        } else if (response.status !== 200) {
-            Log.d(TAG, "loginWithToken(): server returned " + response.status);
-            return errorPromiseFromResponse(response);
-        }
-        return response.json()
-    }).then(response => {
+            if (response.status === 401) {
+                Log.d(TAG, "loginWithToken(): bad or expired token, clear in storage and logout");
+                logout();
+                return errorPromiseFromResponse(response);
+            } else if (response.status !== 200) {
+                Log.d(TAG, "loginWithToken(): server returned " + response.status);
+                return errorPromiseFromResponse(response);
+            }
+            return response.json()
+        }).then(response => {
         Log.d(TAG, "loginWithToken(): success, set user info");
         setAuthInfo({
             token: token,
@@ -78,29 +78,26 @@ function logout(setAuthInfo) {
 
 function loginWithEmailAndPassword(formData, setAuthInfo) {
     Log.d(TAG, "loginWithEmailAndPassword: start")
-    return fetch(BACKEND_ROOT_PATH + "login", {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(formData)
-    }).then(response => {
-        if (response.ok) {
-            Log.d(TAG, "loginWithEmailAndPassword: server returned ok")
-            return response.json()
-        }
-        Log.d(TAG, "loginWithEmailAndPassword: server returned error, status = " + response.status)
-        logout()
-        return errorPromiseFromResponse(response)
+    return httpRequest("POST", "login", formData)
+        .then(response => {
+            if (response.ok) {
+                Log.d(TAG, "loginWithEmailAndPassword: server returned ok")
+                return response.json()
+            }
+            Log.d(TAG, "loginWithEmailAndPassword: server returned error, status = " + response.status)
+            logout()
+            return errorPromiseFromResponse(response)
 
-    }).then(response => {
-        if (response.token == null || response.user == null) {
-            Log.w(TAG, "loginWithEmailAndPassword: user or token is null")
-            return errorPromiseFromUncaughtError("token or user is null")
-        }
-        Log.d(TAG, "loginWithEmailAndPassword: set token and user info")
-        setTokenInStorage(response.token);
-        setAuthInfo(response);
-        return Promise.resolve(response)
-    })
+        }).then(response => {
+            if (response.token == null || response.user == null) {
+                Log.w(TAG, "loginWithEmailAndPassword: user or token is null")
+                return errorPromiseFromUncaughtError("token or user is null")
+            }
+            Log.d(TAG, "loginWithEmailAndPassword: set token and user info")
+            setTokenInStorage(response.token);
+            setAuthInfo(response);
+            return Promise.resolve(response)
+        })
 }
 
 export const AuthContext = createContext(null);
@@ -127,7 +124,6 @@ export default function AuthStateHolder(props) {
 
     return <AuthContext.Provider value={{
         authInfo,
-        addAuthorizationHeaderToParams: (params) => addAuthorizationHeaderToParams(params, authInfo.token),
         loginWithEmailAndPassword: (formData) => loginWithEmailAndPassword(formData, setAuthInfo),
         logout: () => logout(setAuthInfo)
     }}>
