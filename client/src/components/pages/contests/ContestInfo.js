@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Link, useRouteMatch} from "react-router-dom";
-import {ParticipantType} from "../../../api/enums";
+import {ParticipantType, UserRole} from "../../../api/enums";
 import {httpJsonRequest, httpTextRequest} from "../../../utils/http";
 import {If} from "../../../utils/components";
 import {SingleRegistrationsTable} from "./SingleRegistrationsTable";
@@ -64,11 +64,13 @@ function SingleRegistrationBlock(props) {
                                       deleteSuccessCallback={props.deleteSuccessCallback}
                     />
                 </div>
-                <div className="col-3">
-                    <button className="btn btn-primary" onClick={onRegisterAnotherParticipantButtonClick}>
-                        Зарегистрировать участника
-                    </button>
-                </div>
+                <If roleAtLeast={UserRole.VOLUNTEER}>
+                    <div className="col-3">
+                        <button className="btn btn-primary" onClick={onRegisterAnotherParticipantButtonClick}>
+                            Зарегистрировать участника
+                        </button>
+                    </div>
+                </If>
             </div>
             <div className="table-responsive">
                 <SingleRegistrationsTable registrations={props.data}/>

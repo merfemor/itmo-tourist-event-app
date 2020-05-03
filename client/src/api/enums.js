@@ -1,14 +1,18 @@
 export const UserRole = {
     PARTICIPANT: {
-        name: "PARTICIPANT"
+        name: "PARTICIPANT",
+        order: 1
     },
     VOLUNTEER: {
-        name: "VOLUNTEER"
+        name: "VOLUNTEER",
+        order: 2,
     },
     ORGANIZER: {
-        name: "ORGANIZER"
+        name: "ORGANIZER",
+        order: 3
     }
 }
+Object.freeze(UserRole)
 
 export const ResultStructure = {
     TIME: {
@@ -24,6 +28,7 @@ export const ResultStructure = {
         displayName: "время с баллами"
     }
 }
+Object.freeze(ResultStructure)
 
 export const RegistrationType = {
     OPEN: {
@@ -35,6 +40,7 @@ export const RegistrationType = {
         displayName: "предварительная"
     }
 }
+Object.freeze(RegistrationType)
 
 export const ParticipantType = {
     SINGLE: {
@@ -49,4 +55,22 @@ export const ParticipantType = {
         name: "GROUP",
         displayName: "группа"
     }
+}
+Object.freeze(ParticipantType)
+
+export function requireEnumByName(enumClass, name) {
+    const result = findEnumByName(enumClass, name)
+    if (result == null) {
+        throw new Error("Not found enum with name " + name)
+    }
+    return result
+}
+
+export function findEnumByName(enumClass, name) {
+    for (const item in enumClass) {
+        if (enumClass[item].name === name) {
+            return enumClass[item]
+        }
+    }
+    return null;
 }
