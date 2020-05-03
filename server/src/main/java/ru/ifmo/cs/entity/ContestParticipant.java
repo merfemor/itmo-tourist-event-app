@@ -15,7 +15,7 @@ public class ContestParticipant {
     private long participantId;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "participant_id", insertable = false, updatable = false)
-    @JsonIgnore
+    @JsonIgnoreProperties("hibernateLazyInitializer")
     private Person participant;
     @Id
     @Column(name = "contest_id")

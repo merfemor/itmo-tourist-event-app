@@ -57,7 +57,7 @@ export default function ContestEdit() {
     }, []);
 
     if (isRedirect) {
-        return <Redirect to="/contest"/>
+        return <Redirect to={"/contests/" + params.contestId }/>
     }
 
     if (contest == null) {

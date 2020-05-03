@@ -18,7 +18,7 @@ export default function ContestTableCard(props) {
                 </div>
                 <div className="card-footer">
                     <Link to={`/contests/${contest.id}`} className="font-weight-bold font-xs btn-block text-muted">
-                        Редактировать
+                         Подробнее
                         <i className="fa fa-angle-right float-right font-lg"/>
                     </Link>
                 </div>

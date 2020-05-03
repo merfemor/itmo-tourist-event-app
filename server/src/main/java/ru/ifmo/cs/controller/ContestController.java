@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ifmo.cs.api.AllContestParticipants;
 import ru.ifmo.cs.api.ContestRegistration;
+import ru.ifmo.cs.api.dto.ContestResponse;
 import ru.ifmo.cs.database.ContestPatricipantGroupRepository;
 import ru.ifmo.cs.database.ContestPatricipantRepository;
 import ru.ifmo.cs.database.ContestRepository;
@@ -47,8 +48,13 @@ public class ContestController {
 
     @GetMapping(value = "/contest/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Contest> getContestById(@PathVariable long id) {
-        return ResponseEntity.of(contestRepository.findById(id));
+    public ResponseEntity<ContestResponse> getContestById(
+            @PathVariable long id,
+            @RequestParam(required = false, defaultValue = "false") boolean includeRegistrations) {
+
+        Optional<ContestResponse> response = contestRepository.findById(id).map(it ->
+                new ContestResponse(it, includeRegistrations));
+        return ResponseEntity.of(response);
     }
 
     @PostMapping(value = "/contest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
