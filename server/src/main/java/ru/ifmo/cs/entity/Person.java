@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -45,6 +46,12 @@ public class Person {
 
     @JsonCreator
     public Person(Long id, String email, @JsonProperty("password") String password, String firstName, String lastName, String middleName, @JsonProperty("isMale") boolean isMale, Date birthDate, UserRole role, SportsCategory tourismSportsCategory, String university, AcademicDegree studyingAcademicDegree, String itmoEducationGroup, String itmoDepartment, Integer itmoIsuNumber) {
+        Objects.requireNonNull(email, "email must not be null");
+        Objects.requireNonNull(firstName, "firstName must not be null");
+        Objects.requireNonNull(lastName, "lastName must not be null");
+        if (role == null) {
+            role = UserRole.PARTICIPANT;
+        }
         this.id = id;
         this.email = email;
         this.password = password;
