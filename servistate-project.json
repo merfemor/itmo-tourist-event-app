@@ -1,0 +1,217 @@
+{
+    "servistate": "backup",
+    "version": 1,
+    "createdAt": "2020-05-03T07:40:00.867Z",
+    "stores": [
+        {
+            "name": "projects",
+            "data": [
+                {
+                    "name": "ITMO Sport Tourist Application - REST API test",
+                    "description": "",
+                    "id": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "createdAt": "2020-05-01T09:30:58.341Z",
+                    "modifiedAt": "2020-05-03T07:39:54.019Z",
+                    "settings": {
+                        "requestSortOrder": "url:false",
+                        "testSortOrder": "modifiedAt:true",
+                        "filesExpanded": false
+                    },
+                    "vars": [
+                        {
+                            "name": "root",
+                            "value": "http://localhost:8080"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "requests",
+            "data": [
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "POST",
+                    "url": "${root}/person",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "postData": {
+                        "type": "raw",
+                        "data": "{\n    \"email\": \"1@1\",\n    \"password\": \"1\",\n    \"birthDate\": \"2000-12-03\",\n    \"firstName\": \"Ivan\",\n    \"lastName\": \"Ivanov\",\n    \"isMale\": false,\n    \"role\": \"PARTICIPANT\"\n}",
+                        "format": "json",
+                        "autoTypeHeader": true
+                    },
+                    "assertions": [],
+                    "assignments": [],
+                    "id": "04b30fba-3378-4a5b-b8e1-4613e2c1e645",
+                    "createdAt": "2020-05-01T09:30:58.359Z",
+                    "modifiedAt": "2020-05-02T08:54:27.078Z"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "GET",
+                    "url": "${root}/contest/7",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        }
+                    ],
+                    "postData": null,
+                    "assertions": [],
+                    "assignments": [],
+                    "id": "2318d36f-599b-4b7e-bb18-22e8bf3c4e12",
+                    "createdAt": "2020-05-02T21:36:47.430Z",
+                    "modifiedAt": "2020-05-02T21:42:29.070Z"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "POST",
+                    "url": "${root}/contest/7/registration",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        },
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        }
+                    ],
+                    "postData": {
+                        "type": "raw",
+                        "data": "{\n    \"groupName\": \"Порватая лосина\",\n    \"participantIds\": [1,11]\n}",
+                        "format": "json",
+                        "autoTypeHeader": false
+                    },
+                    "assertions": [],
+                    "assignments": [],
+                    "createdAt": "2020-05-03T07:02:59.310Z",
+                    "modifiedAt": "2020-05-03T07:06:18.594Z",
+                    "id": "58e12ca9-b5ea-4913-a3bd-a8db996e6af5"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "GET",
+                    "url": "${root}/person",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        }
+                    ],
+                    "postData": null,
+                    "assertions": [],
+                    "assignments": [],
+                    "id": "772f8395-1cc8-4160-a002-fc8e5be38684",
+                    "createdAt": "2020-05-01T09:35:45.017Z",
+                    "modifiedAt": "2020-05-01T22:41:53.248Z"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "GET",
+                    "url": "${root}/contest/7/registrations",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        }
+                    ],
+                    "postData": null,
+                    "assertions": [],
+                    "assignments": [],
+                    "name": "[Unnamed] [cloned 05/03/2020 10:19:30 AM]",
+                    "id": "83822b9a-1664-40f3-a342-f079e4786b39",
+                    "createdAt": "2020-05-03T07:19:30.924Z",
+                    "modifiedAt": "2020-05-03T07:34:14.710Z"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "POST",
+                    "url": "${root}/contest/7/registration",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        },
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        }
+                    ],
+                    "postData": {
+                        "type": "raw",
+                        "data": "{\n    \"participantId\": 1\n}",
+                        "format": "json",
+                        "autoTypeHeader": false
+                    },
+                    "assertions": [],
+                    "assignments": [],
+                    "id": "9d7f75d6-f0a4-4e49-8195-0c4b82a2e6a5",
+                    "createdAt": "2020-05-03T07:02:59.310Z",
+                    "modifiedAt": "2020-05-03T07:02:59.310Z"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "POST",
+                    "url": "${root}/login",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "postData": {
+                        "type": "raw",
+                        "data": "{\n    \"email\": \"1@1\",\n    \"password\": \"1\"\n}",
+                        "format": "json",
+                        "autoTypeHeader": false
+                    },
+                    "assertions": [
+                        {
+                            "source": "status",
+                            "path": "",
+                            "condition": "eq",
+                            "value": "200"
+                        }
+                    ],
+                    "assignments": [
+                        {
+                            "source": "json",
+                            "path": "/token",
+                            "variable": "authToken",
+                            "persist": true
+                        }
+                    ],
+                    "id": "a41bd391-3f85-4d45-af8d-501696b63437",
+                    "createdAt": "2020-05-01T21:30:03.994Z",
+                    "modifiedAt": "2020-05-03T07:39:43.628Z"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "GET",
+                    "url": "${root}/contest",
+                    "followRedirects": true,
+                    "headers": [],
+                    "postData": null,
+                    "assertions": [],
+                    "assignments": [],
+                    "id": "ba19baad-bbb3-4293-9967-d16e5734b0c9",
+                    "createdAt": "2020-05-02T21:37:04.587Z",
+                    "modifiedAt": "2020-05-02T21:37:04.587Z"
+                }
+            ]
+        }
+    ]
+}
