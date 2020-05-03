@@ -1,9 +1,11 @@
 package ru.ifmo.cs.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 public class Contest {
@@ -23,6 +25,12 @@ public class Contest {
     private RegistrationType registrationType;
     @Column(nullable = false)
     private ParticipantType participantType;
+    @OneToMany(mappedBy = "contest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<ContestParticipant> singleParticipants;
+    @OneToMany(mappedBy = "associatedContest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<ContestParticipantGroup> contestParticipantGroups;
 
     protected Contest() {
         /* for ORM */
@@ -70,6 +78,14 @@ public class Contest {
 
     public ParticipantType getParticipantType() {
         return participantType;
+    }
+
+    public Set<ContestParticipant> getSingleParticipants() {
+        return singleParticipants;
+    }
+
+    public Set<ContestParticipantGroup> getContestParticipantGroups() {
+        return contestParticipantGroups;
     }
 
     public void updateFields(Contest contest) {

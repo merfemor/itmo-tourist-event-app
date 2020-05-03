@@ -1,4 +1,4 @@
-package ru.ifmo.cs.auth;
+package ru.ifmo.cs.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import ru.ifmo.cs.entity.Person;

@@ -1,14 +1,10 @@
-package ru.ifmo.cs.auth;
+package ru.ifmo.cs.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class LoginRequest {
     private String email;
     private String password;
-
-    public LoginRequest() {
-        /* for Jackson */
-    }
 
     public LoginRequest(String email, String password) {
         this.email = email;

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class JwtUtils {
-    private static final long EXPIRE_TIMEOUT = TimeUnit.HOURS.toMillis(10);
+    private static final long EXPIRE_TIMEOUT = TimeUnit.DAYS.toMillis(14);
     private static final String SECRET_KEY = "secret"; // TODO: change secrete key
 
     private JwtUtils() {

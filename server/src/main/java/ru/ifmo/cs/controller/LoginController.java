@@ -4,7 +4,6 @@ package ru.ifmo.cs.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationProvider;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,8 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.ifmo.cs.auth.JwtUtils;
-import ru.ifmo.cs.auth.LoginRequest;
-import ru.ifmo.cs.auth.LoginResponse;
+import ru.ifmo.cs.api.LoginRequest;
+import ru.ifmo.cs.api.LoginResponse;
 import ru.ifmo.cs.database.PersonRepository;
 import ru.ifmo.cs.entity.Person;
 

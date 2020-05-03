@@ -1,6 +1,7 @@
 package ru.ifmo.cs.entity;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,10 +11,18 @@ import java.util.Date;
 @IdClass(ContestParticipant.ContestParticipantId.class)
 public class ContestParticipant {
     @Id
-    @ManyToOne(optional = false)
+    @Column(name = "participant_id")
+    private long participantId;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "participant_id", insertable = false, updatable = false)
+    @JsonIgnore
     private Person participant;
     @Id
-    @ManyToOne(optional = false)
+    @Column(name = "contest_id")
+    private long contestId;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "contest_id", insertable = false, updatable = false)
+    @JsonIgnore
     private Contest contest;
     private Date startDate;
     @OneToOne
@@ -23,12 +32,19 @@ public class ContestParticipant {
         /* for ORM */
     }
 
-    @JsonCreator
-    public ContestParticipant(Person participant, Contest contest, Date startDate, Result result) {
-        this.participant = participant;
-        this.contest = contest;
+    public ContestParticipant(long participantId, long contestId, Date startDate, Result result) {
+        this.participantId = participantId;
+        this.contestId = contestId;
         this.startDate = startDate;
         this.result = result;
+    }
+
+    public long getParticipantId() {
+        return participantId;
+    }
+
+    public long getContestId() {
+        return contestId;
     }
 
     public Person getParticipant() {
@@ -43,19 +59,29 @@ public class ContestParticipant {
         return startDate;
     }
 
-    static class ContestParticipantId implements Serializable {
-        private Person participant;
-        private Contest contest;
+    public Result getResult() {
+        return result;
+    }
 
-        private ContestParticipantId() {
+    public static class ContestParticipantId implements Serializable {
+        private long participantId;
+        private long contestId;
+
+        ContestParticipantId() {
+            /* for ORM */
         }
 
-        public Person getParticipant() {
-            return participant;
+        public ContestParticipantId(long participantId, long contestId) {
+            this.participantId = participantId;
+            this.contestId = contestId;
         }
 
-        public Contest getContest() {
-            return contest;
+        public long getContestId() {
+            return contestId;
+        }
+
+        public long getParticipantId() {
+            return participantId;
         }
     }
 }
