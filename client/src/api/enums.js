@@ -74,3 +74,7 @@ export function findEnumByName(enumClass, name) {
     }
     return null;
 }
+
+export function enumToLocaleString(enumClass, name) {
+    return requireEnumByName(enumClass, name).displayName
+}

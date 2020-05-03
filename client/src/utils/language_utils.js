@@ -15,3 +15,17 @@ export function userRoleToString(role) {
 export function personFullName(person) {
     return `${person.lastName} ${person.firstName} ${person.middleName}`
 }
+
+const DATE_TIME_FORMAT_OPTIONS = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timezone: 'UTC',
+    hour: 'numeric',
+    minute: 'numeric'
+};
+
+export function dateTimeToString(dateString) {
+    const date = Date.parse(dateString)
+    return Intl.DateTimeFormat("ru-RU", DATE_TIME_FORMAT_OPTIONS).format(date)
+}
