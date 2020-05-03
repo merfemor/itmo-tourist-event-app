@@ -5,6 +5,19 @@ import {httpJsonRequest} from "../../../utils/http";
 import {If} from "../../../utils/components";
 import {GroupRegistrationsTable} from "./GroupRegistrationsTable";
 import {SingleRegistrationsContainer} from "./SingleRegistrationsContainer";
+import {ContestDescriptionBlock} from "./ContestDescriptionBlock";
+
+function RegisterGroupBlock(props) {
+    const data = props.data;
+    const contestId = props.contestId;
+    const createSuccessCallback = props.createSuccessCallback;
+
+    return <div className="row">
+        <div className="col-3">
+            <button className="btn btn-primary">Зарегистрировать группу</button>
+        </div>
+    </div>
+}
 
 
 export default function ContestInfo() {
@@ -40,19 +53,14 @@ export default function ContestInfo() {
                     <div className="card-body card-block">
                         <div className="row mb-4">
                             <div className="col-12">
-                                <small>{contest.description}</small>
-                                <div>Начало: {contest.startDateTime}</div>
-                                <div>Окончание: {contest.endDateTime}</div>
-                                <div>Структура результата: {contest.resultStructure}</div>
-                                <div>Тип регистрации: {contest.registrationType}</div>
-                                <div>Тип участника: {contest.participantType}</div>
+                                <ContestDescriptionBlock data={contest}/>
                                 <If roleAtLeast={UserRole.VOLUNTEER}>
                                     <Link to={`${match.url}/edit`} className="mt-4 btn btn-primary">Редактировать</Link>
                                 </If>
                             </div>
                         </div>
-                        <h2>Регистрации</h2>
                         <If cond={isSingleParticipant && contest.singleParticipants != null}>
+                            <h2>Участники</h2>
                             <SingleRegistrationsContainer
                                 contestId={contestId}
                                 data={contest.singleParticipants}
@@ -61,6 +69,16 @@ export default function ContestInfo() {
                             />
                         </If>
                         <If cond={!isSingleParticipant && contest.contestParticipantGroups != null}>
+                            <h2>Группы</h2>
+                            <If roleAtLeast={UserRole.VOLUNTEER}>
+                                <div className="mb-2">
+                                    <RegisterGroupBlock
+                                        contestId={contestId}
+                                        data={contest.contestParticipantGroups}
+                                        createSuccessCallback={onActionDone}
+                                    />
+                                </div>
+                            </If>
                             <div className="table-responsive">
                                 <GroupRegistrationsTable registrations={contest.contestParticipantGroups}/>
                             </div>

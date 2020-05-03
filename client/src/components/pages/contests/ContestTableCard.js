@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import {ContestDescriptionBlock} from "./ContestDescriptionBlock";
 
 export default function ContestTableCard(props) {
     const contest = props.contest;
@@ -8,13 +9,8 @@ export default function ContestTableCard(props) {
         <div className="col-12 col-sm-12 col-lg-6">
             <div className="card">
                 <div className="card-body card-block">
-                    <div className="h4 m-0">{contest.name}</div>
-                    <small>{contest.description}</small>
-                    <div>Начало: {contest.startDateTime}</div>
-                    <div>Окончание: {contest.endDateTime}</div>
-                    <div>Структура результата: {contest.resultStructure}</div>
-                    <div>Тип регистрации: {contest.registrationType}</div>
-                    <div>Тип участника: {contest.participantType}</div>
+                    <div className="h4">{contest.name}</div>
+                    <ContestDescriptionBlock data={contest}/>
                 </div>
                 <div className="card-footer">
                     <Link to={`/contests/${contest.id}`} className="font-weight-bold font-xs btn-block text-muted">
