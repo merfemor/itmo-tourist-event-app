@@ -9,6 +9,7 @@ import LoginPageContent from "./components/pages/login/LoginPageContent";
 import RegisterPageContent from "./components/pages/register/RegisterPageContent";
 import AuthStateHolder from "./auth/AuthStateHolder";
 import SettingsPageContent from "./components/pages/settings/SettingsPageContent";
+import TasksPageContent from "./components/pages/tasks/TasksPageContent";
 
 export default function App() {
     return (
@@ -34,6 +35,9 @@ export default function App() {
                             </Route>
                             <Route path="/participants">
                                 <ParticipantsPageContent/>
+                            </Route>
+                            <Route path="/tasks">
+                                <TasksPageContent/>
                             </Route>
                             <Route path="/contests">
                                 <ContestPageContent/>
