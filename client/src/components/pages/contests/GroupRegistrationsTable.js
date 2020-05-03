@@ -1,7 +1,8 @@
 import React from "react";
 import {UserRole} from "../../../api/enums";
 import {If} from "../../../utils/components";
-import {httpJsonRequest, httpTextRequest} from "../../../utils/http";
+import {httpTextRequest} from "../../../utils/http";
+import {personFullName} from "../../../utils/language_utils";
 
 function renderGroupRegistrationCells(group, deleteButtonClickCallback) {
     const membersCount = group.members.length;
@@ -12,7 +13,7 @@ function renderGroupRegistrationCells(group, deleteButtonClickCallback) {
                 <th rowSpan={membersCount}>{group.name}</th>
             </If>
             <th>
-                {it.lastName + " " + it.firstName + " " + it.middleName}
+                {personFullName(it)}
             </th>
             <th>
                 {it.isMale ? "М" : "Ж"}

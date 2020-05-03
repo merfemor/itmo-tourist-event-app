@@ -1,3 +1,5 @@
+import React from "react";
+
 export function userRoleToString(role) {
     switch (role) {
         case "PARTICIPANT":
@@ -19,6 +21,13 @@ export function personFullName(person) {
 export function personShortName(person) {
     const middleName = person.middleName && ` ${person.middleName[0]}.`
     return `${person.lastName} ${person.firstName[0]}.${middleName}`
+}
+
+export function resultToString(result) {
+    if (result == null) {
+        return "-"
+    }
+    return JSON.stringify(result)
 }
 
 const DATE_TIME_FORMAT_OPTIONS = {

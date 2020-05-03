@@ -8,6 +8,7 @@ import {SingleRegistrationsContainer} from "./SingleRegistrationsContainer";
 import {ContestDescriptionBlock} from "./ContestDescriptionBlock";
 import {RegisterGroupBlock} from "./RegisterGroupBlock";
 import {ContestTasksContainer} from "./ContestTasksContainer";
+import {ContestResultsContainer} from "./ContestResultsContainer";
 
 
 export default function ContestInfo() {
@@ -82,6 +83,8 @@ export default function ContestInfo() {
                                 />
                             </div>
                         </If>
+                        <h2>Результаты</h2>
+                        <ContestResultsContainer data={contest} onChange={onActionDone}/>
                     </div>
                 </div>
             </div>

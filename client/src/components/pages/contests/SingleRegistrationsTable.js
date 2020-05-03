@@ -2,6 +2,7 @@ import React from "react";
 import {If} from "../../../utils/components";
 import {UserRole} from "../../../api/enums";
 import {httpTextRequest} from "../../../utils/http";
+import {personFullName} from "../../../utils/language_utils";
 
 export function SingleRegistrationsTable(props) {
     const registrations = props.registrations;
@@ -31,7 +32,7 @@ export function SingleRegistrationsTable(props) {
                 <tr key={it.participant.id}>
                     <th className="text-center">{it.participant.id}</th>
                     <th>
-                        {it.participant.lastName + " " + it.participant.firstName + " " + it.participant.middleName}
+                        {personFullName(it.participant)}
                     </th>
                     <th className="text-center">
                         {it.participant.isMale ? "М" : "Ж"}

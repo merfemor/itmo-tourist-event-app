@@ -15,5 +15,8 @@ export function If(props) {
             return null;
         }
     }
+    if (props.component != null) {
+        return props.component()
+    }
     return props.children
 }
