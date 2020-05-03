@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Link, useRouteMatch} from "react-router-dom";
 import {If} from "../../../utils/components";
 import {httpJsonRequest} from "../../../utils/http";
+import {personShortName} from "../../../utils/language_utils";
 
 export default function TasksDashboardCard(props) {
     const {url} = useRouteMatch()
@@ -26,9 +27,14 @@ export default function TasksDashboardCard(props) {
             <div className="card-body card-block">
                 <If cond={data.description != null && data.description !== ""}>
                     <div className="mb-2">
-                        {data.description}
+                        <i>{data.description}</i>
                     </div>
                 </If>
+                {data.assignee != null &&
+                <div className="mb-2">
+                    <b>Исполнитель</b>: {personShortName(data.assignee)}
+                </div>
+                }
                 <div className="row">
                     <div className="col-6">
                         <button className={`btn btn-${data.isDone ? "warning" : "success"}`}

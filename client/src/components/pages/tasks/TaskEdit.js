@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Redirect, useRouteMatch} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {httpJsonRequest, httpTextRequest} from "../../../utils/http";
+import PersonSearchDropdownInput from "../../forms/PersonSearchDropdownInput";
 
 export default function TaskEdit() {
     const { params } = useRouteMatch();
@@ -25,13 +26,24 @@ export default function TaskEdit() {
     }
 
     function onFormSubmit(formData) {
-        httpJsonRequest("PUT", "task", { ...formData, id: params.taskId })
+        const newData = {
+            ...data,
+            ...formData,
+            assigneeId: data.assignee?.id,
+            assignee: null
+        }
+        console.log(newData)
+        httpJsonRequest("PUT", "task", newData)
             .then(() => setRedirect(true));
     }
 
-    function onDeleteButtonClick(e) {
+    function onDeleteButtonClick() {
         httpTextRequest("DELETE", `task/${params.taskId}`)
             .then(() => setRedirect(true))
+    }
+
+    function onAssigneeChange(newAssignee) {
+        setData((oldData) => ({...oldData, assignee: newAssignee}))
     }
 
     return (
@@ -65,24 +77,28 @@ export default function TaskEdit() {
                                     начала</label>
                                 <input type="text" id="start-date-input" placeholder="Введите дату и время начала"
                                        defaultValue={data.startDateTime}
-                                       className={"form-control" + (errors.startDateTime ? " is-invalid" : "")}
-                                       name="startDateTime"
-                                       ref={register({
-                                           required: true
-                                       })}
-                                />
+                                       className="form-control" name="startDateTime" ref={register}/>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="end-date-input" className="form-control-label">Дата и время
                                     окончания</label>
                                 <input type="text" id="end-date-input" placeholder="Введите дату и время окончания"
                                        defaultValue={data.endDateTime}
-                                       className={"form-control" + (errors.endDateTime ? " is-invalid" : "")}
-                                       name="endDateTime"
-                                       ref={register({
-                                           required: true
-                                       })}
-                                />
+                                       className="form-control" name="endDateTime" ref={register}/>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="assignee-search-dropdown-input"
+                                       className="form-control-label">
+                                    Исполнитель
+                                </label>
+                                <div className="input-group">
+                                    <PersonSearchDropdownInput id="assignee-search-dropdown-input"
+                                                               value={data.assignee}
+                                                               onChange={onAssigneeChange}
+                                                               placeholderText="Начните вводить имя"
+
+                                    />
+                                </div>
                             </div>
                             <div className="form-group">
                                 <button type="submit" className="btn btn-primary">Сохранить</button>

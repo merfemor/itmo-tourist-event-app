@@ -17,7 +17,6 @@ public class Task {
     private String name;
     private String description;
     @Column(name = "assignee_id")
-    @JsonIgnore
     private Long assigneeId;
     @ManyToOne
     @JoinColumn(name = "assignee_id", insertable = false, updatable = false)
@@ -25,7 +24,6 @@ public class Task {
     @Column(nullable = false)
     private boolean isDone;
     @Column(name = "associated_contest_id")
-    @JsonIgnore
     private Long associatedContestId;
     @ManyToOne
     @JoinColumn(name = "associated_contest_id", insertable = false, updatable = false)

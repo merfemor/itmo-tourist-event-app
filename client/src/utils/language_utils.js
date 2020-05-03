@@ -16,6 +16,11 @@ export function personFullName(person) {
     return `${person.lastName} ${person.firstName} ${person.middleName}`
 }
 
+export function personShortName(person) {
+    const middleName = person.middleName && ` ${person.middleName[0]}.`
+    return `${person.lastName} ${person.firstName[0]}.${middleName}`
+}
+
 const DATE_TIME_FORMAT_OPTIONS = {
     year: 'numeric',
     month: 'long',

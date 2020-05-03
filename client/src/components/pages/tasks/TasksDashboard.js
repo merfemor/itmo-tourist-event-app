@@ -20,8 +20,8 @@ export default function TasksDashboard() {
         </If>
         <div className="row mt-3">
             {dataList.map(it =>
-                <div className="col-sm-6 col-xs-12">
-                    <TasksDashboardCard key={it.id} data={it}/>
+                <div key={it.id} className="col-sm-6 col-xs-12">
+                    <TasksDashboardCard data={it}/>
                 </div>
             )}
         </div>

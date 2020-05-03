@@ -30,19 +30,21 @@ export default function PersonSearchDropdownInput(props) {
     const onChange = props.onChange;
     const placeholderText = props.placeholderText;
     const additionalFilter = props.filter || (() => true)
-    const [selectedId, setSelectedId] = useState(null);
+    const [selectedId, setSelectedId] = useState(props.value?.id);
+    const [query, setQuery] = useState(props.value == null ? "" : personFullName(props.value));
     const [participants, setAvailableParticipants] = useState([]);
     const [participantsNotLoaded, setParticipantsNotLoaded] = useState(true);
     const [filteredParticipants, setFilteredParticipants] = useState([]);
-    const [query, setQuery] = useState("");
 
     const showDropdown = query.length > 0 && selectedId == null;
 
-    props.registerCallbacks.clearQuery = () => {
-        setQuery("")
-        setSelectedId(null)
-        onChange(null)
-    };
+    if (props.registerCallbacks != null) {
+        props.registerCallbacks.clearQuery = () => {
+            setQuery("")
+            setSelectedId(null)
+            onChange(null)
+        };
+    }
 
     function processFilteredParticipants(participants, filterQuery) {
         const newValue = participants.filter(it => filterParticipantByQuery(it, filterQuery))
@@ -82,7 +84,7 @@ export default function PersonSearchDropdownInput(props) {
     return [
         <input type="search"
                key="PersonSearchDropdownInput-input"
-               id="dropdown-input"
+               id={props.id}
                value={query}
                className="dropdown-toggle form-control"
                onChange={onQueryInputChange}
@@ -90,7 +92,7 @@ export default function PersonSearchDropdownInput(props) {
                onFocus={() => onChangeFocus(true)}
                onBlur={() => onChangeFocus(false)}
         />,
-        <If  key="PersonSearchDropdownInput-if" cond={showDropdown}>
+        <If key="PersonSearchDropdownInput-if" cond={showDropdown}>
             <div className="dropdown-menu show" aria-labelledby="dropdown-input">
                 <DropdownListItems onItemSelect={onDropdownOptionClick} items={filteredParticipants}/>
             </div>
