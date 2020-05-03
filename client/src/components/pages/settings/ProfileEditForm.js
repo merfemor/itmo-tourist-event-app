@@ -80,15 +80,6 @@ export default function ProfileEditForm() {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="first-name-input" className="form-control-label">Имя</label>
-                        <input type="text" id="first-name-input" placeholder="Введите имя"
-                               defaultValue={authInfo.user.firstName}
-                               className={"form-control" + (errors.firstName ? " is-invalid" : "")}
-                               name="firstName" ref={register({
-                            required: true
-                        })}/>
-                    </div>
-                    <div className="form-group">
                         <label htmlFor="last-name-input" className="form-control-label">Фамилия</label>
                         <input type="text" id="last-name-input" placeholder="Введите фамилию"
                                defaultValue={authInfo.user.lastName}
@@ -97,6 +88,15 @@ export default function ProfileEditForm() {
                                ref={register({
                                    required: true
                                })}/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="first-name-input" className="form-control-label">Имя</label>
+                        <input type="text" id="first-name-input" placeholder="Введите имя"
+                               defaultValue={authInfo.user.firstName}
+                               className={"form-control" + (errors.firstName ? " is-invalid" : "")}
+                               name="firstName" ref={register({
+                            required: true
+                        })}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="middle-name-input" className="form-control-label">Отчество</label>
