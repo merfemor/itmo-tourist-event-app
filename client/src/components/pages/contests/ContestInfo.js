@@ -68,7 +68,10 @@ export default function ContestInfo() {
                                 </div>
                             </If>
                             <div className="table-responsive">
-                                <GroupRegistrationsTable registrations={contest.contestParticipantGroups}/>
+                                <GroupRegistrationsTable
+                                    registrations={contest.contestParticipantGroups}
+                                    deleteSuccessCallback={onActionDone}
+                                />
                             </div>
                         </If>
                     </div>

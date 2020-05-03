@@ -71,17 +71,10 @@ function loginWithToken(token) {
         })
 }
 
-function logout(setAuthInfo) {
+function logout() {
     Log.d(TAG, "logout")
     setTokenInStorage(null)
     GlobalState.authToken = null
-    setAuthInfo((state) => {
-        return {
-            ...state,
-            token: null,
-            user: null
-        }
-    })
 }
 
 function loginWithEmailAndPassword(formData, setAuthInfo) {
@@ -156,13 +149,18 @@ export default function AuthStateHolder(props) {
     return <AuthContext.Provider value={{
         authInfo,
         loginWithEmailAndPassword: (formData) => loginWithEmailAndPassword(formData, setAuthInfo),
-        setUserInfo: (userInfo) => setAuthInfo((state) => {
-            return {
+        setUserInfo: (userInfo) => setAuthInfo((state) => ({
+            ...state,
+            user: userInfo
+        })),
+        logout: () => {
+            logout()
+            setAuthInfo(state => ({
                 ...state,
-                user: userInfo
-            }
-        }),
-        logout: () => logout(setAuthInfo)
+                token: null,
+                user: null
+            }))
+        }
     }}>
         {props.children}
     </AuthContext.Provider>

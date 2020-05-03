@@ -22,7 +22,7 @@ public class ContestParticipantGroup {
     private Contest associatedContest;
     private String name;
     private Date startDate;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable
     @JsonIgnoreProperties({"hibernateLazyInitializer"})
     private Set<Person> members;

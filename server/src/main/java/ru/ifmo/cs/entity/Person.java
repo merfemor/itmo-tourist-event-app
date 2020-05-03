@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 public class Person {
@@ -32,6 +33,10 @@ public class Person {
     private String itmoEducationGroup;
     private String itmoDepartment;
     private Integer itmoIsuNumber;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "participantId")
+    @JsonIgnore
+    private Set<ContestParticipant> contestRegistrations;
 
 
     protected Person() {
@@ -117,6 +122,10 @@ public class Person {
 
     public Integer getItmoIsuNumber() {
         return itmoIsuNumber;
+    }
+
+    public Set<ContestParticipant> getContestRegistrations() {
+        return contestRegistrations;
     }
 
     @Override

@@ -1,8 +1,9 @@
 import React from "react";
 import {UserRole} from "../../../api/enums";
 import {If} from "../../../utils/components";
+import {httpJsonRequest, httpTextRequest} from "../../../utils/http";
 
-function renderGroupRegistrationCells(group) {
+function renderGroupRegistrationCells(group, deleteButtonClickCallback) {
     const membersCount = group.members.length;
     return group.members.map((it, index) =>
         <tr key={`${group.id}/${it.id}`}>
@@ -18,7 +19,7 @@ function renderGroupRegistrationCells(group) {
             </th>
             <If cond={index === 0} roleAtLeast={UserRole.VOLUNTEER}>
                 <th rowSpan={membersCount} className="text-right">
-                     <button className="btn btn-danger btn-sm">Удалить</button>
+                     <button className="btn btn-danger btn-sm" onClick={deleteButtonClickCallback}>Удалить</button>
                 </th>
             </If>
         </tr>
@@ -27,6 +28,12 @@ function renderGroupRegistrationCells(group) {
 
 export function GroupRegistrationsTable(props) {
     const registrations = props.registrations;
+
+    function onDeleteButtonClick(registration) {
+        httpTextRequest("DELETE", `contest/${registration.associatedContestId}/registration/${registration.id}`)
+            .then(props.deleteSuccessCallback)
+    }
+
     return (
         <table className="table-outline mb-0 d-none d-sm-table table table-hover table-sm">
             <thead className="thead-default">
@@ -41,7 +48,7 @@ export function GroupRegistrationsTable(props) {
             </tr>
             </thead>
             <tbody>
-            {registrations.map(it => renderGroupRegistrationCells(it))}
+            {registrations.map(it => renderGroupRegistrationCells(it, () => onDeleteButtonClick(it)))}
             </tbody>
         </table>
     );
