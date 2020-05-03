@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Link, useRouteMatch} from "react-router-dom";
-import {httpRequest} from "../../../utils/http";
+import {httpJsonRequest} from "../../../utils/http";
 import ContestTableCard from "./ContestTableCard";
 
 export default function ContestTable() {
@@ -8,8 +8,7 @@ export default function ContestTable() {
     const match = useRouteMatch();
 
     useEffect(() => {
-        httpRequest('GET', 'contest')
-            .then(response => response.json())
+        httpJsonRequest('GET', 'contest')
             .then(response => setContestsData(response))
     }, []);
 

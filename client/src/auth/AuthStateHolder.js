@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {Log} from "../utils/Log";
 import {GlobalState} from "../utils/global_cache";
-import {httpRequest} from "../utils/http";
+import {httpJsonRequest, httpRequest} from "../utils/http";
 
 const TAG = "AuthStateHolder";
 
@@ -17,7 +17,6 @@ function restoreTokenFromStorage() {
 function setTokenInStorage(token) {
     // TODO: save token in cookies
     localStorage.setItem("token", token)
-    GlobalState.authToken = token
 }
 
 export function addAuthorizationHeaderToParams(params, token) {
@@ -46,35 +45,36 @@ function errorPromiseFromUncaughtError(e) {
     })
 }
 
-function loginWithToken(token, setAuthInfo) {
+function loginWithToken(token) {
     Log.d(TAG, "loginWithToken(): start")
-    httpRequest("GET", "auth")
-        .then(response => {
-            if (response.status === 401) {
-                Log.d(TAG, "loginWithToken(): bad or expired token, clear in storage and logout");
-                logout();
-                return errorPromiseFromResponse(response);
-            } else if (response.status !== 200) {
-                return errorPromiseFromResponse(response);
-            }
-            return response.json()
-        }).then(response => {
-        Log.d(TAG, "loginWithToken(): success, set user info");
-        setAuthInfo(state => {
-            return {
-                ...state,
+    return httpJsonRequest("GET", "auth")
+        .then(responseJson => {
+            Log.d(TAG, "loginWithToken(): success, set user info");
+            return Promise.resolve({
                 token: token,
-                user: response,
+                user: responseJson,
                 authorizeAttemptWasDone: true
+            });
+        })
+        .catch((status) => {
+            let newToken = token
+            // TODO: decide what code to send from server
+            if (status === 401 || status === 403) {
+                logout();
+                newToken = null
             }
-        });
-        return Promise.resolve(response);
-    })
+            return Promise.resolve({
+                authorizeAttemptWasDone: true,
+                token: newToken,
+                user: null
+            });
+        })
 }
 
 function logout(setAuthInfo) {
     Log.d(TAG, "logout")
     setTokenInStorage(null)
+    GlobalState.authToken = null
     setAuthInfo((state) => {
         return {
             ...state,
@@ -102,6 +102,7 @@ function loginWithEmailAndPassword(formData, setAuthInfo) {
             }
             Log.d(TAG, "loginWithEmailAndPassword: set token and user info")
             setTokenInStorage(response.token);
+            GlobalState.authToken = response.token;
             setAuthInfo({
                 ...response,
                 authorizeAttemptWasDone: true
@@ -136,7 +137,16 @@ export default function AuthStateHolder(props) {
             })
             return
         }
-        loginWithToken(token, setAuthInfo)
+        loginWithToken(token)
+            .then(state => {
+                const newAuthInfo = {
+                    ...authInfo,
+                    ...state
+                }
+                console.log("token")
+                GlobalState.authToken = newAuthInfo.token
+                setAuthInfo(newAuthInfo)
+            })
     }, []);
 
     if (authInfo.authorizeAttemptWasDone !== true) {
