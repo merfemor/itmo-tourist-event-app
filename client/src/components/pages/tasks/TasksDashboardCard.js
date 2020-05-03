@@ -1,8 +1,8 @@
 import React, {useState} from "react";
-import {Link, useRouteMatch} from "react-router-dom";
+import {Link, useRouteMatch, A} from "react-router-dom";
 import {If} from "../../../utils/components";
 import {httpJsonRequest} from "../../../utils/http";
-import {personShortName} from "../../../utils/language_utils";
+import {dateTimeToString, personShortName} from "../../../utils/language_utils";
 
 export default function TasksDashboardCard(props) {
     const {url} = useRouteMatch()
@@ -25,16 +25,36 @@ export default function TasksDashboardCard(props) {
                 </If>
             </div>
             <div className="card-body card-block">
-                <If cond={data.description != null && data.description !== ""}>
-                    <div className="mb-2">
-                        <i>{data.description}</i>
+                {data.startDateTime != null &&
+                    <div>
+                        <b>Начало: </b>
+                        { dateTimeToString(data.startDateTime)}
                     </div>
-                </If>
+                }
+                {data.endDateTime != null &&
+                <div>
+                    <b>Конец: </b>
+                    { dateTimeToString(data.endDateTime)}
+                </div>
+                }
                 {data.assignee != null &&
-                <div className="mb-2">
+                <div>
                     <b>Исполнитель</b>: {personShortName(data.assignee)}
                 </div>
                 }
+                {data.associatedContest != null &&
+                <div>
+                    <b>Для дистанции: </b>
+                    <Link to={`/contests/${data.associatedContest.id}`}>{data.associatedContest.name}</Link>
+                </div>
+                }
+                <div className="mb-2"/>
+                <If cond={data.description != null && data.description !== ""}>
+                    <div className="mb-2">
+                        <b>Описание: </b> <br/>
+                        <i>{data.description}</i>
+                    </div>
+                </If>
                 <div className="row">
                     <div className="col-6">
                         <button className={`btn btn-${data.isDone ? "warning" : "success"}`}
