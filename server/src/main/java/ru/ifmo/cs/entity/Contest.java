@@ -25,12 +25,15 @@ public class Contest {
     private RegistrationType registrationType;
     @Column(nullable = false)
     private ParticipantType participantType;
-    @OneToMany(mappedBy = "contest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "contest", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<ContestParticipant> singleParticipants;
-    @OneToMany(mappedBy = "associatedContest", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "associatedContest", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<ContestParticipantGroup> contestParticipantGroups;
+    @OneToMany(mappedBy = "associatedContest", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Task> associatedTasks;
 
     protected Contest() {
         /* for ORM */
@@ -86,6 +89,10 @@ public class Contest {
 
     public Set<ContestParticipantGroup> getContestParticipantGroups() {
         return contestParticipantGroups;
+    }
+
+    public Set<Task> getAssociatedTasks() {
+        return associatedTasks;
     }
 
     public void updateFields(Contest contest) {

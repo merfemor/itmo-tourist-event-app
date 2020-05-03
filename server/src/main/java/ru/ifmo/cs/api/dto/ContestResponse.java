@@ -19,8 +19,10 @@ public class ContestResponse {
     public final Set<ContestParticipant> singleParticipants;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public final Set<ContestParticipantGroup> contestParticipantGroups;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public final Set<Task> tasks;
 
-    public ContestResponse(Contest contest, boolean includeRegistrations) {
+    public ContestResponse(Contest contest, boolean includeRegistrations, boolean includeTasks) {
         this.id = contest.getId();
         this.name = contest.getName();
         this.description = contest.getDescription();
@@ -35,6 +37,11 @@ public class ContestResponse {
         } else {
             this.singleParticipants = null;
             this.contestParticipantGroups = null;
+        }
+        if (includeTasks) {
+            this.tasks = contest.getAssociatedTasks();
+        } else {
+            this.tasks = null;
         }
     }
 }

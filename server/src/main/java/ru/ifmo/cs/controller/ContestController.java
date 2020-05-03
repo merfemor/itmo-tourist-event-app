@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ifmo.cs.api.AllContestParticipants;
 import ru.ifmo.cs.api.ContestRegistration;
 import ru.ifmo.cs.api.dto.ContestResponse;
 import ru.ifmo.cs.database.ContestPatricipantGroupRepository;
@@ -17,8 +16,9 @@ import ru.ifmo.cs.entity.ContestParticipant;
 import ru.ifmo.cs.entity.ContestParticipantGroup;
 import ru.ifmo.cs.entity.Person;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 
 @RestController
@@ -50,10 +50,12 @@ public class ContestController {
     @ResponseBody
     public ResponseEntity<ContestResponse> getContestById(
             @PathVariable long id,
-            @RequestParam(required = false, defaultValue = "false") boolean includeRegistrations) {
-
+            @RequestParam(required = false, defaultValue = "false") boolean includeRegistrations,
+            @RequestParam(required = false, defaultValue = "false") boolean includeTasks
+    ) {
         Optional<ContestResponse> response = contestRepository.findById(id).map(it ->
-                new ContestResponse(it, includeRegistrations));
+                new ContestResponse(it, includeRegistrations, includeTasks)
+        );
         return ResponseEntity.of(response);
     }
 
@@ -165,14 +167,5 @@ public class ContestController {
                 new ContestParticipant.ContestParticipantId(participantId, contestId);
         contestParticipantRepository.deleteById(contestParticipantId);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping(value = "/contest/{contestId}/registrations",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AllContestParticipants> getContestRegistrations(@PathVariable long contestId) {
-        Optional<AllContestParticipants> participantsOptional = contestRepository.findById(contestId).map(it -> {
-            return new AllContestParticipants(it.getSingleParticipants(), it.getContestParticipantGroups());
-        });
-        return ResponseEntity.of(participantsOptional);
     }
 }
