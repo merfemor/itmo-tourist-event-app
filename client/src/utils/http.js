@@ -10,6 +10,14 @@ export async function httpJsonRequest(method, relativePath, bodyObject) {
     return Promise.reject(response.status);
 }
 
+export async function httpTextRequest(method, relativePath, bodyObject) {
+    const response = await httpRequest(method, relativePath, bodyObject)
+    if (response.ok) {
+        return response.text();
+    }
+    return Promise.reject(response.status);
+}
+
 export function httpRequest(method, relativePath, bodyObject) {
     const token = GlobalState.authToken;
     const params = {

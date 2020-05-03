@@ -143,7 +143,6 @@ export default function AuthStateHolder(props) {
                     ...authInfo,
                     ...state
                 }
-                console.log("token")
                 GlobalState.authToken = newAuthInfo.token
                 setAuthInfo(newAuthInfo)
             })
