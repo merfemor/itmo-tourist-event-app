@@ -1,42 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Link, useRouteMatch} from "react-router-dom";
-import {ParticipantType} from "../../../api/enums";
+import {ParticipantType, UserRole} from "../../../api/enums";
 import {httpJsonRequest} from "../../../utils/http";
 import {If} from "../../../utils/components";
-import {SingleRegistrationsTable} from "./SingleRegistrationsTable";
 import {GroupRegistrationsTable} from "./GroupRegistrationsTable";
-import {useAuth} from "../../../auth/AuthStateHolder";
-import {RegisterMeButton} from "./RegisterMeButton";
-import {RegisterParticipantBlock} from "./RegisterParticipantBlock";
+import {SingleRegistrationsContainer} from "./SingleRegistrationsContainer";
 
-
-function SingleRegistrationBlock(props) {
-    const {authInfo} = useAuth();
-    const isLoggedIn = authInfo.user != null;
-
-    return (
-        <If cond={isLoggedIn}>
-            <div className="row mb-3">
-                <div className="col-3">
-                    <RegisterMeButton data={props.data}
-                                      myId={authInfo.user.id}
-                                      contestId={props.contestId}
-                                      createSuccessCallback={props.createSuccessCallback}
-                                      deleteSuccessCallback={props.deleteSuccessCallback}
-                    />
-                </div>
-                <div className="col-6">
-                    <RegisterParticipantBlock
-                        contestId={props.contestId}
-                        onRegistrationSuccessCallback={props.createSuccessCallback}/>
-                </div>
-            </div>
-            <div className="table-responsive">
-                <SingleRegistrationsTable registrations={props.data}/>
-            </div>
-        </If>
-    );
-}
 
 export default function ContestInfo() {
     const match = useRouteMatch();
@@ -77,12 +46,14 @@ export default function ContestInfo() {
                                 <div>Структура результата: {contest.resultStructure}</div>
                                 <div>Тип регистрации: {contest.registrationType}</div>
                                 <div>Тип участника: {contest.participantType}</div>
-                                <Link to={`${match.url}/edit`} className="mt-4 btn btn-primary">Редактировать</Link>
+                                <If roleAtLeast={UserRole.VOLUNTEER}>
+                                    <Link to={`${match.url}/edit`} className="mt-4 btn btn-primary">Редактировать</Link>
+                                </If>
                             </div>
                         </div>
                         <h2>Регистрации</h2>
                         <If cond={isSingleParticipant && contest.singleParticipants != null}>
-                            <SingleRegistrationBlock
+                            <SingleRegistrationsContainer
                                 contestId={contestId}
                                 data={contest.singleParticipants}
                                 createSuccessCallback={onActionDone}

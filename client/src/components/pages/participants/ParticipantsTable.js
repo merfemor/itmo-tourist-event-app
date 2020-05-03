@@ -1,8 +1,10 @@
 import React from 'react';
-import {userRoleToString} from "../../../utils/language_utils";
+import {personFullName, userRoleToString} from "../../../utils/language_utils";
 import {httpRequest} from "../../../utils/http";
 import {Link} from "react-router-dom";
 import {Log} from "../../../utils/Log";
+import {UserRole} from "../../../api/enums";
+import {If} from "../../../utils/components";
 
 const TAG = "ParticipantTable";
 
@@ -36,19 +38,21 @@ export default class ParticipantsTable extends React.Component {
 
         return (
             <div className="col-12 mt-3">
-                <Link to="/participants/new" className="btn btn-primary">Зарегистрировать участника</Link>
+                <If roleAtLeast={UserRole.VOLUNTEER}>
+                    <Link to="/participants/new" className="btn btn-primary mb-3">Зарегистрировать участника</Link>
+                </If>
                 <div className="table-responsive">
                     <table className="table table-sm table-bordered table-striped table-hover">
                         <thead className="thead-default">
                         <tr>
                             <th>№</th>
-                            <th>email</th>
-                            <th>Фамилия</th>
-                            <th>Имя</th>
-                            <th>Отчество</th>
+                            <th>ФИО</th>
+                            <th>Email</th>
                             <th>Пол</th>
                             <th>Роль</th>
-                            <th>Действия</th>
+                            <If roleAtLeast={UserRole.VOLUNTEER}>
+                                <th>Действия</th>
+                            </If>
                         </tr>
                         </thead>
                         <tbody>
@@ -56,17 +60,17 @@ export default class ParticipantsTable extends React.Component {
                             this.state.participants.map((participant) =>
                                 <tr key={participant.id}>
                                     <td>{participant.id}</td>
+                                    <td>{personFullName(participant)}</td>
                                     <td>{participant.email}</td>
-                                    <td>{participant.lastName}</td>
-                                    <td>{participant.firstName}</td>
-                                    <td>{participant.middleName}</td>
                                     <td>{participant.isMale ? "М" : "Ж"}</td>
                                     <td> {userRoleToString(participant.role)} </td>
-                                    <td>
-                                        <Link to={`/participants/${participant.id}`} className="btn btn-primary">
-                                            Редактировать
-                                        </Link>
-                                    </td>
+                                    <If roleAtLeast={UserRole.VOLUNTEER}>
+                                        <td>
+                                            <Link to={`/participants/${participant.id}`} className="btn btn-primary">
+                                                Редактировать
+                                            </Link>
+                                        </td>
+                                    </If>
                                 </tr>
                             )
                         }

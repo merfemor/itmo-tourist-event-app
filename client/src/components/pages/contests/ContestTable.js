@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Link, useRouteMatch} from "react-router-dom";
 import {httpJsonRequest} from "../../../utils/http";
 import ContestTableCard from "./ContestTableCard";
+import {UserRole} from "../../../api/enums";
+import {If} from "../../../utils/components";
 
 export default function ContestTable() {
     const [contestsData, setContestsData] = useState([]);
@@ -19,11 +21,9 @@ export default function ContestTable() {
     }
 
     return <div>
-        <div className="row">
-            <div className="col-3 col-sm-6 m-4">
-                <Link to={`${match.url}/new`} className="btn btn-primary">Создать дистанцию</Link>
-            </div>
-        </div>
-        <div className="row"> { renderContestCards() } </div>
+        <If roleAtLeast={UserRole.VOLUNTEER}>
+            <Link to={`${match.url}/new`} className="btn btn-primary mt-3">Создать дистанцию</Link>
+        </If>
+        <div className="row mt-3"> {renderContestCards()} </div>
     </div>
 }
