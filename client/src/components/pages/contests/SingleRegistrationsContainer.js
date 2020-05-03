@@ -27,7 +27,11 @@ export function SingleRegistrationsContainer(props) {
                 </div>
             </div>
             <div className="table-responsive">
-                <SingleRegistrationsTable registrations={props.data}/>
+                <SingleRegistrationsTable
+                    registrations={props.data}
+                    contestId={props.contestId}
+                    deleteSuccessCallback={props.deleteSuccessCallback}
+                />
             </div>
         </If>
     );
