@@ -1,25 +1,20 @@
 import React, {useEffect, useState} from "react";
-import {Redirect, useRouteMatch} from "react-router-dom";
+import {useHistory, useRouteMatch} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {httpJsonRequest, httpTextRequest} from "../../../utils/http";
 import PersonSearchDropdownInput from "../../forms/PersonSearchDropdownInput";
 
 export default function TaskEdit() {
     const { params } = useRouteMatch();
+    const taskId = params.taskId;
+    const history = useHistory();
     const {register, handleSubmit, errors} = useForm();
-    const [isRedirect, setRedirect] = useState(false);
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        if (!isRedirect) {
-            httpJsonRequest("GET", `task/${params.taskId}`)
-                .then(response => setData(response))
-        }
+        httpJsonRequest("GET", `task/${taskId}`)
+            .then(response => setData(response))
     }, []);
-
-    if (isRedirect) {
-        return <Redirect to="/tasks"/>
-    }
 
     if (data == null) {
         return <div/>
@@ -32,14 +27,14 @@ export default function TaskEdit() {
             assigneeId: data.assignee?.id,
             assignee: null
         }
-        console.log(newData)
         httpJsonRequest("PUT", "task", newData)
-            .then(() => setRedirect(true));
+            .then(history.goBack);
     }
 
-    function onDeleteButtonClick() {
+    function onDeleteButtonClick(e) {
+        e.preventDefault() // prevent form submit
         httpTextRequest("DELETE", `task/${params.taskId}`)
-            .then(() => setRedirect(true))
+            .then(history.goBack)
     }
 
     function onAssigneeChange(newAssignee) {

@@ -18,7 +18,8 @@ function RegisterGroupForm(props) {
         setGroupName("")
     }
 
-    function onCancelButtonClick() {
+    function onCancelButtonClick(e) {
+        e.preventDefault()
         clearState()
         cancelClickCallback()
     }

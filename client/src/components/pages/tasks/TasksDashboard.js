@@ -1,18 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Link, useRouteMatch} from "react-router-dom";
-import {httpJsonRequest} from "../../../utils/http";
 import {UserRole} from "../../../api/enums";
 import {If} from "../../../utils/components";
 import TasksDashboardCard from "./TasksDashboardCard";
 
-export default function TasksDashboard() {
-    const [dataList, setData] = useState([]);
-    const match = useRouteMatch();
-
-    useEffect(() => {
-        httpJsonRequest('GET', 'tasks')
-            .then(response => setData(response))
-    }, []);
+export default function TasksDashboard(props) {
+    const match = useRouteMatch()
+    const dataList = props.data
 
     return <div>
         <If roleAtLeast={UserRole.VOLUNTEER}>

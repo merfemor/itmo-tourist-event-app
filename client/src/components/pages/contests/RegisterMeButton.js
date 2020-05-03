@@ -16,7 +16,8 @@ export function RegisterMeButton(props) {
         }).then(() => createSuccessCallback(myId))
     }
 
-    function onDeleteRegisterButtonClick() {
+    function onDeleteRegisterButtonClick(e) {
+        e.preventDefault()
         httpTextRequest("DELETE", `contest/${contestId}/registration/single/${myId}`)
             .then(() => deleteSuccessCallback(myId))
     }

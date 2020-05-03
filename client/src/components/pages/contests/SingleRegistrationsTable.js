@@ -8,7 +8,8 @@ export function SingleRegistrationsTable(props) {
     const contestId = props.contestId;
     const deleteSuccessCallback = props.deleteSuccessCallback;
 
-    function deleteParticipant(participantId) {
+    function deleteParticipant(e, participantId) {
+        e.preventDefault()
         httpTextRequest("DELETE", `contest/${contestId}/registration/single/${participantId}`)
             .then(deleteSuccessCallback)
     }
@@ -37,7 +38,7 @@ export function SingleRegistrationsTable(props) {
                     </th>
                     <If roleAtLeast={UserRole.VOLUNTEER}>
                         <th className="text-right pr-2">
-                            <button className="btn btn-danger btn-sm" onClick={() => deleteParticipant(it.participant.id)}>
+                            <button className="btn btn-danger btn-sm" onClick={(e) => deleteParticipant(e, it.participant.id)}>
                                 Удалить
                             </button>
                         </th>

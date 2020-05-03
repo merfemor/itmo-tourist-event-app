@@ -1,21 +1,23 @@
 import React, {useState} from "react";
-import {Redirect} from "react-router-dom";
 import {useForm} from "react-hook-form";
+import {useHistory} from 'react-router-dom';
 import {httpJsonRequest} from "../../../utils/http";
 import PersonSearchDropdownInput from "../../forms/PersonSearchDropdownInput";
 
-export default function TaskCreate() {
+export default function TaskCreate(props) {
+    const associatedContestId = props.associatedContestId;
+    const history = useHistory();
     const {register, handleSubmit, errors} = useForm();
-    const [isRedirect, setRedirect] = useState(false);
     const [assignee, setAssignee] = useState(null);
 
-    if (isRedirect) {
-        return <Redirect to="/tasks"/>
-    }
-
     function onFormSubmit(formData) {
-        httpJsonRequest("POST", "task", { ...formData, assigneeId: assignee?.id })
-            .then(() => setRedirect(true));
+        const data = {
+            ...formData,
+            assigneeId: assignee?.id,
+            associatedContestId: associatedContestId
+        }
+        httpJsonRequest("POST", "task", data)
+            .then(() => history.goBack());
     }
 
     function onAssigneeChange(newAssignee) {

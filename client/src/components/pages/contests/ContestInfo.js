@@ -7,6 +7,7 @@ import {GroupRegistrationsTable} from "./GroupRegistrationsTable";
 import {SingleRegistrationsContainer} from "./SingleRegistrationsContainer";
 import {ContestDescriptionBlock} from "./ContestDescriptionBlock";
 import {RegisterGroupBlock} from "./RegisterGroupBlock";
+import {ContestTasksContainer} from "./ContestTasksContainer";
 
 
 export default function ContestInfo() {
@@ -15,7 +16,7 @@ export default function ContestInfo() {
     const contestId = match.params.contestId;
 
     function loadContest() {
-        httpJsonRequest("GET", "contest/" + contestId + "?includeRegistrations=true")
+        httpJsonRequest("GET", "contest/" + contestId + "?includeRegistrations=true&includeTasks=true")
             .then(result => setContest(result))
     }
 
@@ -47,6 +48,13 @@ export default function ContestInfo() {
                                     <Link to={`${match.url}/edit`} className="mt-4 btn btn-primary">Редактировать</Link>
                                 </If>
                             </div>
+                        </div>
+                        <div>
+                            <h2>Связанные задачи</h2>
+                            <ContestTasksContainer
+                                contestId={contestId}
+                                data={contest.tasks}
+                                onSuccess={onActionDone}/>
                         </div>
                         <If cond={isSingleParticipant && contest.singleParticipants != null}>
                             <h2>Участники</h2>

@@ -2,6 +2,7 @@ package ru.ifmo.cs.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class Task {
     private Long assigneeId;
     @ManyToOne
     @JoinColumn(name = "assignee_id", insertable = false, updatable = false)
+    @JsonIgnoreProperties("hibernateLazyInitializer")
     private Person assignee;
     @Column(nullable = false)
     private boolean isDone;
@@ -27,6 +29,7 @@ public class Task {
     private Long associatedContestId;
     @ManyToOne
     @JoinColumn(name = "associated_contest_id", insertable = false, updatable = false)
+    @JsonIgnoreProperties("hibernateLazyInitializer")
     private Contest associatedContest;
     private Date startDateTime;
     private Date endDateTime;
