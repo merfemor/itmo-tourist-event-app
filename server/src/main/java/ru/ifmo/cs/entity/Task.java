@@ -30,15 +30,15 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "associated_contest_id", insertable = false, updatable = false)
     private Contest associatedContest;
-    private Date startTime;
-    private Date endTime;
+    private Date startDateTime;
+    private Date endDateTime;
 
     protected Task() {
         /* for ORM */
     }
 
     @JsonCreator
-    public Task(Long id, String name, String description, Long assigneeId, @JsonProperty("isDone") boolean isDone, Long associatedContestId, Date startTime, Date endTime) {
+    public Task(Long id, String name, String description, Long assigneeId, @JsonProperty("isDone") boolean isDone, Long associatedContestId, Date startDateTime, Date endDateTime) {
         Objects.requireNonNull(name, "name must not be null");
         this.id = id;
         this.name = name;
@@ -46,8 +46,8 @@ public class Task {
         this.assigneeId = assigneeId;
         this.isDone = isDone;
         this.associatedContestId = associatedContestId;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
     }
 
     public Long getAssigneeId() {
@@ -83,19 +83,19 @@ public class Task {
         return associatedContest;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public Date getStartDateTime() {
+        return startDateTime;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public Date getEndDateTime() {
+        return endDateTime;
     }
 
     public void updateFields(Task newTask) {
         this.assigneeId = newTask.assigneeId;
         this.name = newTask.name;
-        this.startTime = newTask.startTime;
-        this.endTime = newTask.endTime;
+        this.startDateTime = newTask.startDateTime;
+        this.endDateTime = newTask.endDateTime;
         this.isDone = newTask.isDone;
         this.associatedContestId = newTask.associatedContestId;
         this.description = newTask.description;
