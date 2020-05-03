@@ -6,18 +6,7 @@ import {If} from "../../../utils/components";
 import {GroupRegistrationsTable} from "./GroupRegistrationsTable";
 import {SingleRegistrationsContainer} from "./SingleRegistrationsContainer";
 import {ContestDescriptionBlock} from "./ContestDescriptionBlock";
-
-function RegisterGroupBlock(props) {
-    const data = props.data;
-    const contestId = props.contestId;
-    const createSuccessCallback = props.createSuccessCallback;
-
-    return <div className="row">
-        <div className="col-3">
-            <button className="btn btn-primary">Зарегистрировать группу</button>
-        </div>
-    </div>
-}
+import {RegisterGroupBlock} from "./RegisterGroupBlock";
 
 
 export default function ContestInfo() {
@@ -69,12 +58,11 @@ export default function ContestInfo() {
                             />
                         </If>
                         <If cond={!isSingleParticipant && contest.contestParticipantGroups != null}>
-                            <h2>Группы</h2>
+                            <h2>Участники</h2>
                             <If roleAtLeast={UserRole.VOLUNTEER}>
                                 <div className="mb-2">
                                     <RegisterGroupBlock
                                         contestId={contestId}
-                                        data={contest.contestParticipantGroups}
                                         createSuccessCallback={onActionDone}
                                     />
                                 </div>
