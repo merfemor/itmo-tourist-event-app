@@ -11,3 +11,7 @@ export function userRoleToString(role) {
             return "-";
     }
 }
+
+export function personFullName(person) {
+    return `${person.lastName} ${person.firstName} ${person.middleName}`
+}
