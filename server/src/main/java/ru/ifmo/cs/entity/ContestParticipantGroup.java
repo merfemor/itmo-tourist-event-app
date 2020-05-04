@@ -74,6 +74,12 @@ public class ContestParticipantGroup {
     public void modify(String name, Set<Person> members, Result result) {
         this.name = name;
         this.members = members;
-        this.result = result;
+        if (this.result == null) {
+            this.result = result;
+        } else if (result == null) {
+            this.result = null;
+        } else {
+            this.result.updateFields(result);
+        }
     }
 }

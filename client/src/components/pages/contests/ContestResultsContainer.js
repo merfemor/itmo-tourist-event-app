@@ -15,7 +15,9 @@ export function ContestResultsContainer(props) {
                 <ContestSingleParticipantResultsTable data={data.singleParticipants} onChange={onChangeCallback}/>
             </If>
             <If cond={!isSingleParticipant}>
-                <ContestGroupParticipantResultsTable data={data.contestParticipantGroups} onChange={onChangeCallback}/>
+                <ContestGroupParticipantResultsTable data={data.contestParticipantGroups}
+                                                     contestId={data.id}
+                                                     onChange={onChangeCallback}/>
             </If>
         </div>
     </div>
