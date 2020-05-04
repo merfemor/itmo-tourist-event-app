@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ifmo.cs.api.ContestRegistration;
 import ru.ifmo.cs.database.ContestPatricipantGroupRepository;
-import ru.ifmo.cs.database.ContestPatricipantRepository;
+import ru.ifmo.cs.database.ContestParticipantRepository;
 import ru.ifmo.cs.database.ContestRepository;
 import ru.ifmo.cs.database.PersonRepository;
 import ru.ifmo.cs.entity.*;
@@ -19,11 +19,11 @@ import java.util.Set;
 @RestController
 public class ContestRegistrationsController {
     private final ContestRepository contestRepository;
-    private final ContestPatricipantRepository contestParticipantRepository;
+    private final ContestParticipantRepository contestParticipantRepository;
     private final PersonRepository personRepository;
     private final ContestPatricipantGroupRepository contestPatricipantGroupRepository;
 
-    public ContestRegistrationsController(ContestRepository contestRepository, ContestPatricipantRepository contestParticipantRepository, PersonRepository personRepository, ContestPatricipantGroupRepository contestPatricipantGroupRepository) {
+    public ContestRegistrationsController(ContestRepository contestRepository, ContestParticipantRepository contestParticipantRepository, PersonRepository personRepository, ContestPatricipantGroupRepository contestPatricipantGroupRepository) {
         this.contestRepository = contestRepository;
         this.contestParticipantRepository = contestParticipantRepository;
         this.personRepository = personRepository;
