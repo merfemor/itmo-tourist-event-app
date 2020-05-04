@@ -9,6 +9,5 @@ export function includesLowerCase(str, query) {
     str = str?.toLowerCase() || ""
     query = query?.toLowerCase() || ""
     const res = str.includes(query)
-    console.log("includes", str, query, res)
     return res
 }
