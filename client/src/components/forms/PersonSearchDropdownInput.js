@@ -13,7 +13,7 @@ function DropdownListItems(props) {
     return props.items.map(it => {
         return <a key={it.id} href="/" className="dropdown-item"
                   onClick={e => props.onItemSelect(e, it)}>
-            {it.value}
+            {personFullName(it)}
         </a>
     })
 }
@@ -27,21 +27,20 @@ function filterParticipantByQuery(it, filterQuery) {
 }
 
 export default function PersonSearchDropdownInput(props) {
-    const onChange = props.onChange;
-    const placeholderText = props.placeholderText;
+    const { value, onChange, placeholderText } = props;
     const additionalFilter = props.filter || (() => true)
-    const [selectedId, setSelectedId] = useState(props.value?.id);
-    const [query, setQuery] = useState(props.value == null ? "" : personFullName(props.value));
+    const [inputQuery, setQuery] = useState(value == null ? "" : personFullName(value));
     const [participants, setAvailableParticipants] = useState([]);
     const [participantsNotLoaded, setParticipantsNotLoaded] = useState(true);
     const [filteredParticipants, setFilteredParticipants] = useState([]);
 
-    const showDropdown = query.length > 0 && selectedId == null;
+    // FIXME: how to properly change value with query through props?
+    const query = value != null ? personFullName(value) : inputQuery
+    const showDropdown = query.length > 0 && value == null;
 
     if (props.registerCallbacks != null) {
         props.registerCallbacks.clearQuery = () => {
             setQuery("")
-            setSelectedId(null)
             onChange(null)
         };
     }
@@ -49,7 +48,6 @@ export default function PersonSearchDropdownInput(props) {
     function processFilteredParticipants(participants, filterQuery) {
         const newValue = participants.filter(it => filterParticipantByQuery(it, filterQuery))
             .filter(additionalFilter)
-            .map(it => ({id: it.id, value: personFullName(it)}))
         setFilteredParticipants(newValue)
     }
 
@@ -64,15 +62,13 @@ export default function PersonSearchDropdownInput(props) {
 
     function onDropdownOptionClick(e, it) {
         e.preventDefault()
-        setSelectedId(it.id)
-        setQuery(it.value)
+        setQuery(personFullName(it))
         onChange(it)
     }
 
     function onQueryInputChange(e) {
         const newQuery = e.target.value
         setQuery(newQuery)
-        setSelectedId(null)
         onChange(null)
         processFilteredParticipants(participants, newQuery)
     }

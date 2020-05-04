@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Link, useRouteMatch, A} from "react-router-dom";
+import {Link, useRouteMatch} from "react-router-dom";
 import {If} from "../../../utils/components";
 import {httpJsonRequest} from "../../../utils/http";
 import {dateTimeToString, personShortName} from "../../../utils/language_utils";

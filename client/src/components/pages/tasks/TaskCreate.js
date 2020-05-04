@@ -3,11 +3,12 @@ import {useForm} from "react-hook-form";
 import {useHistory} from 'react-router-dom';
 import {httpJsonRequest} from "../../../utils/http";
 import PersonSearchDropdownInput from "../../forms/PersonSearchDropdownInput";
+import {TaskAssigneeSuggestButton} from "./TaskAssigneeSuggestButton";
 
 export default function TaskCreate(props) {
     const associatedContestId = props.associatedContestId;
     const history = useHistory();
-    const {register, handleSubmit, errors} = useForm();
+    const {register, handleSubmit, errors, getValues} = useForm();
     const [assignee, setAssignee] = useState(null);
 
     function onFormSubmit(formData) {
@@ -20,8 +21,10 @@ export default function TaskCreate(props) {
             .then(() => history.goBack());
     }
 
-    function onAssigneeChange(newAssignee) {
-        setAssignee(newAssignee)
+    function onAssigneeSuggestResult(newAssignee) {
+        if (newAssignee != null) {
+            setAssignee(newAssignee)
+        }
     }
 
     return (
@@ -68,11 +71,18 @@ export default function TaskCreate(props) {
                                 </label>
                                 <div className="input-group">
                                     <PersonSearchDropdownInput id="assignee-search-dropdown-input"
-                                                               onChange={onAssigneeChange}
+                                                               value={assignee}
+                                                               onChange={setAssignee}
                                                                placeholderText="Начните вводить имя"
 
                                     />
                                 </div>
+                                <TaskAssigneeSuggestButton
+                                    disabled={assignee != null}
+                                    data={getValues}
+                                    onResult={onAssigneeSuggestResult}>
+                                    Найти наиболее подходящего исполнителя?
+                                </TaskAssigneeSuggestButton>
                             </div>
                             <div className="form-group">
                                 <button type="submit" className="btn btn-primary">Создать</button>

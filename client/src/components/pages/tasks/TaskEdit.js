@@ -3,12 +3,13 @@ import {useHistory, useRouteMatch} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {httpJsonRequest, httpTextRequest} from "../../../utils/http";
 import PersonSearchDropdownInput from "../../forms/PersonSearchDropdownInput";
+import {TaskAssigneeSuggestButton} from "./TaskAssigneeSuggestButton";
 
 export default function TaskEdit() {
     const { params } = useRouteMatch();
     const taskId = params.taskId;
     const history = useHistory();
-    const {register, handleSubmit, errors} = useForm();
+    const {register, handleSubmit, errors, getValues} = useForm();
     const [data, setData] = useState(null);
 
     useEffect(() => {
@@ -39,6 +40,12 @@ export default function TaskEdit() {
 
     function onAssigneeChange(newAssignee) {
         setData((oldData) => ({...oldData, assignee: newAssignee}))
+    }
+
+    function onAssigneeSuggestResult(assignee) {
+        if (assignee != null) {
+            setData((state) => ({...state, assignee: assignee}))
+        }
     }
 
     return (
@@ -94,6 +101,12 @@ export default function TaskEdit() {
 
                                     />
                                 </div>
+                                <TaskAssigneeSuggestButton
+                                    disabled={data.assignee != null}
+                                    data={getValues}
+                                    onResult={onAssigneeSuggestResult}>
+                                    Найти наиболее подходящего исполнителя?
+                                </TaskAssigneeSuggestButton>
                             </div>
                             <div className="form-group">
                                 <button type="submit" className="btn btn-primary">Сохранить</button>
