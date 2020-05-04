@@ -18,6 +18,14 @@ export async function httpTextRequest(method, relativePath, bodyObject, urlParam
     return Promise.reject(response.status);
 }
 
+export async function httpBlobRequest(method, relativePath, bodyObject, urlParams) {
+    const response = await httpRequest(method, relativePath, bodyObject, urlParams)
+    if (response.ok) {
+        return response.text();
+    }
+    return Promise.reject(response.status);
+}
+
 export function httpRequest(method, relativePath, bodyObject, urlParams) {
     urlParams = urlParams || {}
     const token = GlobalState.authToken;
@@ -42,4 +50,14 @@ export function httpRequest(method, relativePath, bodyObject, urlParams) {
     }
 
     return fetch(BACKEND_ROOT_PATH + relativePath, addAuthorizationHeaderToParams(params, token));
+}
+
+export function saveFileOnCurrentPage(blob, filename) {
+    const url = window.URL.createObjectURL(new Blob([blob]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
 }

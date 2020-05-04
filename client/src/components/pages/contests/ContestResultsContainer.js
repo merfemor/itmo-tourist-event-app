@@ -1,11 +1,11 @@
 import {If} from "../../../utils/components";
-import {ParticipantType} from "../../../api/enums";
+import {ParticipantType, requireEnumByName, ResultParticipantsType} from "../../../api/enums";
 import React, {useState} from "react";
 import {ContestSingleParticipantResultsTable} from "./ContestSingleParticipantResultsTable";
 import {ContestGroupParticipantResultsTable} from "./ContestGroupParticipantResultsTable";
 import {ContestSingleResultsFilterContainer} from "./ContestSingleResultsFilterContainer";
 import {ContestGroupResultsFilterContainer} from "./ContestGroupResultsFilterContainer";
-
+import {ContestResultDownloadButton} from "./ContestResultDownloadButton";
 
 export function ContestResultsContainer(props) {
     const { data, onChange: onChangeCallback } = props
@@ -21,6 +21,9 @@ export function ContestResultsContainer(props) {
             <If cond={isSingleParticipant}>
                 <ContestSingleResultsFilterContainer onFilterChange={(newFilter) => setSingleFilterPredicate(() => newFilter)}/>
                 <ContestSingleParticipantResultsTable data={filteredSingleData} onChange={onChangeCallback}/>
+                <ContestResultDownloadButton data={data}>
+                    Скачать результаты
+                </ContestResultDownloadButton>
             </If>
             <If cond={!isSingleParticipant}>
                 <ContestGroupResultsFilterContainer onFilterChange={(newFilter) => setGroupFilterPredicate(() => newFilter)}/>

@@ -58,6 +58,38 @@ export const ParticipantType = {
 }
 Object.freeze(ParticipantType)
 
+export const ResultParticipantsType = {
+    MEN: {
+        name: "MEN",
+        displayName: "Мужские"
+    },
+    WOMEN: {
+        name: "WOMEN",
+        displayName: "Женские"
+    },
+    MIXED_GROUP: {
+        name: "MIXED_GROUP",
+        displayName: "Смешанные"
+    }
+}
+Object.freeze(ResultParticipantsType)
+
+export const ItmoStudentsResultFilter = {
+    ALL: {
+        name: "ALL",
+        displayName: "Все студенты"
+    },
+    FIRST_YEAR_BACHELOR: {
+        name: "FIRST_YEAR_BACHELOR",
+        displayName: "Первокурсники"
+    },
+    GRADUATE: {
+        name: "GRADUATE",
+        displayName: "Выпускники"
+    }
+}
+Object.freeze(ItmoStudentsResultFilter)
+
 export function requireEnumByName(enumClass, name) {
     const result = findEnumByName(enumClass, name)
     if (result == null) {
