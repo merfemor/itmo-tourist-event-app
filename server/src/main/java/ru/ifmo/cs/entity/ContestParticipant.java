@@ -2,10 +2,12 @@ package ru.ifmo.cs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import ru.ifmo.cs.api.ContestRegistration;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @IdClass(ContestParticipant.ContestParticipantId.class)
@@ -24,18 +26,18 @@ public class ContestParticipant {
     @JoinColumn(name = "contest_id", insertable = false, updatable = false)
     @JsonIgnore
     private Contest contest;
-    private Date startDate;
-    @OneToOne
+    private Date startDateTime;
+    @OneToOne(cascade = CascadeType.ALL)
     private Result result;
 
     protected ContestParticipant() {
         /* for ORM */
     }
 
-    public ContestParticipant(long participantId, long contestId, Date startDate, Result result) {
+    public ContestParticipant(long participantId, long contestId, Date startDateTime, Result result) {
         this.participantId = participantId;
         this.contestId = contestId;
-        this.startDate = startDate;
+        this.startDateTime = startDateTime;
         this.result = result;
     }
 
@@ -55,12 +57,23 @@ public class ContestParticipant {
         return contest;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public Date getStartDateTime() {
+        return startDateTime;
     }
 
     public Result getResult() {
         return result;
+    }
+
+    public void updateFields(ContestRegistration contestRegistration) {
+        this.startDateTime = contestRegistration.getStartDateTime();
+        if (this.result == null) {
+            this.result = contestRegistration.getResult();
+        } else if (contestRegistration.getResult() == null) {
+            this.result = null;
+        } else {
+            this.result.updateFields(contestRegistration.getResult());
+        }
     }
 
     public static class ContestParticipantId implements Serializable {
@@ -82,6 +95,20 @@ public class ContestParticipant {
 
         public long getParticipantId() {
             return participantId;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ContestParticipantId that = (ContestParticipantId) o;
+            return participantId == that.participantId &&
+                    contestId == that.contestId;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(participantId, contestId);
         }
     }
 }

@@ -1,12 +1,10 @@
 package ru.ifmo.cs.entity;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,26 +19,26 @@ public class ContestParticipantGroup {
     @JsonIgnore
     private Contest associatedContest;
     private String name;
-    private Date startDate;
+    private Date startDateTime;
     @ManyToMany
     @JoinTable
     @JsonIgnoreProperties({"hibernateLazyInitializer"})
     private Set<Person> members;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Result result;
 
     protected ContestParticipantGroup() {
         /* for ORM */
     }
 
-    public ContestParticipantGroup(Long id, long associatedContestId, String name, Date startDate, Set<Person> members, Result result) {
+    public ContestParticipantGroup(Long id, long associatedContestId, String name, Date startDateTime, Set<Person> members, Result result) {
         if (members != null && members.size() < 2) {
             throw new IllegalArgumentException("at least 2 members should be in group");
         }
         this.id = id;
         this.associatedContestId = associatedContestId;
         this.name = name;
-        this.startDate = startDate;
+        this.startDateTime = startDateTime;
         this.members = members;
         this.result = result;
     }
@@ -61,8 +59,8 @@ public class ContestParticipantGroup {
         return name;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public Date getStartDateTime() {
+        return startDateTime;
     }
 
     public Set<Person> getMembers() {
@@ -73,8 +71,9 @@ public class ContestParticipantGroup {
         return result;
     }
 
-    public void modify(String name, Set<Person> members) {
+    public void modify(String name, Set<Person> members, Result result) {
         this.name = name;
         this.members = members;
+        this.result = result;
     }
 }

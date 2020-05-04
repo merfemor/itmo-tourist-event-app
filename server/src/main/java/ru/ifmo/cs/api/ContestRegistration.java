@@ -1,15 +1,22 @@
 package ru.ifmo.cs.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import ru.ifmo.cs.entity.Result;
 
+import java.util.Date;
+
+// TODO: split into single and group registration
 public class ContestRegistration {
     private Long participantId;
     private Long registrationId;
     private String groupName;
     private long[] participantIds;
+    private Date startDateTime;
+    private Result result;
 
     @JsonCreator
-    public ContestRegistration(Long participantId, Long registrationId, String groupName, long[] participantIds) {
+    public ContestRegistration(Long participantId, Long registrationId, String groupName, long[] participantIds,
+                               Date startDateTime, Result result) {
         if (participantId == null && participantIds == null) {
             throw new IllegalArgumentException("either participantId or participantIds should be set");
         }
@@ -19,7 +26,9 @@ public class ContestRegistration {
         this.participantId = participantId;
         this.registrationId = registrationId;
         this.groupName = groupName;
+        this.startDateTime = startDateTime;
         this.participantIds = participantIds;
+        this.result = result;
     }
 
     public Long getParticipantId() {
@@ -36,5 +45,13 @@ public class ContestRegistration {
 
     public long[] getParticipantIds() {
         return participantIds;
+    }
+
+    public Result getResult() {
+        return result;
+    }
+
+    public Date getStartDateTime() {
+        return startDateTime;
     }
 }

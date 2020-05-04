@@ -1,4 +1,5 @@
 import React from "react";
+import {If} from "./components";
 
 export function userRoleToString(role) {
     switch (role) {
@@ -23,11 +24,35 @@ export function personShortName(person) {
     return `${person.lastName} ${person.firstName[0]}.${middleName}`
 }
 
+function secondsToTimeString(seconds) {
+    const secM = seconds % 60
+    const minutes = Math.floor(seconds / 60)
+    let minutesStr = `${minutes}`
+    if (minutes < 10) {
+        minutesStr = "0" + minutesStr
+    }
+    let secondsStr = `${secM}`
+    if (secM < 10) {
+        secondsStr = "0" + secondsStr
+    }
+    return `${minutesStr}:${secondsStr}`
+}
+
 export function resultToString(result) {
     if (result == null) {
         return "-"
     }
-    return JSON.stringify(result)
+    return <div>
+        <If cond={result.time != null}>
+            <b>Время: </b> {secondsToTimeString(result.time)} <br/>
+        </If>
+        <If cond={result.points != null}>
+            <b>Баллы: </b> {result.points} <br/>
+        </If>
+        <If cond={result.penalty != null}>
+            <b>Штраф: </b> {result.penalty}
+        </If>
+    </div>
 }
 
 const DATE_TIME_FORMAT_OPTIONS = {
