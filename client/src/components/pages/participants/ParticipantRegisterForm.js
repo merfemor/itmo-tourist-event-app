@@ -3,6 +3,7 @@ import {useForm} from "react-hook-form";
 import {registerParticipant} from "../../../api/requests/person";
 import {Redirect} from "react-router-dom";
 import {UserRole} from "../../../api/enums";
+import {IsMaleSelect} from "../../forms/IsMaleSelect";
 
 export default function ParticipantRegisterForm() {
     const [isRedirect, setRedirect] = useState(false);
@@ -63,15 +64,10 @@ export default function ParticipantRegisterForm() {
                         </div>
                         <div className="form-group">
                             <label htmlFor="middle-name-input" className="form-control-label">Пол</label>
-                            <select id="is-male-select" defaultValue=""
-                                    className={"form-control" + (errors.isMale ? " is-invalid" : "")}
-                                    name="isMale" ref={register({
-                                required: true
-                            })}>
-                                <option value="">Выберите пол</option>
-                                <option value="true">Мужской</option>
-                                <option value="false">Женский</option>
-                            </select>
+                            <IsMaleSelect id="is-male-select"
+                                          className={"form-control" + (errors.isMale ? " is-invalid" : "")}
+                                          name="isMale" reference={register({required: true})}
+                            />
                         </div>
 
                         {  /* TODO: add birthday date chooser */}

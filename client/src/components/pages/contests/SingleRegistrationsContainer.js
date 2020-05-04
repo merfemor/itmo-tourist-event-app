@@ -6,6 +6,7 @@ import {SingleRegistrationsTable} from "./SingleRegistrationsTable";
 import React from "react";
 
 export function SingleRegistrationsContainer(props) {
+    const {data, contestId, createSuccessCallback, deleteSuccessCallback} = props;
     const {authInfo} = useAuth();
     const isLoggedIn = authInfo.user != null;
 
@@ -13,24 +14,24 @@ export function SingleRegistrationsContainer(props) {
         <If cond={isLoggedIn}>
             <div className="row mb-3">
                 <div className="col-3">
-                    <RegisterMeButton data={props.data}
+                    <RegisterMeButton data={data}
                                       myId={authInfo.user.id}
-                                      contestId={props.contestId}
-                                      createSuccessCallback={props.createSuccessCallback}
-                                      deleteSuccessCallback={props.deleteSuccessCallback}
+                                      contestId={contestId}
+                                      createSuccessCallback={createSuccessCallback}
+                                      deleteSuccessCallback={deleteSuccessCallback}
                     />
                 </div>
                 <div className="col-6">
                     <RegisterParticipantBlock
-                        contestId={props.contestId}
-                        onRegistrationSuccessCallback={props.createSuccessCallback}/>
+                        contestId={contestId}
+                        onRegistrationSuccessCallback={createSuccessCallback}/>
                 </div>
             </div>
             <div className="table-responsive">
                 <SingleRegistrationsTable
-                    registrations={props.data}
-                    contestId={props.contestId}
-                    deleteSuccessCallback={props.deleteSuccessCallback}
+                    registrations={data}
+                    contestId={contestId}
+                    deleteSuccessCallback={deleteSuccessCallback}
                 />
             </div>
         </If>

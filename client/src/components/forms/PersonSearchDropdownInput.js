@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {personFullName} from "../../utils/language_utils";
 import {httpJsonRequest} from "../../utils/http";
 import {If} from "../../utils/components";
+import {filterPersonByQuery} from "./filter";
 
 function DropdownListItems(props) {
     const defaultItemValue = "Не найдено"
@@ -16,14 +17,6 @@ function DropdownListItems(props) {
             {personFullName(it)}
         </a>
     })
-}
-
-function filterParticipantByQuery(it, filterQuery) {
-    const fullName = personFullName(it)
-    if (filterQuery === "") {
-        return true
-    }
-    return fullName.toLowerCase().includes(filterQuery.toLowerCase())
 }
 
 export default function PersonSearchDropdownInput(props) {
@@ -46,7 +39,7 @@ export default function PersonSearchDropdownInput(props) {
     }
 
     function processFilteredParticipants(participants, filterQuery) {
-        const newValue = participants.filter(it => filterParticipantByQuery(it, filterQuery))
+        const newValue = participants.filter(it => filterPersonByQuery(it, filterQuery))
             .filter(additionalFilter)
         setFilteredParticipants(newValue)
     }

@@ -5,9 +5,7 @@ import {httpTextRequest} from "../../../utils/http";
 import {personFullName} from "../../../utils/language_utils";
 
 export function SingleRegistrationsTable(props) {
-    const registrations = props.registrations;
-    const contestId = props.contestId;
-    const deleteSuccessCallback = props.deleteSuccessCallback;
+    const {registrations, contestId, deleteSuccessCallback} = props;
 
     function deleteParticipant(e, participantId) {
         e.preventDefault()
