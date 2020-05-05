@@ -16,13 +16,13 @@ public interface ContestParticipantRepository
             "cp.contestId = :contestId " +
             "and cp.participant.isMale = :isMale " +
             "and (:itmoDepartment is null or cp.participant.itmoDepartment = :itmoDepartment) " +
-            "and (:university is null or cp.participant.university = :university) " +
+            "and (:organization is null or cp.participant.organization = :organization) " +
             "and (:studyingAcademicDegrees is null or cp.participant.studyingAcademicDegree in :studyingAcademicDegrees) " +
             "and cp.result is not null " +
             "order by cp.result.time")
     List<ContestParticipant> findResults(@Param("contestId") long contestId,
                                          @Param("isMale") boolean isMale,
                                          @Param("itmoDepartment") String itmoDepartment,
-                                         @Param("university") String university,
+                                         @Param("organization") String organization,
                                          @Param("studyingAcademicDegrees") List<AcademicDegree> studyingAcademicDegrees);
 }

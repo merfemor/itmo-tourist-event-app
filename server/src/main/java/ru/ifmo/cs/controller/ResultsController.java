@@ -9,30 +9,41 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ifmo.cs.api.dto.ItmoStudentsResultFilter;
 import ru.ifmo.cs.api.dto.ResultParticipantsType;
-import ru.ifmo.cs.database.ContestPatricipantGroupRepository;
 import ru.ifmo.cs.database.ContestParticipantRepository;
+import ru.ifmo.cs.database.ContestPatricipantGroupRepository;
 import ru.ifmo.cs.database.ContestRepository;
-import ru.ifmo.cs.entity.*;
+import ru.ifmo.cs.entity.AcademicDegree;
+import ru.ifmo.cs.entity.Contest;
+import ru.ifmo.cs.entity.ContestParticipant;
+import ru.ifmo.cs.entity.ParticipantType;
+import ru.ifmo.cs.localization.LocalizationUtils;
+import ru.ifmo.cs.utils.Check;
+import ru.ifmo.cs.utils.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
 public class ResultsController {
 
+    private static final String DEFAULT_RESULTS_FILENAME = "results.csv";
+    private static final String CONTENT_TYPE_TEXT_CSV = "test/csv";
+
     private final ContestRepository contestRepository;
     private final ContestParticipantRepository patricipantRepository;
-    private final ContestPatricipantGroupRepository patricipantGroupRepository;
 
     public ResultsController(ContestRepository contestRepository,
                              ContestParticipantRepository patricipantRepository,
                              ContestPatricipantGroupRepository patricipantGroupRepository) {
         this.contestRepository = contestRepository;
         this.patricipantRepository = patricipantRepository;
-        this.patricipantGroupRepository = patricipantGroupRepository;
     }
 
     @GetMapping(value = "/download/results")
@@ -40,8 +51,8 @@ public class ResultsController {
             @RequestParam long contestId,
             @RequestParam ResultParticipantsType participantGender,
             @RequestParam(required = false) ItmoStudentsResultFilter itmoStudentsResultFilter,
+            @RequestParam(required = false) String organization,
             @RequestParam(required = false) String itmoDepartment,
-            @RequestParam(required = false) String filename,
             HttpServletResponse httpServletResponse) throws IOException {
 
         Contest contest = contestRepository.findById(contestId).orElse(null);
@@ -61,19 +72,48 @@ public class ResultsController {
                 return;
             }
             boolean isMale = participantGender == ResultParticipantsType.MEN;
-            csvData = getSingleParticipantResults(contestId, isMale, itmoStudentsResultFilter, itmoDepartment);
+            csvData = getSingleParticipantResults(contestId, isMale, itmoStudentsResultFilter, organization, itmoDepartment);
         } else {
+            // TODO: implement group results
             writeTextResponse(httpServletResponse, HttpStatus.NOT_IMPLEMENTED, "group participants not implemented");
             return;
         }
 
-        writeMetaToResponse(filename, httpServletResponse);
+        writeMetaToResponse(httpServletResponse);
         try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpServletResponse.getOutputStream())) {
             writeDataToCsvFile(csvData, outputStreamWriter);
         }
     }
 
-    private void writeTextResponse(HttpServletResponse httpServletResponse, HttpStatus httpStatus, String message) throws IOException {
+    private List<String[]> getSingleParticipantResults(long contestId, boolean isMale, ItmoStudentsResultFilter itmoStudentsResultFilter, String organization, String itmoDepartment) {
+        final List<AcademicDegree> academicDegrees = getAcademicDegreesForStudentsFilter(itmoStudentsResultFilter);
+        final List<ContestParticipant> results = patricipantRepository.findResults(contestId, isMale, itmoDepartment, organization, academicDegrees);
+
+        final List<String[]> strResults = new ArrayList<>(results.size());
+
+        strResults.add(LocalizationUtils.SINGLE_RESULT_TABLE_HEADER_VALUES);
+
+        for (int i = 0; i < results.size(); i++) {
+            ContestParticipant result = results.get(i);
+            List<String> row = new ArrayList<>(LocalizationUtils.SINGLE_RESULT_TABLE_HEADER_VALUES.length);
+            row.add(Integer.toString(i + 1));
+            row.add(Long.toString(result.getParticipantId()));
+            row.add(LocalizationUtils.getPersonFullName(result.getParticipant()));
+            row.add(LocalizationUtils.getGenderString(result.getParticipant().isMale()));
+            row.add(StringUtils.emptyIfNull(result.getParticipant().getOrganization()));
+            row.add(LocalizationUtils.academicDegreeToResultTableStatus(result.getParticipant().getStudyingAcademicDegree()));
+            row.add(StringUtils.toStringNullable(result.getResult().getTime()));
+            row.add(StringUtils.toStringNullable(result.getResult().getPoints()));
+            row.add(StringUtils.toStringNullable(result.getResult().getPenalty()));
+            row.add(LocalizationUtils.getCompetitionPlaceString(i + 1));
+            String[] rowStr = new String[row.size()];
+            row.toArray(rowStr);
+            strResults.add(rowStr);
+        }
+        return strResults;
+    }
+
+    private static void writeTextResponse(HttpServletResponse httpServletResponse, HttpStatus httpStatus, String message) throws IOException {
         httpServletResponse.setStatus(httpStatus.value());
         httpServletResponse.setContentType(MediaType.TEXT_PLAIN_VALUE);
         try (PrintWriter printWriter = new PrintWriter(httpServletResponse.getOutputStream())) {
@@ -81,103 +121,31 @@ public class ResultsController {
         }
     }
 
-    private List<String[]> getSingleParticipantResults(long contestId, boolean isMale, ItmoStudentsResultFilter itmoStudentsResultFilter, String itmoDepartment) {
-        final List<AcademicDegree> academicDegrees;
+    private static List<AcademicDegree> getAcademicDegreesForStudentsFilter(ItmoStudentsResultFilter itmoStudentsResultFilter) {
         if (itmoStudentsResultFilter == null) {
-            academicDegrees = null;
+            return null;
         } else {
             switch (itmoStudentsResultFilter) {
                 case FIRST_YEAR_BACHELOR:
-                    academicDegrees = Arrays.asList(AcademicDegree.BACHELOR, AcademicDegree.SPECIALIST);
-                    break;
+                    return Arrays.asList(AcademicDegree.FIRST_YEAR_BACHELOR, AcademicDegree.FIRST_YEAR_SPECIALIST);
                 case ALL:
-                    academicDegrees = Arrays.asList(AcademicDegree.values());
-                    break;
+                    return Arrays.asList(AcademicDegree.values());
                 case GRADUATE:
-                    academicDegrees = Arrays.asList(AcademicDegree.POST_GRADUATE);
-                    break;
+                    return Collections.singletonList(AcademicDegree.GRADUATE);
                 default:
-                    throw new IllegalStateException("missing switch branch for " + itmoStudentsResultFilter);
+                    return Check.failMissingSwitchBranch(itmoStudentsResultFilter, null);
             }
         }
-        List<ContestParticipant> results = patricipantRepository.findResults(contestId, isMale, itmoDepartment, null, academicDegrees);
-
-
-        List<String[]> strResults = new ArrayList<>(results.size());
-        String[] headerValues =  { "№", "Номер участника", "ФИО", "Пол", "Организация", "Статус", "Время", "Баллы", "Штраф", "Место" };
-        strResults.add(headerValues);
-
-        for (int i = 0; i < results.size(); i++) {
-            ContestParticipant result = results.get(i);
-            List<String> row = new ArrayList<>(headerValues.length);
-            row.add(Integer.toString(i + 1));
-            row.add(Long.toString(result.getParticipantId()));
-            row.add(getPersonFullName(result.getParticipant()));
-            row.add(getGenderString(result.getParticipant().isMale()));
-            row.add(emptyIfNull(result.getParticipant().getUniversity()));
-            row.add(toStringNullable(result.getParticipant().getStudyingAcademicDegree()));
-            row.add(toStringNullable(result.getResult().getTime()));
-            row.add(toStringNullable(result.getResult().getPoints()));
-            row.add(toStringNullable(result.getResult().getPenalty()));
-            row.add(getCompetitionPlaceString(i + 1));
-            String[] rowStr = new String[row.size()];
-            row.toArray(rowStr);
-            strResults.add(rowStr);
-        }
-
-        return strResults;
     }
 
-    private static String emptyIfNull(String s) {
-        return s == null ? "" : s;
-    }
-
-    private static String toStringNullable(Object o) {
-        if (o == null) {
-            return "";
-        }
-        return o.toString();
-    }
-
-    private static String getCompetitionPlaceString(int place) {
-        if (place == 1) {
-            return "I";
-        }
-        if (place == 2) {
-            return "II";
-        }
-        if (place == 3) {
-            return "III";
-        }
-        return Integer.toString(place);
-    }
-
-    private static String getGenderString(boolean isMale) {
-        return isMale ? "Мужской" :  "Женский";
-    }
-
-    private static String getPersonFullName(Person person) {
-        String s = person.getLastName() + " " + person.getFirstName();
-        if (person.getMiddleName() != null) {
-            s += " " + person.getMiddleName();
-        }
-        return s;
-    }
-
-    private void writeMetaToResponse(String requestedFilename, HttpServletResponse httpServletResponse) {
-        final String filename;
-        if (requestedFilename == null || requestedFilename.isEmpty()) {
-            filename = "results.csv";
-        } else {
-            filename = requestedFilename + ".csv";
-        }
-        final String contentDisposition = String.format("attachment; filename=\"%s\"", filename);
-        httpServletResponse.setContentType("text/csv");
+    private static void writeMetaToResponse(HttpServletResponse httpServletResponse) {
+        final String contentDisposition = String.format("attachment; filename=\"%s\"", DEFAULT_RESULTS_FILENAME);
+        httpServletResponse.setContentType(CONTENT_TYPE_TEXT_CSV);
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition);
     }
 
 
-    private void writeDataToCsvFile(List<String[]> data, Writer writer) throws IOException {
+    private static void writeDataToCsvFile(List<String[]> data, Writer writer) throws IOException {
         try (CSVWriter csvWriter = new CSVWriter(writer)) {
             csvWriter.writeAll(data);
         }

@@ -25,7 +25,7 @@ public class TaskController {
     @GetMapping(value = "/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     Iterable<Task> getAllTasks() {
-        return taskRepository.findAll();
+        return taskRepository.findAllOrderByNameAndStatus();
     }
 
     @GetMapping(value = "/task/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

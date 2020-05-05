@@ -21,7 +21,7 @@ public class PersonController {
 
     @GetMapping(value = "/person", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Iterable<Person> getAllPerson() {
-        return personRepository.findAll();
+        return personRepository.findAllOrderByFullName();
     }
 
     @GetMapping(value = "/person/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -32,10 +32,6 @@ public class PersonController {
     @PostMapping(value = "/person", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Person createPerson(@RequestBody Person person) {
-        // TODO: use unique constraint instead
-        if (personRepository.findByEmail(person.getEmail()) != null) {
-            throw new IllegalStateException("Person with this email already exists");
-        }
         return personRepository.save(person);
     }
 

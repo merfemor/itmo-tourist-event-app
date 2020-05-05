@@ -3,6 +3,7 @@ package ru.ifmo.cs.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import ru.ifmo.cs.api.ContestRegistration;
+import ru.ifmo.cs.utils.JsonUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,7 +18,7 @@ public class ContestParticipant {
     private long participantId;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "participant_id", insertable = false, updatable = false)
-    @JsonIgnoreProperties("hibernateLazyInitializer")
+    @JsonIgnoreProperties(JsonUtils.HIBERNATE_LAZY_INITIALIZER)
     private Person participant;
     @Id
     @Column(name = "contest_id")

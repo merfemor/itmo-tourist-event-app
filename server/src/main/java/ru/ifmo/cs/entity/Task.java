@@ -1,13 +1,13 @@
 package ru.ifmo.cs.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.ifmo.cs.utils.Check;
+import ru.ifmo.cs.utils.JsonUtils;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
 
 @Entity
 public class Task {
@@ -21,7 +21,7 @@ public class Task {
     private Long assigneeId;
     @ManyToOne
     @JoinColumn(name = "assignee_id", insertable = false, updatable = false)
-    @JsonIgnoreProperties("hibernateLazyInitializer")
+    @JsonIgnoreProperties(JsonUtils.HIBERNATE_LAZY_INITIALIZER)
     private Person assignee;
     @Column(nullable = false)
     private boolean isDone;
@@ -29,10 +29,11 @@ public class Task {
     private Long associatedContestId;
     @ManyToOne
     @JoinColumn(name = "associated_contest_id", insertable = false, updatable = false)
-    @JsonIgnoreProperties("hibernateLazyInitializer")
+    @JsonIgnoreProperties(JsonUtils.HIBERNATE_LAZY_INITIALIZER)
     private Contest associatedContest;
     private Date startDateTime;
     private Date endDateTime;
+    // TODO: add created date time, and sort by it
 
     protected Task() {
         /* for ORM */
@@ -40,7 +41,7 @@ public class Task {
 
     @JsonCreator
     public Task(Long id, String name, String description, Long assigneeId, @JsonProperty("isDone") boolean isDone, Long associatedContestId, Date startDateTime, Date endDateTime) {
-        Objects.requireNonNull(name, "name must not be null");
+        Check.notNull(name, "name must not be null");
         this.id = id;
         this.name = name;
         this.description = description;

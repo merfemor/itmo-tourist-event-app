@@ -2,6 +2,8 @@ package ru.ifmo.cs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import ru.ifmo.cs.utils.Check;
+import ru.ifmo.cs.utils.JsonUtils;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -22,7 +24,7 @@ public class ContestParticipantGroup {
     private Date startDateTime;
     @ManyToMany
     @JoinTable
-    @JsonIgnoreProperties({"hibernateLazyInitializer"})
+    @JsonIgnoreProperties(JsonUtils.HIBERNATE_LAZY_INITIALIZER)
     private Set<Person> members;
     @OneToOne(cascade = CascadeType.ALL)
     private Result result;
@@ -32,9 +34,7 @@ public class ContestParticipantGroup {
     }
 
     public ContestParticipantGroup(Long id, long associatedContestId, String name, Date startDateTime, Set<Person> members, Result result) {
-        if (members != null && members.size() < 2) {
-            throw new IllegalArgumentException("at least 2 members should be in group");
-        }
+        Check.minSize(members, 2, "at least 2 members should be in group");
         this.id = id;
         this.associatedContestId = associatedContestId;
         this.name = name;

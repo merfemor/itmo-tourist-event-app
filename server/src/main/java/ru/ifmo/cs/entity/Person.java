@@ -3,10 +3,10 @@ package ru.ifmo.cs.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.ifmo.cs.utils.Check;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -14,8 +14,8 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(unique = true, nullable = false)
     private String email;
-    // TODO: should be unique, since used in authentication search
     private String password;
     @Column(nullable = false)
     private String firstName;
@@ -27,28 +27,29 @@ public class Person {
     private Date birthDate;
     @Column(nullable = false)
     private UserRole role;
+    private UserRole requestedRole;
     private SportsCategory tourismSportsCategory;
 
-    private String university;
+    private String organization; // or university
     private AcademicDegree studyingAcademicDegree;
     private String itmoEducationGroup;
     private String itmoDepartment;
     private Integer itmoIsuNumber;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "participantId")
     @JsonIgnore
-    private Set<ContestParticipant> contestRegistrations;
-
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "assignee")
+    private Set<Task> assignedTasks;
 
     protected Person() {
         /* for ORM */
     }
 
     @JsonCreator
-    public Person(Long id, String email, @JsonProperty("password") String password, String firstName, String lastName, String middleName, @JsonProperty("isMale") boolean isMale, Date birthDate, UserRole role, SportsCategory tourismSportsCategory, String university, AcademicDegree studyingAcademicDegree, String itmoEducationGroup, String itmoDepartment, Integer itmoIsuNumber) {
-        Objects.requireNonNull(email, "email must not be null");
-        Objects.requireNonNull(firstName, "firstName must not be null");
-        Objects.requireNonNull(lastName, "lastName must not be null");
+    public Person(Long id, String email, @JsonProperty("password") String password, String firstName, String lastName, String middleName, @JsonProperty("isMale") boolean isMale, Date birthDate, UserRole role, UserRole requestedRole, SportsCategory tourismSportsCategory, String organization, AcademicDegree studyingAcademicDegree, String itmoEducationGroup, String itmoDepartment, Integer itmoIsuNumber) {
+        Check.notNull(email, "email must not be null");
+        Check.notNull(firstName, "firstName must not be null");
+        Check.notNull(lastName, "lastName must not be null");
+        Check.isTrue(password != null || role == UserRole.PARTICIPANT, "null passwords allowed only for " + UserRole.PARTICIPANT + " role");
         if (role == null) {
             role = UserRole.PARTICIPANT;
         }
@@ -61,8 +62,9 @@ public class Person {
         this.isMale = isMale;
         this.birthDate = birthDate;
         this.role = role;
+        this.requestedRole = requestedRole;
         this.tourismSportsCategory = tourismSportsCategory;
-        this.university = university;
+        this.organization = organization;
         this.studyingAcademicDegree = studyingAcademicDegree;
         this.itmoEducationGroup = itmoEducationGroup;
         this.itmoDepartment = itmoDepartment;
@@ -111,8 +113,8 @@ public class Person {
         return tourismSportsCategory;
     }
 
-    public String getUniversity() {
-        return university;
+    public String getOrganization() {
+        return organization;
     }
 
     public AcademicDegree getStudyingAcademicDegree() {
@@ -131,8 +133,12 @@ public class Person {
         return itmoIsuNumber;
     }
 
-    public Set<ContestParticipant> getContestRegistrations() {
-        return contestRegistrations;
+    public UserRole getRequestedRole() {
+        return requestedRole;
+    }
+
+    public Set<Task> getAssignedTasks() {
+        return assignedTasks;
     }
 
     @Override
@@ -147,8 +153,9 @@ public class Person {
                 ", isMale=" + isMale +
                 ", birthDate=" + birthDate +
                 ", role=" + role +
+                ", requestedRole=" + requestedRole +
                 ", tourismSportsCategory=" + tourismSportsCategory +
-                ", university='" + university + '\'' +
+                ", organization='" + organization + '\'' +
                 ", studyingAcademicDegree=" + studyingAcademicDegree +
                 ", itmoEducationGroup='" + itmoEducationGroup + '\'' +
                 ", itmoDepartment='" + itmoDepartment + '\'' +
@@ -167,8 +174,9 @@ public class Person {
         this.isMale = newPerson.isMale;
         this.birthDate = newPerson.birthDate;
         this.role = newPerson.role;
+        this.requestedRole = newPerson.requestedRole;
         this.tourismSportsCategory = newPerson.tourismSportsCategory;
-        this.university = newPerson.university;
+        this.organization = newPerson.organization;
         this.studyingAcademicDegree = newPerson.studyingAcademicDegree;
         this.itmoEducationGroup = newPerson.itmoEducationGroup;
         this.itmoDepartment = newPerson.itmoDepartment;

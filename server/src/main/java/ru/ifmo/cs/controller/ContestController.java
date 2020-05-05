@@ -22,7 +22,7 @@ public class ContestController {
     @GetMapping(value = "/contest", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Iterable<Contest> getAllContests() {
-        return contestRepository.findAll();
+        return contestRepository.findAllOrderByName();
     }
 
     @DeleteMapping(value = "/contest/{id}")

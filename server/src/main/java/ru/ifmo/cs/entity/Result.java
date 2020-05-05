@@ -1,6 +1,7 @@
 package ru.ifmo.cs.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import ru.ifmo.cs.utils.Check;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,9 +23,7 @@ public class Result {
 
     @JsonCreator
     public Result(Long id, Long time, Long points, Long penalty) {
-        if (time == null && points == null && penalty == null) {
-            throw new IllegalArgumentException("either time, penalty or points should be set");
-        }
+        Check.anyNotNull("either time, penalty or points should be set", time, points, penalty);
         this.id = id;
         this.time = time;
         this.points = points;
