@@ -9,12 +9,15 @@ import {ContestDescriptionBlock} from "./ContestDescriptionBlock";
 import {RegisterGroupBlock} from "./RegisterGroupBlock";
 import {ContestTasksContainer} from "./ContestTasksContainer";
 import {ContestResultsContainer} from "./ContestResultsContainer";
+import {useAuth} from "../../../auth/AuthStateHolder";
 
 
 export default function ContestInfo() {
     const match = useRouteMatch();
+    const { authInfo } = useAuth();
     const [contest, setContest] = useState(null);
     const contestId = match.params.contestId;
+    const isLoggedIn = authInfo.user != null;
 
     function loadContest() {
         httpJsonRequest("GET", "contest/" + contestId + "?includeRegistrations=true&includeTasks=true")
@@ -45,18 +48,20 @@ export default function ContestInfo() {
                         <div className="row mb-4">
                             <div className="col-12">
                                 <ContestDescriptionBlock data={contest}/>
-                                <If roleAtLeast={UserRole.VOLUNTEER}>
+                                <If roleAtLeast={UserRole.ORGANIZER}>
                                     <Link to={`${match.url}/edit`} className="mt-2"><i className="fa fa-pencil"/> Редактировать</Link>
                                 </If>
                             </div>
                         </div>
-                        <div>
-                            <h2>Связанные задачи</h2>
-                            <ContestTasksContainer
-                                contestId={contestId}
-                                data={contest.tasks}
-                                onSuccess={onActionDone}/>
-                        </div>
+                        { isLoggedIn &&
+                            <div>
+                                <h2>Связанные задачи</h2>
+                                <ContestTasksContainer
+                                    contestId={contestId}
+                                    data={contest.tasks}
+                                    onSuccess={onActionDone}/>
+                            </div>
+                        }
                         <If cond={isSingleParticipant && contest.singleParticipants != null}>
                             <h2>Участники</h2>
                             <SingleRegistrationsContainer

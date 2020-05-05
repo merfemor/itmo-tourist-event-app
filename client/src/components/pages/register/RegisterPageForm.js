@@ -32,8 +32,9 @@ export function RegisterPageForm(props) {
         <div className="row">
             <div className="col-md-8 col-xs-12 mx-auto">
                 <div className="card">
-                    <div className="card-header"><strong>Регистрация участника</strong></div>
                     <div className="card-body card-block">
+                        <h1>Регистрация</h1>
+                        <p className="text-muted">Зарегистрировать свою учетную запись</p>
                         <form onSubmit={handleSubmit(formDataSubmitCallback)}>
                             <div className="form-group">
                                 <label htmlFor="email-input" className="form-control-label">Email</label>
@@ -106,7 +107,7 @@ export function RegisterPageForm(props) {
                                 />
                             </div>
                             <div className="form-group">
-                                <button type="submit" className="btn btn-primary">Зарегистрироваться</button>
+                                <button type="submit" className="btn btn-primary px-4">Зарегистрироваться</button>
                             </div>
                         </form>
                     </div>

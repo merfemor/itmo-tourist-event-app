@@ -9,7 +9,7 @@ export default function TasksDashboard(props) {
     const dataList = props.data
 
     return <div>
-        <If roleAtLeast={UserRole.VOLUNTEER}>
+        <If roleAtLeast={UserRole.ORGANIZER}>
             <Link to={`${match.url}/new`} className="btn btn-success mt-1"><i className="fa fa-plus"/> Создать задачу</Link>
         </If>
         <div className="row mt-3">

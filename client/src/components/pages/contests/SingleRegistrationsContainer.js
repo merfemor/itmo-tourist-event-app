@@ -8,19 +8,18 @@ import React from "react";
 export function SingleRegistrationsContainer(props) {
     const {data, contestId, createSuccessCallback, deleteSuccessCallback} = props;
     const {authInfo} = useAuth();
-    const isLoggedIn = authInfo.user != null;
 
     return (
-        <If cond={isLoggedIn}>
-            <div className="row mb-1">
-                <RegisterMeButton className="col-4"
+        <div>
+            <div className="d-flex mb-1">
+                <RegisterMeButton className=""
                                   data={data}
-                                  myId={authInfo.user.id}
+                                  myId={authInfo.user?.id}
                                   contestId={contestId}
                                   createSuccessCallback={createSuccessCallback}
                                   deleteSuccessCallback={deleteSuccessCallback}
                 />
-                <div className="col-8">
+                <div className="ml-2 w-100">
                     <RegisterParticipantBlock
                         contestId={contestId}
                         onRegistrationSuccessCallback={createSuccessCallback}/>
@@ -33,6 +32,6 @@ export function SingleRegistrationsContainer(props) {
                     deleteSuccessCallback={deleteSuccessCallback}
                 />
             </div>
-        </If>
+        </div>
     );
 }

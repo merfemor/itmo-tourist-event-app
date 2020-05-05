@@ -1,6 +1,7 @@
 import {httpTextRequest} from "../../../utils/http";
 import {If} from "../../../utils/components";
 import React from "react";
+import {Link} from "react-router-dom";
 
 export function RegisterMeButton(props) {
     const data = props.data;
@@ -29,9 +30,12 @@ export function RegisterMeButton(props) {
                     Не буду участвовать
                 </button>
             </If>
-            <If cond={!isRegistered}>
+            <If cond={myId == null}>
+                <Link to="/login" className="btn btn-success">Буду участвовать</Link>
+            </If>
+            <If cond={!isRegistered && myId != null}>
                 <button className="btn btn-success" onClick={onRegisterButtonClick}>
-                    Зарегистрировать себя
+                    Буду участвовать
                 </button>
             </If>
         </div>

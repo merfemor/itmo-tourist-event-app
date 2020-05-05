@@ -32,13 +32,13 @@ export function ContestSingleResultsFilterContainer(props) {
         setNameQuery(nameQuery)
     }
 
-    return <div className="mb-2 row">
-        <div className="col-8">
+    return <div className="mb-1 d-flex">
+        <div className="w-100">
             <input type="text" onChange={onNameQueryChange} defaultValue={nameQuery} className="form-control"
                    placeholder="Искать по ФИО"/>
         </div>
-        <div className="col-4">
-            <IsMaleSelect name="isMale" className="form-control" onChange={onIsMaleChange}/>
+        <div className="ml-2">
+            <IsMaleSelect name="isMale" className="form-control px-5" onChange={onIsMaleChange}/>
         </div>
     </div>
 }

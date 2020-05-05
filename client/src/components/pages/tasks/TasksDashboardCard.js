@@ -3,6 +3,7 @@ import {Link, useRouteMatch} from "react-router-dom";
 import {If} from "../../../utils/components";
 import {httpJsonRequest} from "../../../utils/http";
 import {dateTimeToString, personShortName} from "../../../utils/language_utils";
+import {UserRole} from "../../../api/enums";
 
 export default function TasksDashboardCard(props) {
     const {url} = useRouteMatch()
@@ -15,26 +16,29 @@ export default function TasksDashboardCard(props) {
 
     return (
         <div className="card">
-            <div className="card-header">
-                <b>{data.name}</b>
-                <If cond={data.isDone}>
-                    <span className="float-right badge badge-success">Завершен</span>
-                </If>
-                <If cond={!data.isDone}>
-                    <span className="float-right badge badge-primary">Открыт</span>
-                </If>
-            </div>
             <div className="card-body card-block">
+                <div>
+                    <h5>{data.name}</h5>
+                </div>
+                <div>
+                    <b>Статус: </b>
+                    <If cond={data.isDone}>
+                        <span className="badge badge-success">Завершен</span>
+                    </If>
+                    <If cond={!data.isDone}>
+                        <span className="badge badge-primary">Открыт</span>
+                    </If>
+                </div>
                 {data.startDateTime != null &&
-                    <div>
-                        <b>Начало: </b>
-                        { dateTimeToString(data.startDateTime)}
-                    </div>
+                <div>
+                    <b>Начало: </b>
+                    {dateTimeToString(data.startDateTime)}
+                </div>
                 }
                 {data.endDateTime != null &&
                 <div>
                     <b>Конец: </b>
-                    { dateTimeToString(data.endDateTime)}
+                    {dateTimeToString(data.endDateTime)}
                 </div>
                 }
                 {data.assignee != null &&
@@ -55,18 +59,20 @@ export default function TasksDashboardCard(props) {
                         <i>{data.description}</i>
                     </div>
                 </If>
-                <div className="row">
-                    <div className="col-6">
+                <div className="mt-2 d-flex">
+                    <div>
                         <button className={`btn btn-${data.isDone ? "warning" : "success"}`}
                                 onClick={changeTaskStatus}>
                             {data.isDone ? "Переоткрыть" : "Завершить"}
                         </button>
                     </div>
-                    <div className="col-6">
-                        <Link to={`${url}/${data.id}`} className="btn btn-primary">
-                            Редактировать
-                        </Link>
-                    </div>
+                    <If roleAtLeast={UserRole.ORGANIZER}>
+                        <div className="ml-2">
+                            <Link to={`${url}/${data.id}`} className="btn btn-primary">
+                                Редактировать
+                            </Link>
+                        </div>
+                    </If>
                 </div>
             </div>
         </div>
