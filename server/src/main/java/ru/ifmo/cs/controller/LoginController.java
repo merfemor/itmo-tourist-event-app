@@ -17,6 +17,8 @@ import ru.ifmo.cs.api.LoginRequest;
 import ru.ifmo.cs.api.LoginResponse;
 import ru.ifmo.cs.database.PersonRepository;
 import ru.ifmo.cs.entity.Person;
+import ru.ifmo.cs.entity.UserRole;
+import ru.ifmo.cs.utils.Check;
 
 
 @RestController
@@ -53,5 +55,14 @@ public class LoginController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Person person = personRepository.findByEmail(userDetails.getUsername());
         return ResponseEntity.ok(person);
+    }
+
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<LoginResponse> createPerson(@RequestBody Person person) {
+        Check.notNull(person.getPassword(), "password shouldn't be null");
+        Person savedPerson = personRepository.save(person);
+        String token = JwtUtils.generateToken(savedPerson.getEmail());
+        return ResponseEntity.ok(new LoginResponse(token, savedPerson));
     }
 }

@@ -2,19 +2,26 @@ import {useForm} from "react-hook-form";
 import React from "react";
 import {UserRole} from "../../../api/enums";
 import {httpJsonRequest} from "../../../utils/http";
-
-function onSubmitRegistration(formData) {
-    httpJsonRequest("POST", "person", {
-        ...formData,
-        role: UserRole.PARTICIPANT.name
-    }).then(response => {
-        // TODO: store cookies, and etc
-    })
-}
+import {useAuth} from "../../../auth/AuthStateHolder";
 
 export function RegisterPageForm(props) {
+    const {setToken, setUserInfo} = useAuth()
     const {register, handleSubmit, errors, getValues} = useForm();
     const propsRequestFinishCallback = props.onRegisterFinish;
+
+    function onSubmitRegistration(formData) {
+        httpJsonRequest("POST", "register", {
+            ...formData,
+            role: UserRole.PARTICIPANT.name
+        }).then(response => {
+            setToken(response.token)
+            setUserInfo(response.user)
+            if (response.token == null || response.user == null) {
+                console.error("Server returned OK, but no token or user info in response json")
+            }
+        })
+    }
+
     const formDataSubmitCallback = (data) => {
         onSubmitRegistration(data);
         if (propsRequestFinishCallback) {

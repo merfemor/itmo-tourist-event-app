@@ -149,6 +149,11 @@ export default function AuthStateHolder(props) {
     return <AuthContext.Provider value={{
         authInfo,
         loginWithEmailAndPassword: (formData) => loginWithEmailAndPassword(formData, setAuthInfo),
+        setToken: (token) => {
+            GlobalState.authToken = token
+            setTokenInStorage(token)
+            setAuthInfo(info => ({...info, token: token}))
+        },
         setUserInfo: (userInfo) => setAuthInfo((state) => ({
             ...state,
             user: userInfo

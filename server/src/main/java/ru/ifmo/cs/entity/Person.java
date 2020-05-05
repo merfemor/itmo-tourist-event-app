@@ -49,7 +49,6 @@ public class Person {
         Check.notNull(email, "email must not be null");
         Check.notNull(firstName, "firstName must not be null");
         Check.notNull(lastName, "lastName must not be null");
-        Check.isTrue(password != null || role == UserRole.PARTICIPANT, "null passwords allowed only for " + UserRole.PARTICIPANT + " role");
         if (role == null) {
             role = UserRole.PARTICIPANT;
         }

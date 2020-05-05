@@ -5,8 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ifmo.cs.api.LoginResponse;
+import ru.ifmo.cs.auth.JwtUtils;
 import ru.ifmo.cs.database.PersonRepository;
 import ru.ifmo.cs.entity.Person;
+import ru.ifmo.cs.entity.UserRole;
+import ru.ifmo.cs.utils.Check;
 
 import java.util.Objects;
 
@@ -32,6 +36,7 @@ public class PersonController {
     @PostMapping(value = "/person", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Person createPerson(@RequestBody Person person) {
+        Check.isTrue(person.getPassword() == null && person.getRole() == UserRole.PARTICIPANT, "can only create users with role = " + UserRole.PARTICIPANT + " and null password");
         return personRepository.save(person);
     }
 
