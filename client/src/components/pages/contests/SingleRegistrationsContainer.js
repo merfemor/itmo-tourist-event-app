@@ -12,16 +12,15 @@ export function SingleRegistrationsContainer(props) {
 
     return (
         <If cond={isLoggedIn}>
-            <div className="row mb-3">
-                <div className="col-3">
-                    <RegisterMeButton data={data}
-                                      myId={authInfo.user.id}
-                                      contestId={contestId}
-                                      createSuccessCallback={createSuccessCallback}
-                                      deleteSuccessCallback={deleteSuccessCallback}
-                    />
-                </div>
-                <div className="col-6">
+            <div className="row mb-1">
+                <RegisterMeButton className="col-4"
+                                  data={data}
+                                  myId={authInfo.user.id}
+                                  contestId={contestId}
+                                  createSuccessCallback={createSuccessCallback}
+                                  deleteSuccessCallback={deleteSuccessCallback}
+                />
+                <div className="col-8">
                     <RegisterParticipantBlock
                         contestId={contestId}
                         onRegistrationSuccessCallback={createSuccessCallback}/>

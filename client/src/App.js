@@ -19,33 +19,19 @@ export default function App() {
                 <div className="app-body">
                     <Sidebar/>
                     <main className="main">
-                        <Switch>
-                            <Route path="/login">
-                                <div className="container-fluid">
-                                    <LoginPageContent/>
-                                </div>
-                            </Route>
-                            <Route path="/register">
-                                <div className="container-fluid">
-                                    <RegisterPageContent/>
-                                </div>
-                            </Route>
-                            <Route path="/settings">
-                                <SettingsPageContent/>
-                            </Route>
-                            <Route path="/participants">
-                                <ParticipantsPageContent/>
-                            </Route>
-                            <Route path="/tasks">
-                                <TasksPageContent/>
-                            </Route>
-                            <Route path="/contests">
-                                <ContestPageContent/>
-                            </Route>
-                            <Route path="/">
-                                <Redirect to="/contests"/>
-                            </Route>
-                        </Switch>
+                        <div className="my-2 mx-1">
+                            <Switch>
+                                <Route path="/login" component={LoginPageContent}/>
+                                <Route path="/register" component={RegisterPageContent}/>
+                                <Route path="/settings" component={SettingsPageContent}/>
+                                <Route path="/participants" component={ParticipantsPageContent}/>
+                                <Route path="/tasks" component={TasksPageContent}/>
+                                <Route path="/contests" component={ContestPageContent}/>
+                                <Route path="/">
+                                    <Redirect to="/contests"/>
+                                </Route>
+                            </Switch>
+                        </div>
                     </main>
                 </div>
             </div>

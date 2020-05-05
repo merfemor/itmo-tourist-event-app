@@ -37,12 +37,14 @@ export default class ParticipantsTable extends React.Component {
         }
 
         return (
-            <div className="col-12 mt-3">
+            <div className="col-12">
                 <If roleAtLeast={UserRole.VOLUNTEER}>
-                    <Link to="/participants/new" className="btn btn-primary mb-3">Зарегистрировать участника</Link>
+                    <Link to="/participants/new" className="btn btn-success mb-2">
+                        <i className="fa fa-plus"/> Зарегистрировать участника
+                    </Link>
                 </If>
-                <div className="table-responsive">
-                    <table className="table table-sm table-bordered table-striped table-hover">
+                <div className="">
+                    <table className="table bg-white table-sm table-striped table-hover">
                         <thead className="thead-default">
                         <tr>
                             <th>№</th>
@@ -51,7 +53,7 @@ export default class ParticipantsTable extends React.Component {
                             <th>Пол</th>
                             <th>Роль</th>
                             <If roleAtLeast={UserRole.VOLUNTEER}>
-                                <th>Действия</th>
+                                <th><span className="d-sm-down-none">Действия</span></th>
                             </If>
                         </tr>
                         </thead>
@@ -66,8 +68,10 @@ export default class ParticipantsTable extends React.Component {
                                     <td> {userRoleToString(participant.role)} </td>
                                     <If roleAtLeast={UserRole.VOLUNTEER}>
                                         <td>
-                                            <Link to={`/participants/${participant.id}`} className="btn btn-primary">
-                                                Редактировать
+                                            <Link to={`/participants/${participant.id}`} className="btn btn-sm btn-link">
+                                                <i className="fa fa-edit"/>
+                                                <span className="d-sm-down-none"> Редактировать</span>
+
                                             </Link>
                                         </td>
                                     </If>

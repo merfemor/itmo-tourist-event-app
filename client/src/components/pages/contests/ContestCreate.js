@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {ParticipantType, RegistrationType, ResultStructure} from "../../../api/enums";
 import {Log} from "../../../utils/Log";
@@ -129,7 +129,7 @@ export default function ContestCreate() {
                                 </select>
                             </div>
                             <div className="form-group">
-                                <button type="submit" className="btn btn-primary">Создать</button>
+                                <button type="submit" className="btn btn-success"><i className="fa fa-plus"/> Создать</button>
                             </div>
                         </form>
                     </div>

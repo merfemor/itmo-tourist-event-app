@@ -46,7 +46,7 @@ export default function ContestInfo() {
                             <div className="col-12">
                                 <ContestDescriptionBlock data={contest}/>
                                 <If roleAtLeast={UserRole.VOLUNTEER}>
-                                    <Link to={`${match.url}/edit`} className="mt-4 btn btn-primary">Редактировать</Link>
+                                    <Link to={`${match.url}/edit`} className="mt-2"><i className="fa fa-pencil"/> Редактировать</Link>
                                 </If>
                             </div>
                         </div>

@@ -109,8 +109,8 @@ export default function TaskEdit() {
                                 </TaskAssigneeSuggestButton>
                             </div>
                             <div className="form-group">
-                                <button type="submit" className="btn btn-primary">Сохранить</button>
-                                <button className="btn btn-danger" onClick={onDeleteButtonClick}>Удалить</button>
+                                <button type="submit" className="btn btn-success"><i className="fa fa-save"/> Сохранить</button>
+                                <button className="btn btn-danger ml-2" onClick={onDeleteButtonClick}><i className="fa fa-trash"/> Удалить</button>
                             </div>
                         </form>
                     </div>

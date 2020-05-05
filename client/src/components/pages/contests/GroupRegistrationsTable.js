@@ -20,7 +20,7 @@ function renderGroupRegistrationCells(group, deleteButtonClickCallback) {
             </th>
             <If cond={index === 0} roleAtLeast={UserRole.VOLUNTEER}>
                 <th rowSpan={membersCount} className="text-right">
-                     <button className="btn btn-danger btn-sm" onClick={deleteButtonClickCallback}>Удалить</button>
+                     <button className="btn btn-danger btn-sm" onClick={deleteButtonClickCallback}><i className="fa fa-trash"/> Удалить</button>
                 </th>
             </If>
         </tr>
@@ -36,7 +36,7 @@ export function GroupRegistrationsTable(props) {
     }
 
     return (
-        <table className="table-outline mb-0 d-none d-sm-table table table-hover table-sm">
+        <table className="table-outline table table-hover table-sm">
             <thead className="thead-default">
             <tr>
                 <th>№</th>

@@ -4,15 +4,18 @@ import {Link} from "react-router-dom";
 
 export default function AuthorizedHeaderMenu() {
     const {logout} = useAuth();
+
     return (
         <ul className="ml-auto navbar-nav">
-            <li className="px-3 nav-item">
-                <Link className="btn btn-secondary" to="/settings">
-                    <i className="icon-settings"/>Настройки
+            <li className="nav-item">
+                <Link className="btn btn-outline-secondary" to="/settings">
+                    <i className="fa fa-wrench"/><span className="d-sm-down-none"> Настройки</span>
                 </Link>
             </li>
-            <li className="px-3 nav-item">
-                <button className="btn btn-primary" onClick={logout}>Выйти</button>
+            <li className="px-1 nav-item">
+                <button className="btn btn-outline-danger" onClick={logout}>
+                    <i className="fa fa-sign-out"/><span className="d-sm-down-none"> Выйти</span>
+                </button>
             </li>
         </ul>
     );

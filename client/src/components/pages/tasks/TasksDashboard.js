@@ -10,11 +10,11 @@ export default function TasksDashboard(props) {
 
     return <div>
         <If roleAtLeast={UserRole.VOLUNTEER}>
-            <Link to={`${match.url}/new`} className="btn btn-primary mt-3">Создать задачу</Link>
+            <Link to={`${match.url}/new`} className="btn btn-success mt-1"><i className="fa fa-plus"/> Создать задачу</Link>
         </If>
         <div className="row mt-3">
             {dataList.map(it =>
-                <div key={it.id} className="col-sm-6 col-xs-12">
+                <div key={it.id} className="col-sm-12 col-xs-12 col-md-6">
                     <TasksDashboardCard data={it}/>
                 </div>
             )}

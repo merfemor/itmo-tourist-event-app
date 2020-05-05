@@ -68,7 +68,7 @@ function RegisterGroupForm(props) {
                                     <th>
                                         <button className="btn btn-danger btn-sm"
                                                 onClick={() => setMembers(members.filter(it => it.id !== member.id))}>
-                                            Удалить
+                                            <i className="fa fa-trash"/> Удалить
                                         </button>
                                     </th>
                                 </tr>

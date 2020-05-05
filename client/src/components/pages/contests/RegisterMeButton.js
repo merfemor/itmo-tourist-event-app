@@ -23,7 +23,7 @@ export function RegisterMeButton(props) {
     }
 
     return (
-        <div>
+        <div className={props.className}>
             <If cond={isRegistered}>
                 <button className="btn btn-danger" onClick={onDeleteRegisterButtonClick}>
                     Не буду участвовать

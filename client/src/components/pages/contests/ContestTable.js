@@ -22,8 +22,8 @@ export default function ContestTable() {
 
     return <div>
         <If roleAtLeast={UserRole.VOLUNTEER}>
-            <Link to={`${match.url}/new`} className="btn btn-primary mt-3">Создать дистанцию</Link>
+            <Link to={`${match.url}/new`} className="btn btn-success px-3"><i className="fa fa-plus"/> Создать дистанцию</Link>
         </If>
-        <div className="row mt-3"> {renderContestCards()} </div>
+        <div className="row mt-2"> {renderContestCards()} </div>
     </div>
 }

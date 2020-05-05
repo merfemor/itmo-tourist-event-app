@@ -74,7 +74,7 @@ export function ContestResultDownloadButton(props) {
                 </div>
                 <div className="modal-footer">
                     <button className="btn btn-success" type="submit">Загрузить</button>
-                    <button className="btn btn-primary" onClick={onCancelClick}>Отмена</button>
+                    <button className="btn btn-secondary" onClick={onCancelClick}>Отмена</button>
                 </div>
             </form>
         </Modal>

@@ -67,11 +67,11 @@ export function EditContestResultModal(props) {
                 </div>
             </div>
             <div className="modal-footer">
-                <button className="btn btn-success" type="submit">Сохранить</button>
+                <button className="btn btn-success" type="submit"><i className="fa fa-save"/> Сохранить</button>
                 <If cond={data != null}>
-                    <button className="btn btn-danger" onClick={onDeleteClick}>Удалить</button>
+                    <button className="btn btn-danger ml-2" onClick={onDeleteClick}><i className="fa fa-trash"/> Удалить</button>
                 </If>
-                <button className="btn btn-primary" onClick={onCancelClick}>Отмена</button>
+                <button className="btn btn-secondary ml-2" onClick={onCancelClick}>Отмена</button>
             </div>
         </form>
     </Modal>

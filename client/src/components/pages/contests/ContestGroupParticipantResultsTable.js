@@ -4,6 +4,7 @@ import {UserRole} from "../../../api/enums";
 import {personFullName, resultToString} from "../../../utils/language_utils";
 import {EditContestResultModal} from "./CreateResultModal";
 import {httpTextRequest} from "../../../utils/http";
+import {Link} from "react-router-dom";
 
 export function ContestGroupParticipantResultsTable(props) {
     const contestId = props.contestId
@@ -85,15 +86,15 @@ export function ContestGroupParticipantResultsTable(props) {
                     <If roleAtLeast={UserRole.VOLUNTEER}>
                         <th className="text-right pr-2">
                             <If cond={it.result != null}>
-                                <button className="btn btn-secondary btn-sm"
+                                <button className="btn btn-primary btn-sm"
                                         onClick={() => onEditResultButtonClick(it)}>
-                                    Редактировать
+                                    <i className="fa fa-pencil"/><span className="d-sm-down-none"> Редактировать</span>
                                 </button>
                             </If>
                             <If cond={it.result == null}>
-                                <button className="btn btn-primary btn-sm"
+                                <button className="btn btn-success btn-sm"
                                         onClick={() => onCreateResultButtonClick(it)}>
-                                    Внести
+                                    <i className="fa fa-plus"/><span className="d-sm-down-none"> Внести</span>
                                 </button>
                             </If>
                         </th>

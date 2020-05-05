@@ -19,18 +19,16 @@ export default function TasksPageContent() {
     const match = useRouteMatch();
 
     return <div>
-        <div className="container-fluid">
-            <Switch>
-                <Route path={`${match.path}/new`}>
-                    <TaskCreate/>
-                </Route>
-                <Route path={`${match.path}/:taskId`}>
-                    <TaskEdit/>
-                </Route>
-                <Route path={match.path}>
-                    <TasksDashboardWithData/>
-                </Route>
-            </Switch>
-        </div>
+        <Switch>
+            <Route path={`${match.path}/new`}>
+                <TaskCreate/>
+            </Route>
+            <Route path={`${match.path}/:taskId`}>
+                <TaskEdit/>
+            </Route>
+            <Route path={match.path}>
+                <TasksDashboardWithData/>
+            </Route>
+        </Switch>
     </div>;
 }

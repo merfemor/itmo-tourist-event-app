@@ -29,8 +29,8 @@ export function RegisterParticipantBlock(props) {
                                            registerCallbacks={dropdownCallbacks}
                                            placeholderText="Добавить участника"/>
                 <div className="input-group-btn">
-                    <button className="btn btn-primary" onClick={onAddButtonClick} disabled={selectedId == null}>
-                        Добавить
+                    <button className="btn btn-success" onClick={onAddButtonClick} disabled={selectedId == null}>
+                        <i className="fa fa-plus"/><span className="d-sm-down-none"> Добавить</span>
                     </button>
                 </div>
             </div>

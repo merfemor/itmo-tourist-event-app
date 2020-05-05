@@ -132,7 +132,7 @@ export default function ProfileEditForm() {
 
                     {  /* TODO: add birthday date chooser */}
                     <div className="form-group">
-                        <button type="submit" className="btn btn-primary">Сохранить</button>
+                        <button type="submit" className="btn btn-success px-4"><i className="fa fa-save"/> Сохранить</button>
                     </div>
                 </form>
             </div>

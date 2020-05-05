@@ -4,6 +4,7 @@ import {UserRole} from "../../../api/enums";
 import {personFullName, resultToString} from "../../../utils/language_utils";
 import {EditContestResultModal} from "./CreateResultModal";
 import {httpTextRequest} from "../../../utils/http";
+import {Link} from "react-router-dom";
 
 export function ContestSingleParticipantResultsTable(props) {
     const data = props.data
@@ -50,7 +51,7 @@ export function ContestSingleParticipantResultsTable(props) {
     }
 
     return <div>
-        <table className="table-outline table table-hover table-sm">
+        <table className="table-outline table table-hover table-sm mb-1">
             <thead className="thead-default">
             <tr>
                 <th className="text-center">№</th>
@@ -74,13 +75,13 @@ export function ContestSingleParticipantResultsTable(props) {
                     <If roleAtLeast={UserRole.VOLUNTEER}>
                         <th className="text-right pr-2">
                             <If cond={it.result != null}>
-                                <button className="btn btn-secondary btn-sm" onClick={() => onEditResultButtonClick(it)}>
-                                    Редактировать
+                                <button className="btn btn-link btn-sm" onClick={() => onEditResultButtonClick(it)}>
+                                    <i className="fa fa-pencil"/><span className="d-sm-down-none"> Редактировать</span>
                                 </button>
                             </If>
                             <If cond={it.result == null}>
-                                <button className="btn btn-primary" onClick={() => onCreateResultButtonClick(it)}>
-                                    Внести
+                                <button className="btn btn-link text-success btn-sm" onClick={() => onCreateResultButtonClick(it)}>
+                                    <i className="fa fa-plus"/><span className="d-sm-down-none"> Внести</span>
                                 </button>
                             </If>
                         </th>

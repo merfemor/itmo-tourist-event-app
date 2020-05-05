@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import {useHistory} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {httpJsonRequest} from "../../../utils/http";
 import PersonSearchDropdownInput from "../../forms/PersonSearchDropdownInput";
 import {TaskAssigneeSuggestButton} from "./TaskAssigneeSuggestButton";
@@ -85,7 +85,7 @@ export default function TaskCreate(props) {
                                 </TaskAssigneeSuggestButton>
                             </div>
                             <div className="form-group">
-                                <button type="submit" className="btn btn-primary">Создать</button>
+                                <button type="submit" className="btn btn-success"><i className="fa fa-plus"/> Создать</button>
                             </div>
                         </form>
                     </div>

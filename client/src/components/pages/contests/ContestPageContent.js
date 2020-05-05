@@ -15,15 +15,13 @@ function ContestTaskCreate() {
 export default function ContestPageContent() {
     const match = useRouteMatch();
     return <div>
-        <div className="container-fluid">
-            <Switch>
-                <Route path={`${match.path}/new`} component={ContestCreate}/>
-                <Route path={`${match.path}/:contestId/edit`} component={ContestEdit}/>
-                <Route path={`${match.path}/:contestId/new`} component={ContestTaskCreate}/>
-                <Route path={`${match.path}/:contestId/:taskId`} component={TaskEdit}/>
-                <Route path={`${match.path}/:contestId`} component={ContestInfo}/>
-                <Route path={match.path} component={ContestTable}/>
-            </Switch>
-        </div>
+        <Switch>
+            <Route path={`${match.path}/new`} component={ContestCreate}/>
+            <Route path={`${match.path}/:contestId/edit`} component={ContestEdit}/>
+            <Route path={`${match.path}/:contestId/new`} component={ContestTaskCreate}/>
+            <Route path={`${match.path}/:contestId/:taskId`} component={TaskEdit}/>
+            <Route path={`${match.path}/:contestId`} component={ContestInfo}/>
+            <Route path={match.path} component={ContestTable}/>
+        </Switch>
     </div>;
 }

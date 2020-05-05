@@ -14,14 +14,14 @@ export function SingleRegistrationsTable(props) {
     }
 
     return (
-        <table className="table-outline mb-0 d-none d-sm-table table table-hover table-sm">
+        <table className="table-outline table table-hover table-sm">
             <thead className="thead-default">
             <tr>
                 <th className="text-center">№</th>
                 <th>ФИО</th>
                 <th className="text-center">Пол</th>
                 <If roleAtLeast={UserRole.VOLUNTEER}>
-                    <th className="text-right pr-2">Действия</th>
+                    <th className="text-right"><span className="pr-2 d-sm-down-none">Действия</span></th>
                 </If>
             </tr>
             </thead>
@@ -37,8 +37,9 @@ export function SingleRegistrationsTable(props) {
                     </th>
                     <If roleAtLeast={UserRole.VOLUNTEER}>
                         <th className="text-right pr-2">
-                            <button className="btn btn-danger btn-sm" onClick={(e) => deleteParticipant(e, it.participant.id)}>
-                                Удалить
+                            <button className="btn btn-link text-danger btn-sm" onClick={(e) => deleteParticipant(e, it.participant.id)}>
+                                <i className="fa fa-trash"/>
+                                <span className="d-xs-down-none"> Удалить</span>
                             </button>
                         </th>
                     </If>

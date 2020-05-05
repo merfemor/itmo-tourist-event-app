@@ -4,13 +4,16 @@ import React from "react";
 
 export default function UnauthorizedHeaderMenu() {
     return (
-        <Nav className="ml-auto" navbar>
-            <li className="px-3 nav-item">
-                <Link to="/login" className="btn btn-primary">Войти</Link>
+        <ul className="ml-auto navbar-nav">
+            <li className="nav-item">
+                <Link to="/login" className="btn btn-outline-success"><i className="fa fa-sign-in"/>
+                <span className="d-sm-down-none"> Войти</span>
+                </Link>
             </li>
-            <li className="px-3 nav-item">
-                <Link to="/register" className="btn btn-secondary">Зарегистрироваться</Link>
+            <li className="nav-item px-1">
+                <Link to="/register" className="btn btn-outline-primary"><i className="fa fa-user"/>
+                    <span className="d-sm-down-none"> Зарегистрироваться</span></Link>
             </li>
-        </Nav>
+        </ul>
     );
 }
