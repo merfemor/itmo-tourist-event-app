@@ -1,7 +1,7 @@
 {
     "servistate": "backup",
     "version": 1,
-    "createdAt": "2020-05-03T07:40:00.867Z",
+    "createdAt": "2020-05-06T06:51:46.054Z",
     "stores": [
         {
             "name": "projects",
@@ -11,7 +11,7 @@
                     "description": "",
                     "id": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
                     "createdAt": "2020-05-01T09:30:58.341Z",
-                    "modifiedAt": "2020-05-03T07:39:54.019Z",
+                    "modifiedAt": "2020-05-06T06:51:24.766Z",
                     "settings": {
                         "requestSortOrder": "url:false",
                         "testSortOrder": "modifiedAt:true",
@@ -42,7 +42,7 @@
                     ],
                     "postData": {
                         "type": "raw",
-                        "data": "{\n    \"email\": \"1@1\",\n    \"password\": \"1\",\n    \"birthDate\": \"2000-12-03\",\n    \"firstName\": \"Ivan\",\n    \"lastName\": \"Ivanov\",\n    \"isMale\": false,\n    \"role\": \"PARTICIPANT\"\n}",
+                        "data": "{\n    \"email\": \"admin@itmo.touristeventapp.ru\",\n    \"password\": \"admin\",\n    \"birthDate\": \"2000-12-03\",\n    \"firstName\": \"Admin\",\n    \"lastName\": \"Admin\",\n    \"isMale\": true,\n    \"role\": \"ORGANIZER\"\n}",
                         "format": "json",
                         "autoTypeHeader": true
                     },
@@ -50,7 +50,7 @@
                     "assignments": [],
                     "id": "04b30fba-3378-4a5b-b8e1-4613e2c1e645",
                     "createdAt": "2020-05-01T09:30:58.359Z",
-                    "modifiedAt": "2020-05-02T08:54:27.078Z"
+                    "modifiedAt": "2020-05-03T17:01:32.872Z"
                 },
                 {
                     "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
@@ -69,6 +69,33 @@
                     "id": "2318d36f-599b-4b7e-bb18-22e8bf3c4e12",
                     "createdAt": "2020-05-02T21:36:47.430Z",
                     "modifiedAt": "2020-05-02T21:42:29.070Z"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "POST",
+                    "url": "${root}/task",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "postData": {
+                        "type": "raw",
+                        "data": "{\n    \"name\": \"Заварить и кофе и начать писать диплом\"\n}",
+                        "format": "json",
+                        "autoTypeHeader": false
+                    },
+                    "assertions": [],
+                    "assignments": [],
+                    "createdAt": "2020-05-03T17:00:11.688Z",
+                    "modifiedAt": "2020-05-03T17:11:40.772Z",
+                    "id": "4fabcc87-3089-4d62-89dc-b30099338bf6"
                 },
                 {
                     "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
@@ -136,6 +163,108 @@
                 },
                 {
                     "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "GET",
+                    "url": "${root}/tasks",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        }
+                    ],
+                    "postData": null,
+                    "assertions": [],
+                    "assignments": [],
+                    "id": "86a97469-42ec-44ce-bf91-8bcde0cafbfb",
+                    "createdAt": "2020-05-03T17:00:11.688Z",
+                    "modifiedAt": "2020-05-03T17:00:11.688Z"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "GET",
+                    "url": "${root}/task/26",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        }
+                    ],
+                    "postData": null,
+                    "assertions": [],
+                    "assignments": [],
+                    "createdAt": "2020-05-03T17:00:11.688Z",
+                    "modifiedAt": "2020-05-03T17:10:36.603Z",
+                    "id": "8b7e5601-661c-467a-abf3-aa56a2174524"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "GET",
+                    "url": "${root}/contest/7?includeRegistrations=true&includeTasks=true",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        }
+                    ],
+                    "postData": null,
+                    "assertions": [],
+                    "assignments": [],
+                    "createdAt": "2020-05-02T21:36:47.430Z",
+                    "modifiedAt": "2020-05-03T22:35:15.771Z",
+                    "id": "8e378d23-3e5f-42eb-b435-c30cc193a3d5"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "DELETE",
+                    "url": "${root}/task/26",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        }
+                    ],
+                    "postData": {
+                        "type": "formdata",
+                        "data": []
+                    },
+                    "assertions": [],
+                    "assignments": [],
+                    "createdAt": "2020-05-03T17:00:11.688Z",
+                    "modifiedAt": "2020-05-03T17:10:45.506Z",
+                    "id": "92c423f0-33c8-405d-b7ea-030047a9bdc3"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "PUT",
+                    "url": "${root}/task",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "postData": {
+                        "type": "raw",
+                        "data": "{\n    \"id\": \"26\",\n    \"name\": \"Заварить кофе и начать писать диплом\",\n    \"isDone\": \"true\"\n}",
+                        "format": "json",
+                        "autoTypeHeader": false
+                    },
+                    "assertions": [],
+                    "assignments": [],
+                    "createdAt": "2020-05-03T17:00:11.688Z",
+                    "modifiedAt": "2020-05-03T17:10:16.327Z",
+                    "id": "989c4ed4-02df-40ec-bb44-2d1b0b5e85c4"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
                     "method": "POST",
                     "url": "${root}/contest/7/registration",
                     "followRedirects": true,
@@ -174,7 +303,7 @@
                     ],
                     "postData": {
                         "type": "raw",
-                        "data": "{\n    \"email\": \"1@1\",\n    \"password\": \"1\"\n}",
+                        "data": "{\n    \"email\": \"admin@itmo.touristeventapp.ru\",\n    \"password\": \"admin\"\n}",
                         "format": "json",
                         "autoTypeHeader": false
                     },
@@ -196,7 +325,7 @@
                     ],
                     "id": "a41bd391-3f85-4d45-af8d-501696b63437",
                     "createdAt": "2020-05-01T21:30:03.994Z",
-                    "modifiedAt": "2020-05-03T07:39:43.628Z"
+                    "modifiedAt": "2020-05-03T17:02:50.377Z"
                 },
                 {
                     "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
@@ -210,6 +339,42 @@
                     "id": "ba19baad-bbb3-4293-9967-d16e5734b0c9",
                     "createdAt": "2020-05-02T21:37:04.587Z",
                     "modifiedAt": "2020-05-02T21:37:04.587Z"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "GET",
+                    "url": "${root}/download/results?contestId=7&participantGender=WOMEN",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        }
+                    ],
+                    "postData": null,
+                    "assertions": [],
+                    "assignments": [],
+                    "id": "e37692e3-bbd7-465d-9861-b33aa18a2264",
+                    "createdAt": "2020-05-04T19:29:09.075Z",
+                    "modifiedAt": "2020-05-04T19:29:09.075Z"
+                },
+                {
+                    "project": "c95fb6da-8969-4d98-b6b0-38f979c6b1e3",
+                    "method": "GET",
+                    "url": "${root}/task/assignee",
+                    "followRedirects": true,
+                    "headers": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ${authToken}"
+                        }
+                    ],
+                    "postData": null,
+                    "assertions": [],
+                    "assignments": [],
+                    "id": "fda18bfc-24f1-414b-aea2-7cc58176f831",
+                    "createdAt": "2020-05-04T14:12:26.875Z",
+                    "modifiedAt": "2020-05-04T14:12:26.875Z"
                 }
             ]
         }
