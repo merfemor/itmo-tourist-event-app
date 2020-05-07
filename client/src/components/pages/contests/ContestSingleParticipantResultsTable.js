@@ -4,7 +4,6 @@ import {UserRole} from "../../../api/enums";
 import {personFullName, resultToString} from "../../../utils/language_utils";
 import {EditContestResultModal} from "./CreateResultModal";
 import {httpTextRequest} from "../../../utils/http";
-import {Link} from "react-router-dom";
 
 export function ContestSingleParticipantResultsTable(props) {
     const data = props.data

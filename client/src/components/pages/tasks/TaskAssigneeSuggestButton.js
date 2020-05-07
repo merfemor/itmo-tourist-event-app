@@ -22,6 +22,6 @@ export function TaskAssigneeSuggestButton(props) {
     }
 
     return <If cond={!props.disabled}>
-        <a href="#" className={props.className} onClick={onButtonClick}>{props.children}</a>
+        <button className={props.className} onClick={onButtonClick}>{props.children}</button>
     </If>
 }

@@ -41,9 +41,9 @@ export function ContestResultDownloadButton(props) {
     }
 
     return <div>
-        <a href="#" className={props.className} onClick={onClick}>
+        <button className={props.className} onClick={onClick}>
             {props.children}
-        </a>
+        </button>
         <Modal isOpen={modalIsOpen} className="modal-primary">
             <div className="modal-header">
                 <h4 className="modal-title">

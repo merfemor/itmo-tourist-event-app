@@ -1,5 +1,5 @@
 import {If} from "../../../utils/components";
-import {ParticipantType, requireEnumByName, ResultParticipantsType, UserRole} from "../../../api/enums";
+import {ParticipantType, UserRole} from "../../../api/enums";
 import React, {useState} from "react";
 import {ContestSingleParticipantResultsTable} from "./ContestSingleParticipantResultsTable";
 import {ContestGroupParticipantResultsTable} from "./ContestGroupParticipantResultsTable";
@@ -23,7 +23,7 @@ export function ContestResultsContainer(props) {
                 onFilterChange={(newFilter) => setSingleFilterPredicate(() => newFilter)}/>
             <ContestSingleParticipantResultsTable data={filteredSingleData} onChange={onChangeCallback}/>
             <If roleAtLeast={UserRole.ORGANIZER}>
-                <ContestResultDownloadButton data={data}>
+                <ContestResultDownloadButton data={data} className="btn btn-link">
                     Скачать результаты
                 </ContestResultDownloadButton>
             </If>

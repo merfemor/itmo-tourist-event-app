@@ -1,5 +1,4 @@
 import {Link} from "react-router-dom";
-import {Nav} from "reactstrap";
 import React from "react";
 
 export default function UnauthorizedHeaderMenu() {

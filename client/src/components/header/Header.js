@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-import {Nav, NavbarBrand, NavbarToggler} from 'reactstrap';
+import {Nav, NavbarToggler} from 'reactstrap';
 import {useAuth} from "../../auth/AuthStateHolder";
 import AuthorizedHeaderMenu from "./AuthorizedHeaderMenu";
 import UnauthorizedHeaderMenu from "./UnauthorizedHeaderMenu";

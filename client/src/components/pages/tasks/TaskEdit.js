@@ -102,6 +102,7 @@ export default function TaskEdit() {
                                     />
                                 </div>
                                 <TaskAssigneeSuggestButton
+                                    className="btn-link"
                                     disabled={data.assignee != null}
                                     data={getValues}
                                     onResult={onAssigneeSuggestResult}>

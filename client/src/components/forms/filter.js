@@ -1,5 +1,4 @@
 import {personFullName} from "../../utils/language_utils";
-import {isNullOrEmpty} from "../../utils/type_utils";
 
 export function filterPersonByQuery(it, filterQuery) {
     return includesLowerCase(personFullName(it), filterQuery)

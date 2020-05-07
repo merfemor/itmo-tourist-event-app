@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {ParticipantType, RegistrationType, ResultStructure} from "../../../api/enums";
 import {Log} from "../../../utils/Log";
@@ -81,6 +81,7 @@ export default function ContestCreate() {
                                        })}
                                 />
                             </div>
+
                             <div className="form-group">
                                 <label htmlFor="end-date-input" className="form-control-label">Дата и время
                                     окончания</label>

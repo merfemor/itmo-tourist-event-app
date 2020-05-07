@@ -1,5 +1,4 @@
 import {useAuth} from "../../../auth/AuthStateHolder";
-import {If} from "../../../utils/components";
 import {RegisterMeButton} from "./RegisterMeButton";
 import {RegisterParticipantBlock} from "./RegisterParticipantBlock";
 import {SingleRegistrationsTable} from "./SingleRegistrationsTable";
