@@ -22,7 +22,7 @@ export function EnumSelect(props) {
     for (let i in enumClass) {
         values.push(enumClass[i])
     }
-    return <select id={id} defaultValue={defaultValue.name} className={className} name={name}
+    return <select id={id} defaultValue={defaultValue?.name} className={className} name={name}
                    ref={reference}
                    onChange={onChangeField}>
         <If cond={nullable === true}>

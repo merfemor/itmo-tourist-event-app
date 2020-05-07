@@ -90,6 +90,82 @@ export const ItmoStudentsResultFilter = {
 }
 Object.freeze(ItmoStudentsResultFilter)
 
+export const AcademicDegree = {
+    FIRST_YEAR_BACHELOR: {
+        name: "FIRST_YEAR_BACHELOR",
+        displayName: "Бакалавр (1 курс)"
+    },
+    BACHELOR: {
+        name: "BACHELOR",
+        displayName: "Бакалавр"
+    },
+    FIRST_YEAR_SPECIALIST: {
+         name: "FIRST_YEAR_SPECIALIST",
+        displayName: "Специалист (1 курс)"
+    },
+    SPECIALIST: {
+        name: "SPECIALIST",
+        displayName: "Специалист"
+    },
+    MASTER: {
+        name: "MASTER",
+        displayName: "Магистр"
+    },
+    POST_GRADUATE: {
+        name: "POST_GRADUATE",
+        displayName: "Аспирант"
+    },
+    GRADUATE: {
+        name: "GRADUATE",
+        displayName: "Выпускник"
+    }
+}
+Object.freeze(AcademicDegree)
+
+export const SportsCategory = {
+    HONORED_MASTER_OF_SPORTS: {
+        name: "HONORED_MASTER_OF_SPORTS",
+        displayName: "ЗМС"
+    },
+    INTERNATIONAL_MASTER_OF_SPORTS: {
+        name: "INTERNATIONAL_MASTER_OF_SPORTS",
+        displayName: "МСМК"
+    },
+    MASTER_OF_SPORTS: {
+        name: "MASTER_OF_SPORTS",
+        displayName: "МС"
+    },
+    CANDIDATE_MASTER_OF_SPORTS: {
+        name: "CANDIDATE_MASTER_OF_SPORTS",
+        displayName: "КМС"
+    },
+    ADULT_1: {
+        name: "ADULT_1",
+        displayName: "1 взрослый"
+    },
+    ADULT_2: {
+        name: "ADULT_2",
+        displayName: "2 взрослый"
+    },
+    ADULT_3: {
+        name: "ADULT_3",
+        displayName: "3 взрослый"
+    },
+    YOUTH_1: {
+        name: "YOUTH_1",
+        displayName: "1 юношеский"
+    },
+    YOUTH_2: {
+        name: "YOUTH_2",
+        displayName: "2 юношеский"
+    },
+    YOUTH_3: {
+        name: "YOUTH_3",
+        displayName: "3 юношеский"
+    }
+}
+Object.freeze(SportsCategory)
+
 export function requireEnumByName(enumClass, name) {
     const result = findEnumByName(enumClass, name)
     if (result == null) {
