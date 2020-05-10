@@ -1,23 +1,30 @@
 package ru.ifmo.cs.controller;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ifmo.cs.api.LoginResponse;
-import ru.ifmo.cs.auth.JwtUtils;
 import ru.ifmo.cs.database.PersonRepository;
 import ru.ifmo.cs.entity.Person;
 import ru.ifmo.cs.entity.UserRole;
 import ru.ifmo.cs.utils.Check;
 
+import javax.annotation.PostConstruct;
 import java.util.Objects;
 
 // TODO: implement validation of requests
 @RestController
 public class PersonController {
+    private static final Logger log = LoggerFactory.getLogger(PersonController.class);
     private final PersonRepository personRepository;
+    @Value("${admin.default-email}")
+    private String adminDefaultEmail;
+    @Value("${admin.default-password}")
+    private String adminDefaultPassword;
 
     public PersonController(PersonRepository personRepository) {
         this.personRepository = personRepository;
@@ -58,5 +65,20 @@ public class PersonController {
         }
         oldPerson.updateFields(newPerson);
         return ResponseEntity.ok(personRepository.save(oldPerson));
+    }
+
+    @PostConstruct
+    private void createAdminIfNeeded() {
+        if (personRepository.existsByEmail(adminDefaultEmail)) {
+            log.debug("Skip create of admin already exists");
+            return;
+        }
+        Person admin = new Person(null, adminDefaultEmail, adminDefaultPassword, "admin", "admin", null, true, null, UserRole.ORGANIZER, null, null, null, null, null, null, null);
+        admin = personRepository.save(admin);
+        log.debug("Created admin with id = " + admin.getId() + " and email = " + adminDefaultEmail);
+
+        // not required any more
+        adminDefaultEmail = null;
+        adminDefaultPassword = null;
     }
 }

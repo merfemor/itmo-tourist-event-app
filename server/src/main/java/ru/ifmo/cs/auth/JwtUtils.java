@@ -22,7 +22,6 @@ public class JwtUtils {
 
     public JwtUtils(@Value("#{${jwt.timeout-minutes}}") long expireTimeoutMinutes,
                     @Value("${jwt.secret}") String secretKey) {
-        Check.notNull(secretKey, "secretKey should be set");
         expireTimeoutMillis = TimeUnit.MINUTES.toMillis(expireTimeoutMinutes);
         this.secretKey = secretKey;
         log.debug("Create instance with default expire timeout set to " + expireTimeoutMinutes + " minutes");

@@ -10,4 +10,6 @@ public interface PersonRepository extends PagingAndSortingRepository<Person, Lon
     default Iterable<Person> findAllOrderByFullName() {
         return findAll(Sort.by("lastName", "firstName", "middleName"));
     }
+
+    boolean existsByEmail(String email);
 }
