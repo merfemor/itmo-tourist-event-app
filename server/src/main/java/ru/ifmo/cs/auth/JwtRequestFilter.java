@@ -20,9 +20,11 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
+    private final JwtUtils jwtUtils;
 
-    public JwtRequestFilter(UserDetailsService userDetailsService) {
+    public JwtRequestFilter(UserDetailsService userDetailsService, JwtUtils jwtUtils) {
         this.userDetailsService = userDetailsService;
+        this.jwtUtils = jwtUtils;
     }
 
     @Override
@@ -31,11 +33,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
             final String token = authorizationHeader.substring(7);
-            final String username = JwtUtils.extractUsername(token);
+            final String username = jwtUtils.extractUsername(token);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (userDetails != null && JwtUtils.isValidToken(token, userDetails.getUsername())) {
+                if (userDetails != null && jwtUtils.isValidToken(token, userDetails.getUsername())) {
                     AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
                             userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

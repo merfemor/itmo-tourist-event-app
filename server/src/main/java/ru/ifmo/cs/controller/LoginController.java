@@ -17,7 +17,6 @@ import ru.ifmo.cs.api.LoginRequest;
 import ru.ifmo.cs.api.LoginResponse;
 import ru.ifmo.cs.database.PersonRepository;
 import ru.ifmo.cs.entity.Person;
-import ru.ifmo.cs.entity.UserRole;
 import ru.ifmo.cs.utils.Check;
 
 
@@ -26,10 +25,13 @@ public class LoginController {
 
     private final AuthenticationManager authenticationManager;
     private final PersonRepository personRepository;
+    private final JwtUtils jwtUtils;
 
-    public LoginController(AuthenticationManager authenticationManager, PersonRepository personRepository) {
+    public LoginController(AuthenticationManager authenticationManager,
+                           PersonRepository personRepository, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.personRepository = personRepository;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -42,7 +44,7 @@ public class LoginController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         final Person person = personRepository.findByEmail(loginRequest.getEmail());
-        final String authToken = JwtUtils.generateToken(person.getEmail());
+        final String authToken = jwtUtils.generateToken(person.getEmail());
         return ResponseEntity.ok(new LoginResponse(authToken, person));
     }
 
@@ -62,7 +64,7 @@ public class LoginController {
     public ResponseEntity<LoginResponse> createPerson(@RequestBody Person person) {
         Check.notNull(person.getPassword(), "password shouldn't be null");
         Person savedPerson = personRepository.save(person);
-        String token = JwtUtils.generateToken(savedPerson.getEmail());
+        String token = jwtUtils.generateToken(savedPerson.getEmail());
         return ResponseEntity.ok(new LoginResponse(token, savedPerson));
     }
 }
