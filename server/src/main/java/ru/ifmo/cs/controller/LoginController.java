@@ -18,6 +18,7 @@ import ru.ifmo.cs.api.LoginResponse;
 import ru.ifmo.cs.database.PersonRepository;
 import ru.ifmo.cs.entity.Person;
 import ru.ifmo.cs.utils.Check;
+import ru.ifmo.cs.utils.RestPaths;
 
 
 @RestController
@@ -34,7 +35,7 @@ public class LoginController {
         this.jwtUtils = jwtUtils;
     }
 
-    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = RestPaths.Login.LOGIN, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         try {
             authenticationManager.authenticate(
@@ -48,7 +49,7 @@ public class LoginController {
         return ResponseEntity.ok(new LoginResponse(authToken, person));
     }
 
-    @GetMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = RestPaths.Login.AUTH, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<Person> getPersonInfoByToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) {
@@ -59,7 +60,7 @@ public class LoginController {
         return ResponseEntity.ok(person);
     }
 
-    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = RestPaths.Login.REGISTER, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<LoginResponse> createPerson(@RequestBody Person person) {
         Check.notNull(person.getPassword(), "password shouldn't be null");

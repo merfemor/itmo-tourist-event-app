@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.ifmo.cs.entity.UserRole;
+import ru.ifmo.cs.utils.RestPaths;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,8 +45,12 @@ public class WebSecuirtyConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/login", "/register").permitAll()
-                .antMatchers(HttpMethod.GET, "/auth", "/contest", "/contest/**").permitAll()
+                .antMatchers(HttpMethod.POST, RestPaths.Login.LOGIN, RestPaths.Login.REGISTER)
+                .not().fullyAuthenticated()
+                .antMatchers(HttpMethod.GET, RestPaths.Login.AUTH)
+                .not().fullyAuthenticated()
+                .antMatchers(HttpMethod.GET, RestPaths.Contest.ROOT, RestPaths.Contest.ROOT + "/**")
+                .permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }

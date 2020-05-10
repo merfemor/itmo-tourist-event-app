@@ -12,6 +12,7 @@ import ru.ifmo.cs.database.PersonRepository;
 import ru.ifmo.cs.entity.Person;
 import ru.ifmo.cs.entity.UserRole;
 import ru.ifmo.cs.utils.Check;
+import ru.ifmo.cs.utils.RestPaths;
 
 import javax.annotation.PostConstruct;
 import java.util.Objects;
@@ -30,17 +31,17 @@ public class PersonController {
         this.personRepository = personRepository;
     }
 
-    @GetMapping(value = "/person", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = RestPaths.Person.ROOT, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Iterable<Person> getAllPerson() {
         return personRepository.findAllOrderByFullName();
     }
 
-    @GetMapping(value = "/person/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = RestPaths.Person.ROOT + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> getPersonById(@PathVariable Long id) {
         return ResponseEntity.of(personRepository.findById(id));
     }
 
-    @PostMapping(value = "/person", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = RestPaths.Person.ROOT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Person createPerson(@RequestBody Person person) {
         Check.isTrue(person.getPassword() == null && person.getRole() == UserRole.PARTICIPANT, "can only create users with role = " + UserRole.PARTICIPANT + " and null password");
@@ -51,7 +52,7 @@ public class PersonController {
         return newValue != null && !Objects.equals(oldValue, newValue);
     }
 
-    @PutMapping(value = "/person", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = RestPaths.Person.ROOT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> modifyPerson(@RequestBody Person newPerson) {
         Person oldPerson = personRepository.findById(newPerson.getId()).orElse(null);
         if (oldPerson == null) {

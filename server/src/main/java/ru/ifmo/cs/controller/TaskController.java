@@ -7,10 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.ifmo.cs.database.PersonRepository;
 import ru.ifmo.cs.database.TaskRepository;
 import ru.ifmo.cs.entity.Person;
-import ru.ifmo.cs.entity.Task;
+import ru.ifmo.cs.utils.RestPaths;
 
 import java.util.Collections;
-import java.util.Date;
 
 @RestController
 public class TaskController {
@@ -22,26 +21,26 @@ public class TaskController {
         this.personRepository = personRepository;
     }
 
-    @GetMapping(value = "/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = RestPaths.Task.GET_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    Iterable<Task> getAllTasks() {
+    Iterable<ru.ifmo.cs.entity.Task> getAllTasks() {
         return taskRepository.findAllOrderByNameAndStatus();
     }
 
-    @GetMapping(value = "/task/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Task> getTaskById(@PathVariable long id) {
+    @GetMapping(value = RestPaths.Task.ROOT + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ru.ifmo.cs.entity.Task> getTaskById(@PathVariable long id) {
         return ResponseEntity.of(taskRepository.findById(id));
     }
 
-    @PostMapping(value = "/task", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = RestPaths.Task.ROOT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Task createTask(@RequestBody Task task) {
+    public ru.ifmo.cs.entity.Task createTask(@RequestBody ru.ifmo.cs.entity.Task task) {
         return taskRepository.save(task);
     }
 
-    @PutMapping(value = "/task", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Task> modifyTask(@RequestBody Task newTask) {
-        Task oldTask = taskRepository.findById(newTask.getId()).orElse(null);
+    @PutMapping(value = RestPaths.Task.ROOT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ru.ifmo.cs.entity.Task> modifyTask(@RequestBody ru.ifmo.cs.entity.Task newTask) {
+        ru.ifmo.cs.entity.Task oldTask = taskRepository.findById(newTask.getId()).orElse(null);
         if (oldTask == null) {
             return ResponseEntity.notFound().build();
         }
@@ -49,7 +48,7 @@ public class TaskController {
         return ResponseEntity.ok(taskRepository.save(oldTask));
     }
 
-    @DeleteMapping(value = "/task/{id}")
+    @DeleteMapping(value = RestPaths.Task.ROOT + "/{id}")
     public ResponseEntity deleteTask(@PathVariable long id) {
         if (!taskRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
@@ -58,7 +57,7 @@ public class TaskController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/task/assignee", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = RestPaths.Task.ROOT + "/assignee", produces = MediaType.APPLICATION_JSON_VALUE)
     public Iterable<Person> findMatchingVolunteerForTask(
             @RequestParam(required = false) Long startDateTime,
             @RequestParam(required = false) Long endDateTime

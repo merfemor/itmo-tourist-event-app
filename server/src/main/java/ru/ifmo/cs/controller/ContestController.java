@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.ifmo.cs.api.dto.ContestResponse;
 import ru.ifmo.cs.database.ContestRepository;
 import ru.ifmo.cs.entity.Contest;
+import ru.ifmo.cs.utils.RestPaths;
 
 import java.util.Optional;
 
@@ -19,18 +20,18 @@ public class ContestController {
         this.contestRepository = contestRepository;
     }
 
-    @GetMapping(value = "/contest", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = RestPaths.Contest.ROOT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Iterable<Contest> getAllContests() {
         return contestRepository.findAllOrderByName();
     }
 
-    @DeleteMapping(value = "/contest/{id}")
+    @DeleteMapping(value = RestPaths.Contest.ROOT + "/{id}")
     public void deleteContest(@PathVariable long id) {
         contestRepository.deleteById(id);
     }
 
-    @GetMapping(value = "/contest/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = RestPaths.Contest.ROOT + "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<ContestResponse> getContestById(
             @PathVariable long id,
@@ -43,13 +44,13 @@ public class ContestController {
         return ResponseEntity.of(response);
     }
 
-    @PostMapping(value = "/contest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = RestPaths.Contest.ROOT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Contest createContest(@RequestBody Contest contest) {
         return contestRepository.save(contest);
     }
 
-    @PutMapping(value = "/contest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = RestPaths.Contest.ROOT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Contest> modifyContest(@RequestBody Contest newContest) {
         Contest oldContest = contestRepository.findById(newContest.getId()).orElse(null);
