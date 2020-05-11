@@ -11,11 +11,11 @@ import {
 } from "../../../utils/language_utils";
 import moment from "moment";
 
-export function getDefaultStartDateTimeForContest() {
+function getDefaultStartDateTimeForContest() {
     return moment(Date.now())
 }
 
-export function getDefaultEndDateTimeForContest() {
+function getDefaultEndDateTimeForContest() {
     return moment(Date.now()).add(2, "hours")
 }
 
@@ -56,7 +56,7 @@ export default function ContestCreate() {
         setState({
             startDateTime: newStartDateTime,
             endDateTime: newEndDateTime,
-            neverChanged: false
+            isSet: false
         })
     }
 

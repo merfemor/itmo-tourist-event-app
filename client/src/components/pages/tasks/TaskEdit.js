@@ -4,6 +4,13 @@ import {useForm} from "react-hook-form";
 import {httpJsonRequest, httpTextRequest} from "../../../utils/http";
 import PersonSearchDropdownInput from "../../forms/PersonSearchDropdownInput";
 import {TaskAssigneeSuggestButton} from "./TaskAssigneeSuggestButton";
+import {
+    dateIntervalToString,
+    DATETIME_RANGE_CONTAINER_LOCAL,
+    momentFromServerJsonVal, momentToServerJsonVal
+} from "../../../utils/language_utils";
+import DateTimeRangeContainer from "react-advanced-datetimerange-picker";
+import {getDefaultEndDateTimeForTask, getDefaultStartDateTimeForTask} from "./TaskCreate";
 
 export default function TaskEdit() {
     const { params } = useRouteMatch();
@@ -11,10 +18,24 @@ export default function TaskEdit() {
     const history = useHistory();
     const {register, handleSubmit, errors, getValues} = useForm();
     const [data, setData] = useState(null);
+    const [state, setState] = useState({
+        startDateTime: getDefaultStartDateTimeForTask(),
+        endDateTime: getDefaultEndDateTimeForTask(),
+        isSet: false
+    });
 
     useEffect(() => {
         httpJsonRequest("GET", `task/${taskId}`)
-            .then(response => setData(response))
+            .then(response => {
+                setData(response)
+                if (response.startDateTime != null && response.endDateTime != null) {
+                    setState({
+                        startDateTime: momentFromServerJsonVal(response.startDateTime),
+                        endDateTime: momentFromServerJsonVal(response.endDateTime),
+                        isSet: true
+                    })
+                }
+            })
     }, []);
 
     if (data == null) {
@@ -27,6 +48,10 @@ export default function TaskEdit() {
             ...formData,
             assigneeId: data.assignee?.id,
             assignee: null
+        }
+        if (state.isSet) {
+            newData.startDateTime = momentToServerJsonVal(state.startDateTime)
+            newData.endDateTime = momentToServerJsonVal(state.endDateTime)
         }
         httpJsonRequest("PUT", "task", newData)
             .then(history.goBack);
@@ -46,6 +71,14 @@ export default function TaskEdit() {
         if (assignee != null) {
             setData((state) => ({...state, assignee: assignee}))
         }
+    }
+
+    function onDateTimesChange(newStartDateTime, newEndDateTime) {
+        setState({
+            startDateTime: newStartDateTime,
+            endDateTime: newEndDateTime,
+            isSet: true
+        })
     }
 
     return (
@@ -74,20 +107,18 @@ export default function TaskEdit() {
                                           className={"form-control" + (errors.description ? " is-invalid" : "")}
                                           name="description" ref={register}/>
                             </div>
-                            <div className="form-group">
-                                <label htmlFor="start-date-input" className="form-control-label">Дата и время
-                                    начала</label>
-                                <input type="text" id="start-date-input" placeholder="Введите дату и время начала"
-                                       defaultValue={data.startDateTime}
-                                       className="form-control" name="startDateTime" ref={register}/>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="end-date-input" className="form-control-label">Дата и время
-                                    окончания</label>
-                                <input type="text" id="end-date-input" placeholder="Введите дату и время окончания"
-                                       defaultValue={data.endDateTime}
-                                       className="form-control" name="endDateTime" ref={register}/>
-                            </div>
+                            <DateTimeRangeContainer start={state.startDateTime} end={state.endDateTime}
+                                                    local={DATETIME_RANGE_CONTAINER_LOCAL}
+                                                    applyCallback={onDateTimesChange}>
+                                <div className="form-group">
+                                    <label htmlFor="start-date-time-input" className="form-control-label">Промежуток</label>
+                                    <input type="text" id="start-date-time-input" className="form-control"
+                                           required={true}
+                                           placeholder="Укажите промежуток"
+                                           value={state.isSet ? dateIntervalToString(state.startDateTime, state.endDateTime) : "" }
+                                    />
+                                </div>
+                            </DateTimeRangeContainer>
                             <div className="form-group">
                                 <label htmlFor="assignee-search-dropdown-input"
                                        className="form-control-label">

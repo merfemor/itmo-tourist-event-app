@@ -4,18 +4,39 @@ import {useHistory} from 'react-router-dom';
 import {httpJsonRequest} from "../../../utils/http";
 import PersonSearchDropdownInput from "../../forms/PersonSearchDropdownInput";
 import {TaskAssigneeSuggestButton} from "./TaskAssigneeSuggestButton";
+import {dateIntervalToString, DATETIME_RANGE_CONTAINER_LOCAL} from "../../../utils/language_utils";
+import DateTimeRangeContainer from "react-advanced-datetimerange-picker";
+import moment from "moment";
+
+export function getDefaultStartDateTimeForTask(associatedContest) {
+    // TODO: default task start time based on associated contest start time
+    return moment(Date.now())
+}
+
+export function getDefaultEndDateTimeForTask() {
+    return moment(Date.now()).add(2, "hours")
+}
 
 export default function TaskCreate(props) {
     const associatedContestId = props.associatedContestId;
     const history = useHistory();
     const {register, handleSubmit, errors, getValues} = useForm();
     const [assignee, setAssignee] = useState(null);
+    const [state, setState] = useState({
+        startDateTime: getDefaultStartDateTimeForTask(),
+        endDateTime: getDefaultEndDateTimeForTask(),
+        isSet: false
+    });
 
     function onFormSubmit(formData) {
         const data = {
             ...formData,
             assigneeId: assignee?.id,
             associatedContestId: associatedContestId
+        }
+        if (state.isSet === true) {
+            data.startDateTime = state.startDateTime
+            data.endDateTime = state.endDateTime
         }
         httpJsonRequest("POST", "task", data)
             .then(() => history.goBack());
@@ -25,6 +46,14 @@ export default function TaskCreate(props) {
         if (newAssignee != null) {
             setAssignee(newAssignee)
         }
+    }
+
+    function onDateTimesChange(newStartDateTime, newEndDateTime) {
+        setState({
+            startDateTime: newStartDateTime,
+            endDateTime: newEndDateTime,
+            isSet: true
+        })
     }
 
     return (
@@ -51,19 +80,18 @@ export default function TaskCreate(props) {
                                           className={"form-control" + (errors.description ? " is-invalid" : "")}
                                           name="description" ref={register}/>
                             </div>
-                            { /* TODO: add assignee and associated contest */}
-                            <div className="form-group">
-                                <label htmlFor="start-date-input" className="form-control-label">Дата и время
-                                    начала</label>
-                                <input type="text" id="start-date-input" placeholder="Введите дату и время начала"
-                                       className="form-control" name="startDateTime" ref={register}/>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="end-date-input" className="form-control-label">Дата и время
-                                    окончания</label>
-                                <input type="text" id="end-date-input" placeholder="Введите дату и время окончания"
-                                       className="form-control" name="endDateTime" ref={register}/>
-                            </div>
+                            <DateTimeRangeContainer start={state.startDateTime} end={state.endDateTime}
+                                                    local={DATETIME_RANGE_CONTAINER_LOCAL}
+                                                    applyCallback={onDateTimesChange}>
+                                <div className="form-group">
+                                    <label htmlFor="start-date-time-input" className="form-control-label">Промежуток</label>
+                                    <input type="text" id="start-date-time-input" className="form-control"
+                                           required={true}
+                                           placeholder="Укажите промежуток"
+                                           value={state.isSet ? dateIntervalToString(state.startDateTime, state.endDateTime) : "" }
+                                    />
+                                </div>
+                            </DateTimeRangeContainer>
                             <div className="form-group">
                                 <label htmlFor="assignee-search-dropdown-input"
                                        className="form-control-label">
