@@ -1,13 +1,14 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {Log} from "../utils/Log";
 import {GlobalState} from "../utils/global_cache";
-import {httpJsonRequest, httpRequest} from "../utils/http";
+import {httpJsonRequest} from "../utils/http";
 
 const TAG = "AuthStateHolder";
+const PROPERTY_TOKEN = "token";
 
 function restoreTokenFromStorage() {
     // TODO: get token from cookies
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem(PROPERTY_TOKEN);
     if (token === "null") {
         return null;
     }
@@ -16,7 +17,8 @@ function restoreTokenFromStorage() {
 
 function setTokenInStorage(token) {
     // TODO: save token in cookies
-    localStorage.setItem("token", token)
+    localStorage.setItem(PROPERTY_TOKEN, token)
+    console.log("token set ", token)
 }
 
 export function addAuthorizationHeaderToParams(params, token) {
@@ -77,31 +79,27 @@ function logout() {
     GlobalState.authToken = null
 }
 
-function loginWithEmailAndPassword(formData, setAuthInfo) {
+async function loginWithEmailAndPassword(formData, setAuthInfo) {
     Log.d(TAG, "loginWithEmailAndPassword: start")
-    return httpRequest("POST", "login", formData)
-        .then(response => {
-            if (response.ok) {
-                Log.d(TAG, "loginWithEmailAndPassword: server returned ok")
-                return response.json()
-            }
-            logout()
-            return errorPromiseFromResponse(response)
-
-        }).then(response => {
-            if (response.token == null || response.user == null) {
-                Log.w(TAG, "loginWithEmailAndPassword: user or token is null")
-                return errorPromiseFromUncaughtError("token or user is null")
-            }
-            Log.d(TAG, "loginWithEmailAndPassword: set token and user info")
-            setTokenInStorage(response.token);
-            GlobalState.authToken = response.token;
-            setAuthInfo({
-                ...response,
-                authorizeAttemptWasDone: true
-            });
-            return Promise.resolve(response)
-        })
+    try {
+        const response = await httpJsonRequest("POST", "login", formData)
+        Log.d(TAG, "loginWithEmailAndPassword: server returned ok")
+        if (response.token == null || response.user == null) {
+            Log.w(TAG, "loginWithEmailAndPassword: user or token is null")
+            return errorPromiseFromUncaughtError("token or user is null")
+        }
+        Log.d(TAG, "loginWithEmailAndPassword: set token and user info")
+        setTokenInStorage(response.token);
+        GlobalState.authToken = response.token;
+        setAuthInfo({
+            ...response,
+            authorizeAttemptWasDone: true
+        });
+        return response
+    } catch (err) {
+        logout();
+        throw err
+    }
 }
 
 export const AuthContext = createContext(null);

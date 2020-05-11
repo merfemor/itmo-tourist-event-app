@@ -6,3 +6,4 @@ export const Log = {
         console.warn(tag + ":", message, object || "")
     }
 }
+Object.freeze(Log)

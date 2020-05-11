@@ -1,79 +1,55 @@
 import React, {useEffect, useState} from "react";
-import {Redirect, useRouteMatch} from "react-router-dom";
+import {useHistory, useRouteMatch} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {ParticipantType, RegistrationType, ResultStructure} from "../../../api/enums";
-import {Log} from "../../../utils/Log";
-import {httpRequest} from "../../../utils/http";
+import {httpJsonRequest} from "../../../utils/http";
+import DateTimeRangeContainer from 'react-advanced-datetimerange-picker'
+import {
+    dateIntervalToString,
+    DATETIME_RANGE_CONTAINER_LOCAL,
+    dateTimeToString,
+    momentFromServerJsonVal,
+    momentToServerJsonVal
+} from "../../../utils/language_utils";
 
-const TAG = "ContestEdit";
-
-function submitContest(contestFormData) {
-    Log.d(TAG, "submitContest: start");
-    return httpRequest("PUT", "contest", contestFormData)
-        .then(response => {
-        if (response.status === 200) {
-            Log.d(TAG, "submitContest: ok response, returning");
-            return response.json()
-        }
-        return Promise.reject()
-    })
-}
-
-function loadContestById(id) {
-    Log.d(TAG, "loadContestById: " + id)
-    return httpRequest("GET", "contest/" + id)
-        .then(response => {
-            if (response.status === 200) {
-                Log.d(TAG, "loadContest: success")
-                return response.json()
-            }
-            return Promise.reject()
-        })
-}
-
-function deleteContestById(id) {
-    Log.d(TAG, "deleteContestById: " + id)
-    return httpRequest("DELETE", "contest/" + id)
-        .then(response => {
-            if (response.status === 200) {
-                Log.d(TAG, "loadContest: success")
-                return;
-            }
-            return Promise.reject()
-        })
-}
 
 export default function ContestEdit() {
+    const history = useHistory();
     const { params } = useRouteMatch();
     const {register, handleSubmit, errors} = useForm();
-    const [isRedirect, setRedirect] = useState(false);
     const [contest, setContest] = useState(null);
+    const [startDateTime, setStartDateTime] = useState(null);
+    const [endDateTime, setEndDateTime] = useState(null);
+
 
     useEffect(() => {
-        if (!isRedirect) {
-            loadContestById(params.contestId)
-                .then(response => setContest(response))
-        }
+        httpJsonRequest("GET", "contest/" + params.contestId)
+            .then(response => {
+                setStartDateTime(momentFromServerJsonVal(response.startDateTime))
+                setEndDateTime(momentFromServerJsonVal(response.endDateTime))
+                setContest(response)
+            })
     }, []);
-
-    if (isRedirect) {
-        return <Redirect to={"/contests/" + params.contestId }/>
-    }
 
     if (contest == null) {
         return <div/>
     }
 
     function onFormSubmit(formData) {
-        formData['id'] = params.contestId;
-        submitContest(formData)
-            .then(() => setRedirect(true));
+        const data = {
+            ...formData,
+            id: contest.id,
+            startDateTime: momentToServerJsonVal(startDateTime),
+            endDateTime: momentToServerJsonVal(endDateTime)
+        }
+        httpJsonRequest("PUT", "contest", data)
+            .then(history.goBack)
     }
 
     function onDeleteButtonClick(e) {
         e.preventDefault()
-        deleteContestById(contest.id)
-            .then(() => setRedirect(true))
+        httpJsonRequest("DELETE", "contest/" + contest.id)
+            .then(history.goBack)
     }
 
     function generateEnumOptions(enumClass) {
@@ -87,6 +63,11 @@ export default function ContestEdit() {
             }
         }
         return result;
+    }
+
+    function onDatesChange(newStartDateTime, newEndDateTime) {
+        setStartDateTime(newStartDateTime)
+        setEndDateTime(newEndDateTime)
     }
 
     return (
@@ -115,7 +96,18 @@ export default function ContestEdit() {
                                           className={"form-control" + (errors.description ? " is-invalid" : "")}
                                           name="description" ref={register}/>
                             </div>
-                            { /* TODO: replace with beautiful date time pickers */}
+                            <DateTimeRangeContainer start={startDateTime} end={endDateTime}
+                                                    local={DATETIME_RANGE_CONTAINER_LOCAL}
+                                                    applyCallback={onDatesChange}>
+                                <div className="form-group">
+                                    <label htmlFor="start-date-time-input" className="form-control-label">Дата и время
+                                        проведения</label>
+                                    <input type="text" id="start-date-time-input" className="form-control"
+                                           required={true}
+                                           value={dateIntervalToString(startDateTime, endDateTime)}
+                                    />
+                                </div>
+                            </DateTimeRangeContainer>
                             <div className="form-group">
                                 <label htmlFor="start-date-input" className="form-control-label">Дата и время
                                     начала</label>

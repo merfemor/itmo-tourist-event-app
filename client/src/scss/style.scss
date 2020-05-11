@@ -32,7 +32,19 @@
 // Custom styles
 @import "custom";
 
-$font-path: '~react-widgets/lib/fonts';
-$img-path: '~react-widgets/lib/img';
+// Settings for react-advanced-datetimerange-picker
+.rangecontainer {
+  display: none;
+}
 
-//@import '~react-widgets/lib/scss/react-widgets';
+span.calendarAddon {
+  display: none;
+}
+
+div.activeNotifier {
+  color: #ffffff00;
+  padding-bottom: 20px;
+  > span.dot {
+    display: none;
+  }
+}

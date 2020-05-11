@@ -1,35 +1,42 @@
 import React, {useState} from "react";
-import {Redirect} from "react-router-dom";
+import {useHistory} from "react-router-dom";
+import DateTimeRangeContainer from 'react-advanced-datetimerange-picker'
 import {useForm} from "react-hook-form";
 import {ParticipantType, RegistrationType, ResultStructure} from "../../../api/enums";
-import {Log} from "../../../utils/Log";
-import {httpRequest} from "../../../utils/http";
+import {httpJsonRequest} from "../../../utils/http";
+import {
+    dateIntervalToString,
+    DATETIME_RANGE_CONTAINER_LOCAL,
+    momentToServerJsonVal
+} from "../../../utils/language_utils";
+import moment from "moment";
 
-const TAG = "ContestCreate";
-
-function submitContest(contestFormData) {
-    Log.d(TAG, "submitContest: start");
-    return httpRequest("POST", "contest", contestFormData)
-        .then(response => {
-        if (response.status === 200) {
-            Log.d(TAG, "submitContest: ok response, returning");
-            return Promise.resolve()
-        }
-        return Promise.reject()
-    })
+export function getDefaultStartDateTimeForContest() {
+    return moment(Date.now())
 }
 
-export default function ContestCreate() {
-    const {register, handleSubmit, errors} = useForm();
-    const [isRedirect, setRedirect] = useState(false);
+export function getDefaultEndDateTimeForContest() {
+    return moment(Date.now()).add(2, "hours")
+}
 
-    if (isRedirect) {
-        return <Redirect to="/contests"/>
-    }
+
+export default function ContestCreate() {
+    const history = useHistory();
+    const {register, handleSubmit, errors} = useForm();
+    const [state, setState] = useState({
+        startDateTime: getDefaultStartDateTimeForContest(),
+        endDateTime: getDefaultEndDateTimeForContest(),
+        neverChanged: true
+    });
 
     function onFormSubmit(formData) {
-        submitContest(formData)
-            .then(() => setRedirect(true));
+        const data = {
+            ...formData,
+            startDateTime: momentToServerJsonVal(state.startDateTime),
+            endDateTime: momentToServerJsonVal(state.endDateTime)
+        }
+        httpJsonRequest("POST", "contest", data)
+            .then(history.goBack);
     }
 
     function generateEnumOptions(enumClass) {
@@ -43,6 +50,14 @@ export default function ContestCreate() {
             }
         }
         return result;
+    }
+
+    function onDateTimesChange(newStartDateTime, newEndDateTime) {
+        setState({
+            startDateTime: newStartDateTime,
+            endDateTime: newEndDateTime,
+            neverChanged: false
+        })
     }
 
     return (
@@ -69,30 +84,19 @@ export default function ContestCreate() {
                                           className={"form-control" + (errors.description ? " is-invalid" : "")}
                                           name="description" ref={register}/>
                             </div>
-                            { /* TODO: replace with beautiful date time pickers */}
-                            <div className="form-group">
-                                <label htmlFor="start-date-input" className="form-control-label">Дата и время
-                                    начала</label>
-                                <input type="text" id="start-date-input" placeholder="Введите дату и время начала"
-                                       className={"form-control" + (errors.startDateTime ? " is-invalid" : "")}
-                                       name="startDateTime"
-                                       ref={register({
-                                           required: true
-                                       })}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="end-date-input" className="form-control-label">Дата и время
-                                    окончания</label>
-                                <input type="text" id="end-date-input" placeholder="Введите название"
-                                       className={"form-control" + (errors.endDateTime ? " is-invalid" : "")}
-                                       name="endDateTime"
-                                       ref={register({
-                                           required: true
-                                       })}
-                                />
-                            </div>
+                            <DateTimeRangeContainer start={state.startDateTime} end={state.endDateTime}
+                                                    local={DATETIME_RANGE_CONTAINER_LOCAL}
+                                                    applyCallback={onDateTimesChange}>
+                                <div className="form-group">
+                                    <label htmlFor="start-date-time-input" className="form-control-label">Дата и время
+                                        проведения</label>
+                                    <input type="text" id="start-date-time-input" className="form-control"
+                                           required={true}
+                                           value={state.neverChanged ? "" :  dateIntervalToString(state.startDateTime, state.endDateTime)}
+                                           placeholder="Выберите дату и время проведения"
+                                    />
+                                </div>
+                            </DateTimeRangeContainer>
                             <div className="form-group">
                                 <label htmlFor="result-structure-input" className="form-control-label">Структура
                                     результата</label>

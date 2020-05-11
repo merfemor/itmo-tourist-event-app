@@ -48,7 +48,7 @@ public class WebSecuirtyConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, RestPaths.Login.LOGIN, RestPaths.Login.REGISTER)
                 .not().fullyAuthenticated()
                 .antMatchers(HttpMethod.GET, RestPaths.Login.AUTH)
-                .not().fullyAuthenticated()
+                .fullyAuthenticated()
                 .antMatchers(HttpMethod.GET, RestPaths.Contest.ROOT, RestPaths.Contest.ROOT + "/**")
                 .permitAll()
                 .anyRequest().authenticated();

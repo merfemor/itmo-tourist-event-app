@@ -1,5 +1,6 @@
 import React from "react";
 import {If} from "./components";
+import moment from "moment";
 
 export function userRoleToString(role) {
     switch (role) {
@@ -68,3 +69,46 @@ export function dateTimeToString(dateString) {
     const date = Date.parse(dateString)
     return Intl.DateTimeFormat("ru-RU", DATE_TIME_FORMAT_OPTIONS).format(date)
 }
+
+export function dateIntervalToString(from, to) {
+    return `${dateTimeToString(from)} - ${dateTimeToString(to)}`
+}
+
+export const DATETIME_RANGE_CONTAINER_LOCAL = {
+    format: "DD.MM.YYYY HH:mm",
+    sundayFirst: false,
+    days: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+    months: [
+        'Январь',
+        'Ферваль',
+        'Март',
+        'Апрель',
+        'Май',
+        'Июнь',
+        'Июль',
+        'Август',
+        'Сентябрь',
+        'Октябрь',
+        'Ноябрь',
+        'Декабрь'
+    ],
+    fromDate: 'Начало',
+    toDate: 'Конец',
+    apply: 'Сохранить',
+    cancel: 'Отмена',
+    close: 'Закрыть',
+    maxDate: 'Максимальная дата'
+}
+Object.freeze(DATETIME_RANGE_CONTAINER_LOCAL)
+
+export function momentToServerJsonVal(dt) {
+    return dt.valueOf()
+}
+
+export function momentFromServerJsonVal(jsonVal) {
+    if (jsonVal == null) {
+        return null
+    }
+    return moment(Date.parse(jsonVal))
+}
+

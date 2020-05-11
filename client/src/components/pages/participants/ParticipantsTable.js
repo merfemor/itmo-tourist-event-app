@@ -1,12 +1,9 @@
 import React from 'react';
 import {personFullName, userRoleToString} from "../../../utils/language_utils";
-import {httpRequest} from "../../../utils/http";
+import {httpJsonRequest} from "../../../utils/http";
 import {Link} from "react-router-dom";
-import {Log} from "../../../utils/Log";
 import {UserRole} from "../../../api/enums";
 import {If} from "../../../utils/components";
-
-const TAG = "ParticipantTable";
 
 export default class ParticipantsTable extends React.Component {
     state = {
@@ -14,15 +11,7 @@ export default class ParticipantsTable extends React.Component {
     }
 
     componentDidMount() {
-        Log.d(TAG, "loadParticipants: start")
-        httpRequest("GET", "person")
-            .then(response => {
-                if (response.ok) {
-                    return response.json()
-                }
-                // TODO: handle HTTP errors
-                return Promise.reject()
-            })
+        httpJsonRequest("GET", "person")
             .then(data => {
                 this.setState({
                     participants: data
