@@ -10,6 +10,8 @@ import RegisterPageContent from "./components/pages/register/RegisterPageContent
 import AuthStateHolder from "./auth/AuthStateHolder";
 import SettingsPageContent from "./components/pages/settings/SettingsPageContent";
 import TasksPageContent from "./components/pages/tasks/TasksPageContent";
+import {PrivateRoute, UnauthorizedRoute} from "./auth/PrivateRoute";
+import {UserRole} from "./api/enums";
 
 export default function App() {
     return (
@@ -21,11 +23,11 @@ export default function App() {
                     <main className="main">
                         <div className="my-2 mx-1">
                             <Switch>
-                                <Route path="/login" component={LoginPageContent}/>
-                                <Route path="/register" component={RegisterPageContent}/>
-                                <Route path="/settings" component={SettingsPageContent}/>
-                                <Route path="/participants" component={ParticipantsPageContent}/>
-                                <Route path="/tasks" component={TasksPageContent}/>
+                                <UnauthorizedRoute path="/login" component={LoginPageContent}/>
+                                <UnauthorizedRoute path="/register" component={RegisterPageContent}/>
+                                <PrivateRoute path="/settings" component={SettingsPageContent}/>
+                                <PrivateRoute path="/participants" component={ParticipantsPageContent}/>
+                                <PrivateRoute roleAtLeast={UserRole.VOLUNTEER} path="/tasks" component={TasksPageContent}/>
                                 <Route path="/contests" component={ContestPageContent}/>
                                 <Route path="/">
                                     <Redirect to="/contests"/>
