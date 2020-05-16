@@ -84,6 +84,8 @@ class BestAssigneeFinderImpl(
     private fun createComparator(taskStart: Date, taskEnd: Date) = comparing<Person, DamageFromTask> { person ->
         var wereMissedContests = 0
         var newMissedContests = 0
+        var wereMissedGroupContests = 0
+        var newMissedGroupContests = 0
 
         for (registration in person.contestRegistrations) {
             val damageType = getContestDamageType(registration.contest, registration.startDateTime,
@@ -101,12 +103,14 @@ class BestAssigneeFinderImpl(
                     taskStart, taskEnd, person.assignedTasks)
 
             when (damageType) {
-                ContestDamageType.WAS_MISSED -> wereMissedContests++
-                ContestDamageType.NEW_MISSED -> newMissedContests++
+                ContestDamageType.WAS_MISSED -> wereMissedGroupContests++
+                ContestDamageType.NEW_MISSED -> newMissedGroupContests++
                 ContestDamageType.NOT_MISSED -> Unit
             }
         }
-        DamageFromTask(newMissedContests, wereMissedContests + newMissedContests)
+        DamageFromTask(newMissedGroupContests, newMissedContests,
+                wereMissedGroupContests + newMissedGroupContests,
+                wereMissedContests + newMissedContests)
     }
 
     private companion object {
@@ -167,11 +171,19 @@ private enum class ContestDamageType {
     NEW_MISSED
 }
 
-private data class DamageFromTask(val newMissedContest: Int, val totalMissedContests: Int) : Comparable<DamageFromTask> {
+private data class DamageFromTask(
+        val newMissedContest: Int,
+        val newMissedGroupContest: Int,
+        val totalMissedGroupContests: Int,
+        val totalMissedContests: Int
+) : Comparable<DamageFromTask> {
+
     override fun compareTo(other: DamageFromTask): Int = comparator.compare(this, other)
 
     private companion object {
-        val comparator: Comparator<DamageFromTask> = comparingInt<DamageFromTask> { it.newMissedContest }
+        val comparator: Comparator<DamageFromTask> = comparingInt<DamageFromTask> { it.newMissedGroupContest }
+                .thenComparingInt { it.newMissedContest }
+                .thenComparingInt { it.totalMissedGroupContests }
                 .thenComparingInt { it.totalMissedContests }
     }
 }
