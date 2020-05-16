@@ -20,15 +20,22 @@ class BestAssigneeFinderImplTest {
     private val forTest: BestAssigneeFinder = BestAssigneeFinderImpl(personRepository, groupRegistrationsRepository)
 
     @Test
-    fun `on empty not found any people in db find return null`() {
+    fun `on empty db return null`() {
         personRepository.setReturnData()
-        assertNull(forTest.find())
+        assertNull(forTest.findForTime(10.date, 20.date))
     }
 
     @Test
-    fun `on empty not found any people in db findForTime return null`() {
-        personRepository.setReturnData()
-        assertNull(forTest.findForTime(10.date, 20.date))
+    fun `if only one person in db return him even if full overlap`() {
+        val contest = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
+        val registration = createSingleRegistration(contest, null)
+        val person = createPerson("full-overlap").apply {
+            registrations(registration)
+        }
+        personRepository.setReturnData(person)
+
+        val assignee = forTest.findForTime(10.date, 20.date)
+        assertEquals(person, assignee)
     }
 
     @Test
@@ -88,6 +95,53 @@ class BestAssigneeFinderImplTest {
         assertEquals(person2, assignee)
     }
 
+    @Test
+    fun `prevent full open registration contest overlapping`() {
+        val contest1 = createContest(10.date, 30.date, RegistrationType.OPEN)
+        val task1 = createTask(10.date, 20.date)
+        val task2 = createTask(10.date, 20.date)
+
+        val registration1 = createSingleRegistration(contest1, null)
+        val person1 = createPerson("user1").apply {
+            registrations(registration1)
+            tasks(task1)
+        }
+        val person2 = createPerson("user2").apply {
+            tasks(task2)
+        }
+
+        personRepository.setReturnData(person1, person2)
+
+        val assignee = forTest.findForTime(20.date, 30.date)
+        assertEquals(person2, assignee)
+    }
+
+    @Test
+    fun `prefer person with less new missed contests`() {
+        val contest1 = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
+        val contest2 = createContest(30.date, 50.date, RegistrationType.PRE_REGISTRATION)
+        val task1 = createTask(10.date, 15.date)
+
+        val person1 = createPerson("missed-1st-contest").apply {
+            tasks(task1)
+            registrations(
+                    createSingleRegistration(contest1, null),
+                    createSingleRegistration(contest2, null)
+            )
+        }
+        val person2 = createPerson("nothing-missed-now").apply {
+            registrations(
+                    createSingleRegistration(contest1, null),
+                    createSingleRegistration(contest2, null)
+            )
+        }
+
+        personRepository.setReturnData(person1, person2)
+
+        val assignee = forTest.findForTime(15.date, 35.date)
+        assertEquals(person1, assignee)
+    }
+
     private companion object {
         private val Int.date
         get() = Date(this.toLong())
@@ -108,7 +162,7 @@ class BestAssigneeFinderImplTest {
         private fun createPerson(personEmail: String): Person {
             return mock {
                 on { email} doReturn personEmail
-                on { toString() } doReturn "Person{email=$personEmail}"
+                on { toString() } doReturn personEmail
             }
         }
 

@@ -2,10 +2,13 @@ package ru.ifmo.cs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import ru.ifmo.cs.utils.Check;
 import ru.ifmo.cs.utils.JsonUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
 import java.util.Date;
 import java.util.Set;
 
@@ -51,6 +54,7 @@ public class ContestParticipantGroup {
         return associatedContestId;
     }
 
+    @NonNull
     public Contest getAssociatedContest() {
         return associatedContest;
     }
@@ -59,6 +63,7 @@ public class ContestParticipantGroup {
         return name;
     }
 
+    @Nullable
     public Date getStartDateTime() {
         return startDateTime;
     }

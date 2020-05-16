@@ -3,6 +3,7 @@ package ru.ifmo.cs.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.lang.NonNull;
 import ru.ifmo.cs.api.ContestRegistration;
 import ru.ifmo.cs.utils.Check;
 
@@ -142,6 +143,7 @@ public class Person {
         return requestedRole;
     }
 
+    @NonNull
     public Set<Task> getAssignedTasks() {
         return assignedTasks;
     }

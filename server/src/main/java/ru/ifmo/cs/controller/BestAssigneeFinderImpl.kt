@@ -3,13 +3,12 @@ package ru.ifmo.cs.controller
 import org.springframework.stereotype.Component
 import ru.ifmo.cs.database.ContestParticipantGroupRepository
 import ru.ifmo.cs.database.PersonRepository
-import ru.ifmo.cs.entity.Contest
-import ru.ifmo.cs.entity.Person
-import ru.ifmo.cs.entity.RegistrationType
-import ru.ifmo.cs.entity.UserRole
+import ru.ifmo.cs.entity.*
 import java.util.*
 import java.util.Comparator.comparing
+import java.util.Comparator.comparingInt
 import kotlin.math.min
+
 
 @Component
 class BestAssigneeFinderImpl(
@@ -26,25 +25,59 @@ class BestAssigneeFinderImpl(
         val volunteers = personRepository.findByRole(UserRole.VOLUNTEER)
         val withoutTaskOverlaps = volunteers.filter { person ->
             person.assignedTasks.none { task ->
-                areDatesOverlap(task.startDateTime, task.endDateTime, taskStart, taskEnd)
+                task.startDateTime != null && task.endDateTime != null &&
+                        areDatesOverlap(task.startDateTime!!, task.endDateTime!!, taskStart, taskEnd)
             }
         }
-        val comparator: Comparator<Person> = comparing<Person, Long> { person ->
-            var totalOverlap = 0L
-            for (registration in person.contestRegistrations) {
-                val date = getParticipateStartEndForCountOverlap(registration.contest, registration.startDateTime)
-                        ?: continue
-                totalOverlap += datesOverlapMillis(date.first, date.second, taskStart, taskEnd)
-            }
-            val groupRegistrations = groupRegistrationRepository.findByMembersContains(person)
-            for (registration in groupRegistrations) {
-                val date = getParticipateStartEndForCountOverlap(registration.associatedContest, registration.startDateTime)
-                        ?: continue
-                totalOverlap += datesOverlapMillis(date.first, date.second, taskStart, taskEnd)
-            }
-            totalOverlap
-        }
+        val comparator = createComparator(taskStart, taskEnd)
         return withoutTaskOverlaps.sortedWith(comparator).firstOrNull()
+    }
+
+    private fun getContestDamageType(contest: Contest, registrationStart: Date?,
+                                     taskStart: Date, taskEnd: Date,
+                                     oldTasks: Collection<Task>): ContestDamageType {
+        val date = getParticipateStartEndForCountOverlap(contest, registrationStart)
+                ?: return ContestDamageType.NOT_MISSED
+
+        val alreadyOverlapped = oldTasks.any { task ->
+            task.startDateTime != null && task.endDateTime != null &&
+                    areDatesOverlap(date.first, date.second, task.startDateTime!!, task.endDateTime!!)
+        }
+        if (alreadyOverlapped) {
+            return ContestDamageType.WAS_MISSED
+        }
+        if (areDatesOverlap(date.first, date.second, taskStart, taskEnd)) {
+            return ContestDamageType.NEW_MISSED
+        }
+        return ContestDamageType.NOT_MISSED
+    }
+
+    private fun createComparator(taskStart: Date, taskEnd: Date) = comparing<Person, DamageFromTask> { person ->
+        var wereMissedContests = 0
+        var newMissedContests = 0
+
+        for (registration in person.contestRegistrations) {
+            val damageType = getContestDamageType(registration.contest, registration.startDateTime,
+                    taskStart, taskEnd, person.assignedTasks)
+
+            when (damageType) {
+                ContestDamageType.WAS_MISSED -> wereMissedContests++
+                ContestDamageType.NEW_MISSED -> newMissedContests++
+                ContestDamageType.NOT_MISSED -> Unit
+            }
+        }
+        val groupRegistrations = groupRegistrationRepository.findByMembersContains(person)
+        for (registration in groupRegistrations) {
+            val damageType = getContestDamageType(registration.associatedContest, registration.startDateTime,
+                    taskStart, taskEnd, person.assignedTasks)
+
+            when (damageType) {
+                ContestDamageType.WAS_MISSED -> wereMissedContests++
+                ContestDamageType.NEW_MISSED -> newMissedContests++
+                ContestDamageType.NOT_MISSED -> Unit
+            }
+        }
+        DamageFromTask(newMissedContests, wereMissedContests + newMissedContests)
     }
 
     private companion object {
@@ -85,5 +118,20 @@ class BestAssigneeFinderImpl(
                 }
             }
         }
+    }
+}
+
+private enum class ContestDamageType {
+    NOT_MISSED,
+    WAS_MISSED,
+    NEW_MISSED
+}
+
+private data class DamageFromTask(val newMissedContest: Int, val totalMissedContests: Int) : Comparable<DamageFromTask> {
+    override fun compareTo(other: DamageFromTask): Int = comparator.compare(this, other)
+
+    private companion object {
+        val comparator: Comparator<DamageFromTask> = comparingInt<DamageFromTask> { it.newMissedContest }
+                .thenComparingInt { it.totalMissedContests }
     }
 }

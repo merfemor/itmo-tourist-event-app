@@ -3,6 +3,7 @@ package ru.ifmo.cs.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.lang.Nullable;
 import ru.ifmo.cs.utils.Check;
 import ru.ifmo.cs.utils.JsonUtils;
 
@@ -31,7 +32,9 @@ public class Task {
     @JoinColumn(name = "associated_contest_id", insertable = false, updatable = false)
     @JsonIgnoreProperties(JsonUtils.HIBERNATE_LAZY_INITIALIZER)
     private Contest associatedContest;
+    @Nullable
     private Date startDateTime;
+    @Nullable
     private Date endDateTime;
     // TODO: add created date time, and sort by it
 
@@ -85,10 +88,12 @@ public class Task {
         return associatedContest;
     }
 
+    @Nullable
     public Date getStartDateTime() {
         return startDateTime;
     }
 
+    @Nullable
     public Date getEndDateTime() {
         return endDateTime;
     }
