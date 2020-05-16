@@ -5,5 +5,5 @@ import java.util.*
 
 interface BestAssigneeFinder {
     fun find(): Person?
-    fun findForTime(startDateTime: Date, endDateTime: Date): Person?
+    fun findForTime(taskStart: Date, taskEnd: Date): Person?
 }

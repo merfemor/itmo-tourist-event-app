@@ -2,6 +2,7 @@ package ru.ifmo.cs.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -75,6 +76,7 @@ public class Contest {
         return resultStructure;
     }
 
+    @NonNull
     public RegistrationType getRegistrationType() {
         return registrationType;
     }

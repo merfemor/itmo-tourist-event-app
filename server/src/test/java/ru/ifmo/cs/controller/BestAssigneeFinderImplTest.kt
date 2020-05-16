@@ -6,16 +6,18 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.any
 import ru.ifmo.cs.database.ContestParticipantGroupRepository
 import ru.ifmo.cs.database.PersonRepository
 import ru.ifmo.cs.entity.*
 import java.util.*
 
 class BestAssigneeFinderImplTest {
-    private val personRepository = mock(PersonRepository::class.java)
-    private val groupRegistrationsRepository = mock(ContestParticipantGroupRepository::class.java)
-    private val forTest: BestAssigneeFinder = BestAssigneeFinderImpl(personRepository)
+    private val personRepository = mock<PersonRepository>()
+    private val groupRegistrationsRepository = mock<ContestParticipantGroupRepository> {
+        on { findByMembersContains(any()) } doReturn emptyList()
+    }
+    private val forTest: BestAssigneeFinder = BestAssigneeFinderImpl(personRepository, groupRegistrationsRepository)
 
     @Test
     fun `on empty not found any people in db find return null`() {
@@ -67,12 +69,13 @@ class BestAssigneeFinderImplTest {
         }
         personRepository.setReturnData(person1, person2)
 
-        assertNull(forTest.findForTime(20.date, 25.date))
+        val assignee = forTest.findForTime(20.date, 25.date)
+        assertEquals(person1, assignee)
     }
 
     @Test
-    fun `if two person and only one has no contest overlap, choose him`() {
-        val contest = createContest(10.date, 20.date)
+    fun `if there are two person and only one has no contest overlap, choose him`() {
+        val contest = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
         val registration = createSingleRegistration(contest, 15.date)
 
         val person1 = createPerson("user1").apply {
@@ -138,10 +141,11 @@ class BestAssigneeFinderImplTest {
             }
         }
 
-        private fun createContest(start: Date, end: Date): Contest {
+        private fun createContest(start: Date, end: Date, cRegistrationType: RegistrationType): Contest {
             return mock {
                 on { startDateTime } doReturn start
                 on { endDateTime } doReturn end
+                on { registrationType } doReturn cRegistrationType
             }
         }
     }
