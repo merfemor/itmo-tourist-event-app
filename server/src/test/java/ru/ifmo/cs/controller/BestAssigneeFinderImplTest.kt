@@ -26,6 +26,18 @@ class BestAssigneeFinderImplTest {
     }
 
     @Test
+    fun `find gives person with less number of tasks`() {
+        val person1 = createPerson("less-tasks")
+        val person2 = createPerson("more-tasks").apply {
+            tasks(createTask(null, null))
+        }
+
+        personRepository.setReturnData(person1, person2)
+        val assignee = forTest.find()
+        assertEquals(person1, assignee)
+    }
+
+    @Test
     fun `if only one person in db return him even if full overlap`() {
         val contest = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
         val registration = createSingleRegistration(contest, null)

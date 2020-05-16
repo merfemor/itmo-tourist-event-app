@@ -17,8 +17,8 @@ class BestAssigneeFinderImpl(
 ) : BestAssigneeFinder {
 
     override fun find(): Person? {
-        // TODO: implement it
-        return null
+        val volunteers = personRepository.findByRole(UserRole.VOLUNTEER)
+        return volunteers.sortedBy { it.assignedTasks.size }.firstOrNull()
     }
 
     override fun findForTime(taskStart: Date, taskEnd: Date): Person? {
