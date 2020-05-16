@@ -36,6 +36,11 @@ class BestAssigneeFinderImpl(
     private fun getContestDamageType(contest: Contest, registrationStart: Date?,
                                      taskStart: Date, taskEnd: Date,
                                      oldTasks: Collection<Task>): ContestDamageType {
+        if (contest.registrationType == RegistrationType.OPEN) {
+            return getContestDamageTypeForOpenRegistrationContest(oldTasks,
+                    contest.startDateTime, contest.endDateTime, taskStart, taskEnd)
+        }
+
         val date = getParticipateStartEndForCountOverlap(contest, registrationStart)
                 ?: return ContestDamageType.NOT_MISSED
 
@@ -50,6 +55,30 @@ class BestAssigneeFinderImpl(
             return ContestDamageType.NEW_MISSED
         }
         return ContestDamageType.NOT_MISSED
+    }
+
+    private fun getContestDamageTypeForOpenRegistrationContest(oldTasks: Collection<Task>,
+                                                               contestStartDateTime: Date,
+                                                               contestEndDateTime: Date,
+                                                               taskStart: Date, taskEnd: Date): ContestDamageType {
+        val tasksBefore = oldTasks.mapNotNull {
+            it.startDateTime ?: return@mapNotNull null
+            it.endDateTime ?: return@mapNotNull null
+            it.startDateTime!! to it.endDateTime!!
+        }
+
+        val wasOverlapped = isRangeFullyOverlapped(contestStartDateTime, contestEndDateTime, tasksBefore)
+        if (wasOverlapped) {
+            return ContestDamageType.WAS_MISSED
+        }
+
+        val tasksAfter = tasksBefore + (taskStart to taskEnd)
+        val becameOverlapped = isRangeFullyOverlapped(contestStartDateTime, contestEndDateTime, tasksAfter)
+        return if (becameOverlapped) {
+            ContestDamageType.NEW_MISSED
+        } else {
+            ContestDamageType.NOT_MISSED
+        }
     }
 
     private fun createComparator(taskStart: Date, taskEnd: Date) = comparing<Person, DamageFromTask> { person ->
@@ -98,7 +127,6 @@ class BestAssigneeFinderImpl(
         private fun getParticipateStartEndForCountOverlap(contest: Contest, registrationStart: Date?): Pair<Date, Date>? {
             return when (contest.registrationType) {
                 RegistrationType.OPEN -> {
-                    // TODO: fix case when open registration contest is fully overlapped
                     // since registration is open, we can participate in any time, so no overlaps can be here
                     null
                 }
@@ -117,6 +145,18 @@ class BestAssigneeFinderImpl(
                     }
                 }
             }
+        }
+
+        private fun isRangeFullyOverlapped(start: Date, end: Date, ranges: Collection<Pair<Date, Date>>): Boolean {
+            val sortedTasks = ranges.sortedBy { it.first }
+            var firstNotOverlappedStart = start
+
+            for ((rStart, rEnd) in sortedTasks) {
+                if (rEnd <= firstNotOverlappedStart && rStart <= firstNotOverlappedStart) {
+                    firstNotOverlappedStart = rEnd
+                }
+            }
+            return firstNotOverlappedStart < end
         }
     }
 }
