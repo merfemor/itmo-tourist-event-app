@@ -3,9 +3,11 @@ package ru.ifmo.cs.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.ifmo.cs.api.ContestRegistration;
 import ru.ifmo.cs.utils.Check;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -39,6 +41,10 @@ public class Person {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "assignee")
     private Set<Task> assignedTasks;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "participant")
+    private Collection<ContestParticipant> contestRegistrations;
 
     protected Person() {
         /* for ORM */
@@ -138,6 +144,10 @@ public class Person {
 
     public Set<Task> getAssignedTasks() {
         return assignedTasks;
+    }
+
+    public Collection<ContestParticipant> getContestRegistrations() {
+        return contestRegistrations;
     }
 
     @Override

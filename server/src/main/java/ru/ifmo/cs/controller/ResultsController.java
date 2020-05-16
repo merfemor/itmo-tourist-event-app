@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.ifmo.cs.api.dto.ItmoStudentsResultFilter;
 import ru.ifmo.cs.api.dto.ResultParticipantsType;
 import ru.ifmo.cs.database.ContestParticipantRepository;
-import ru.ifmo.cs.database.ContestPatricipantGroupRepository;
+import ru.ifmo.cs.database.ContestParticipantGroupRepository;
 import ru.ifmo.cs.database.ContestRepository;
 import ru.ifmo.cs.entity.AcademicDegree;
 import ru.ifmo.cs.entity.Contest;
@@ -41,7 +41,7 @@ public class ResultsController {
 
     public ResultsController(ContestRepository contestRepository,
                              ContestParticipantRepository patricipantRepository,
-                             ContestPatricipantGroupRepository patricipantGroupRepository) {
+                             ContestParticipantGroupRepository patricipantGroupRepository) {
         this.contestRepository = contestRepository;
         this.patricipantRepository = patricipantRepository;
     }

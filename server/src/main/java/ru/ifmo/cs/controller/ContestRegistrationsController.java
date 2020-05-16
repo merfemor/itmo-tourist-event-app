@@ -6,7 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ifmo.cs.api.ContestRegistration;
-import ru.ifmo.cs.database.ContestPatricipantGroupRepository;
+import ru.ifmo.cs.database.ContestParticipantGroupRepository;
 import ru.ifmo.cs.database.ContestParticipantRepository;
 import ru.ifmo.cs.database.ContestRepository;
 import ru.ifmo.cs.database.PersonRepository;
@@ -21,13 +21,13 @@ public class ContestRegistrationsController {
     private final ContestRepository contestRepository;
     private final ContestParticipantRepository contestParticipantRepository;
     private final PersonRepository personRepository;
-    private final ContestPatricipantGroupRepository contestPatricipantGroupRepository;
+    private final ContestParticipantGroupRepository contestParticipantGroupRepository;
 
-    public ContestRegistrationsController(ContestRepository contestRepository, ContestParticipantRepository contestParticipantRepository, PersonRepository personRepository, ContestPatricipantGroupRepository contestPatricipantGroupRepository) {
+    public ContestRegistrationsController(ContestRepository contestRepository, ContestParticipantRepository contestParticipantRepository, PersonRepository personRepository, ContestParticipantGroupRepository contestParticipantGroupRepository) {
         this.contestRepository = contestRepository;
         this.contestParticipantRepository = contestParticipantRepository;
         this.personRepository = personRepository;
-        this.contestPatricipantGroupRepository = contestPatricipantGroupRepository;
+        this.contestParticipantGroupRepository = contestParticipantGroupRepository;
     }
 
     @PostMapping(value = "/contest/{contestId}/registration",
@@ -58,7 +58,7 @@ public class ContestRegistrationsController {
                 new ContestParticipantGroup(null, contestId, registration.getGroupName(),
                         null, members, null);
 
-        contestPatricipantGroupRepository.save(contestParticipantGroup);
+        contestParticipantGroupRepository.save(contestParticipantGroup);
         return ResponseEntity.ok().build();
     }
 
@@ -83,7 +83,7 @@ public class ContestRegistrationsController {
         if (!contestRepository.existsById(contestId)) {
             return new ResponseEntity<>("not found contest", HttpStatus.NOT_FOUND);
         }
-        ContestParticipantGroup oldGroup = contestPatricipantGroupRepository.findById(registration.getRegistrationId()).orElse(null);
+        ContestParticipantGroup oldGroup = contestParticipantGroupRepository.findById(registration.getRegistrationId()).orElse(null);
         if (oldGroup == null) {
             return new ResponseEntity<>("registration not found", HttpStatus.NOT_FOUND);
         }
@@ -96,7 +96,7 @@ public class ContestRegistrationsController {
             members.add(person);
         }
         oldGroup.modify(registration.getGroupName(), members, registration.getResult());
-        contestPatricipantGroupRepository.save(oldGroup);
+        contestParticipantGroupRepository.save(oldGroup);
         return ResponseEntity.ok().build();
     }
 
@@ -126,7 +126,7 @@ public class ContestRegistrationsController {
         if (!contestRepository.existsById(contestId)) {
             return new ResponseEntity<>("not found contest", HttpStatus.NOT_FOUND);
         }
-        contestPatricipantGroupRepository.deleteById(registrationId);
+        contestParticipantGroupRepository.deleteById(registrationId);
         return ResponseEntity.ok().build();
     }
 
