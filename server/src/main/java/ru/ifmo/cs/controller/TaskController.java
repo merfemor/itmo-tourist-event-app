@@ -1,6 +1,7 @@
 package ru.ifmo.cs.controller;
 
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,15 +11,17 @@ import ru.ifmo.cs.entity.Person;
 import ru.ifmo.cs.utils.RestPaths;
 
 import java.util.Collections;
+import java.util.Date;
 
 @RestController
 public class TaskController {
     private final TaskRepository taskRepository;
-    private final PersonRepository personRepository;
+    private final BestAssigneeFinder bestAssigneeFinder;
 
-    public TaskController(TaskRepository taskRepository, PersonRepository personRepository) {
+    public TaskController(TaskRepository taskRepository,
+                          BestAssigneeFinder bestAssigneeFinder) {
         this.taskRepository = taskRepository;
-        this.personRepository = personRepository;
+        this.bestAssigneeFinder = bestAssigneeFinder;
     }
 
     @GetMapping(value = RestPaths.Task.GET_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -58,12 +61,38 @@ public class TaskController {
     }
 
     @GetMapping(value = RestPaths.Task.ROOT + "/assignee", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Iterable<Person> findMatchingVolunteerForTask(
+    public ResponseEntity<Iterable<Person>> findAssigneeForTask(
             @RequestParam(required = false) Long startDateTime,
             @RequestParam(required = false) Long endDateTime
     ) {
-        Iterable<Person> person = personRepository.findAll();
-        // TODO: implement best volunteer search
-        return Collections.singleton(person.iterator().next());
+        if (startDateTime == null && endDateTime == null) {
+            Person assignee = bestAssigneeFinder.find();
+            Iterable<Person> result;
+            if (assignee != null) {
+                result = Collections.singletonList(assignee);
+            } else {
+                result = Collections.emptyList();
+            }
+            return ResponseEntity.ok(result);
+        }
+
+        if (startDateTime == null || endDateTime == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Date start = new Date(startDateTime);
+        Date end = new Date(endDateTime);
+
+        if (!start.before(end)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Person assignee = bestAssigneeFinder.findForTime(start, end);
+        Iterable<Person> result;
+        if (assignee != null) {
+            result = Collections.singletonList(assignee);
+        } else {
+            result = Collections.emptyList();
+        }
+        return ResponseEntity.ok(result);
     }
 }

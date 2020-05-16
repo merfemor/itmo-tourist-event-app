@@ -19,9 +19,11 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
+
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
     implementation("org.xerial:sqlite-jdbc:3.30.1")
     implementation("com.zsoltfabok:sqlite-dialect:1.0")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -32,6 +34,7 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+    testImplementation("org.mockito:mockito-all:1.10.19")
 }
 
 tasks.withType<KotlinCompile> {
