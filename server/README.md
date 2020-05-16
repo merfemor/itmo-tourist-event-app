@@ -7,3 +7,8 @@ To run app execute
 ```
 ./gradlew bootRun
 ```
+
+To run tests execute
+```
+./gradlew test
+```
