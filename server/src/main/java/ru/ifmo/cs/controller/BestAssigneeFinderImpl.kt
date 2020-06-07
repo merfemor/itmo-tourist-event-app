@@ -18,7 +18,7 @@ class BestAssigneeFinderImpl(
 
     override fun find(): Person? {
         val volunteers = personRepository.findByRole(UserRole.VOLUNTEER)
-        return volunteers.sortedBy { it.assignedTasks.size }.firstOrNull()
+        return volunteers.minBy { it.assignedTasks.size }
     }
 
     override fun findForTime(taskStart: Date, taskEnd: Date): Person? {
@@ -29,8 +29,7 @@ class BestAssigneeFinderImpl(
                         areDatesOverlap(task.startDateTime!!, task.endDateTime!!, taskStart, taskEnd)
             }
         }
-        val comparator = createComparator(taskStart, taskEnd)
-        return withoutTaskOverlaps.sortedWith(comparator).firstOrNull()
+        return withoutTaskOverlaps.minBy { getPersonDamageFromTask(taskStart, taskEnd, it) }
     }
 
     private fun getContestDamageType(contest: Contest, registrationStart: Date?,
@@ -81,7 +80,7 @@ class BestAssigneeFinderImpl(
         }
     }
 
-    private fun createComparator(taskStart: Date, taskEnd: Date) = comparing<Person, DamageFromTask> { person ->
+    private fun getPersonDamageFromTask(taskStart: Date, taskEnd: Date, person: Person): DamageFromTask {
         var wereMissedContests = 0
         var newMissedContests = 0
         var wereMissedGroupContests = 0
@@ -108,7 +107,7 @@ class BestAssigneeFinderImpl(
                 ContestDamageType.NOT_MISSED -> Unit
             }
         }
-        DamageFromTask(newMissedGroupContests, newMissedContests,
+        return DamageFromTask(newMissedGroupContests, newMissedContests,
                 wereMissedGroupContests + newMissedGroupContests,
                 wereMissedContests + newMissedContests)
     }
