@@ -129,9 +129,10 @@ class BestAssigneeFinderImplTest {
     fun `prevent full open registration contest overlapping`() {
         val contest = createContest(10.date, 30.date, RegistrationType.OPEN)
 
-        val registration = createSingleRegistration(contest, null)
         val personRegistered = createPerson("registered-on-open-contest").apply {
-            singleRegistrations(registration)
+            singleRegistrations(
+                    createSingleRegistration(contest, null)
+            )
             tasks(createTask(10.date, 20.date))
         }
         val personNonRegistered = createPerson("non-registered").apply {
@@ -142,6 +143,29 @@ class BestAssigneeFinderImplTest {
 
         val assignee = forTest.findForTime(20.date, 30.date)
         assertEquals(personNonRegistered, assignee)
+    }
+
+    @Test
+    fun `don't count part open registration contest overlapping`() {
+        val contestOpen1 = createContest(10.date, 20.date, RegistrationType.OPEN)
+        val contestOpen2 = createContest(20.date, 30.date, RegistrationType.OPEN)
+        val contestPre = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
+
+        val personMissedLess = createPerson("can-participate-in-both-contest").apply {
+            singleRegistrations(
+                    createSingleRegistration(contestOpen1, null),
+                    createSingleRegistration(contestOpen2, null)
+            )
+        }
+        val personMissedMore = createPerson("missed-1-contest").apply {
+            singleRegistrations(
+                    createSingleRegistration(contestPre, null)
+            )
+        }
+        personRepository.setReturnData(personMissedLess, personMissedMore)
+
+        val assignee = forTest.findForTime(15.date, 25.date)
+        assertEquals(personMissedLess, assignee)
     }
 
     @Test
