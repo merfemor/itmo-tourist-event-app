@@ -19,30 +19,79 @@ class BestAssigneeFinderImplTest {
     }
     private val forTest: BestAssigneeFinder = BestAssigneeFinderImpl(personRepository, groupRegistrationsRepository)
 
+    /* ----------------------- find tests ---------------------- */
+
     @Test
-    fun `on empty db return null`() {
+    fun `find task without time on empty db returns null`() {
+        personRepository.setReturnData()
+        assertNull(forTest.find())
+    }
+
+    @Test
+    fun `find task without time on only one person returns him`() {
+        val person = createPerson("user")
+        personRepository.setReturnData(person)
+        assertEquals(person, forTest.find())
+    }
+
+    @Test
+    fun `find task without time gives person with less number of tasks`() {
+        val lessTasksPerson = createPerson("less-tasks")
+        val moreTasksPerson = createPerson("more-tasks").apply {
+            tasks(createTask(null, null))
+        }
+
+        personRepository.setReturnData(lessTasksPerson, moreTasksPerson)
+        val assignee = forTest.find()
+        assertEquals(lessTasksPerson, assignee)
+    }
+
+    /* ----------------------- findForTime tests ---------------------- */
+
+    @Test
+    fun `on empty db returns null`() {
         personRepository.setReturnData()
         assertNull(forTest.findForTime(10.date, 20.date))
     }
 
     @Test
-    fun `find gives person with less number of tasks`() {
-        val person1 = createPerson("less-tasks")
-        val person2 = createPerson("more-tasks").apply {
-            tasks(createTask(null, null))
+    fun `on one busy person return null`() {
+        val person = createPerson("user").apply {
+            tasks(createTask(10.date, 20.date))
         }
-
-        personRepository.setReturnData(person1, person2)
-        val assignee = forTest.find()
-        assertEquals(person1, assignee)
+        personRepository.setReturnData(person)
+        assertNull(forTest.findForTime(9.date, 11.date))
     }
 
     @Test
-    fun `if only one person in db return him even if full overlap`() {
+    fun `on two busy person return null`() {
+        val person1 = createPerson("user1").apply {
+            tasks(createTask(10.date, 20.date))
+        }
+        val person2 = createPerson("user2").apply {
+            tasks(createTask(15.date, 25.date))
+        }
+        personRepository.setReturnData(person1, person2)
+
+        assertNull(forTest.findForTime(15.date, 20.date))
+    }
+
+
+    @Test
+    fun `on one free person return this person`() {
+        val person = createPerson("user")
+        personRepository.setReturnData(person)
+
+        val assignee = forTest.findForTime(10.date, 20.date)
+        assertEquals(person, assignee)
+    }
+
+    @Test
+    fun `on one free person return him even if contest overlap`() {
         val contest = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
         val registration = createSingleRegistration(contest, null)
-        val person = createPerson("full-overlap").apply {
-            registrations(registration)
+        val person = createPerson("user").apply {
+            singleRegistrations(registration)
         }
         personRepository.setReturnData(person)
 
@@ -51,107 +100,194 @@ class BestAssigneeFinderImplTest {
     }
 
     @Test
-    fun `on all have tasks in this time return null`() {
-        val task1 = createTask(10.date, 20.date)
-        val task2 = createTask(15.date, 25.date)
-
-        val person1 = createPerson("user1").apply {
-            tasks(task1)
+    fun `on one free and one busy person return free person`() {
+        val freePerson = createPerson("free")
+        val busyPerson = createPerson("busy").apply {
+            tasks(createTask(10.date, 20.date))
         }
-        val person2 = createPerson("user2").apply {
-            tasks(task2)
-        }
-        personRepository.setReturnData(person1, person2)
+        personRepository.setReturnData(freePerson, busyPerson)
 
-        assertNull(forTest.findForTime(15.date, 20.date))
+        val assignee = forTest.findForTime(10.date, 20.date)
+        assertEquals(freePerson, assignee)
     }
 
     @Test
-    fun `find for time in db with one person returns this person`() {
-        val person = createPerson("user1")
-        personRepository.setReturnData(person)
-
-        val assignee = forTest.findForTime(1.date, 2.date)
-        assertEquals(person, assignee)
-    }
-
-    @Test
-    fun `if one person is free and contest registrations empty, return he`() {
-        val task1 = createTask(10.date, 20.date)
-        val task2 = createTask(15.date, 25.date)
-
-        val person1 = createPerson("user1").apply {
-            tasks(task1)
-        }
-        val person2 = createPerson("user2").apply {
-            tasks(task2)
-        }
-        personRepository.setReturnData(person1, person2)
-
-        val assignee = forTest.findForTime(20.date, 25.date)
-        assertEquals(person1, assignee)
-    }
-
-    @Test
-    fun `if there are two person and only one has no contest overlap, choose him`() {
+    fun `between two free person choose one that has no contest overlap`() {
         val contest = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
-        val registration = createSingleRegistration(contest, 15.date)
-
-        val person1 = createPerson("user1").apply {
-            registrations(registration)
+        val registration = createSingleRegistration(contest, null)
+        val personWithOverlap = createPerson("with-overlap").apply {
+            singleRegistrations(registration)
         }
-        val person2 = createPerson("user2")
-        personRepository.setReturnData(person1, person2)
+        val personWithoutOverlap = createPerson("without-overlap")
+        personRepository.setReturnData(personWithOverlap, personWithoutOverlap)
 
         val assignee = forTest.findForTime(15.date, 20.date)
-        assertEquals(person2, assignee)
+        assertEquals(personWithoutOverlap, assignee)
     }
 
     @Test
     fun `prevent full open registration contest overlapping`() {
-        val contest1 = createContest(10.date, 30.date, RegistrationType.OPEN)
-        val task1 = createTask(10.date, 20.date)
-        val task2 = createTask(10.date, 20.date)
+        val contest = createContest(10.date, 30.date, RegistrationType.OPEN)
 
-        val registration1 = createSingleRegistration(contest1, null)
-        val person1 = createPerson("user1").apply {
-            registrations(registration1)
-            tasks(task1)
+        val registration = createSingleRegistration(contest, null)
+        val personRegistered = createPerson("registered-on-open-contest").apply {
+            singleRegistrations(registration)
+            tasks(createTask(10.date, 20.date))
         }
-        val person2 = createPerson("user2").apply {
-            tasks(task2)
+        val personNonRegistered = createPerson("non-registered").apply {
+            tasks(createTask(10.date, 20.date))
         }
 
-        personRepository.setReturnData(person1, person2)
+        personRepository.setReturnData(personRegistered, personNonRegistered)
 
         val assignee = forTest.findForTime(20.date, 30.date)
-        assertEquals(person2, assignee)
+        assertEquals(personNonRegistered, assignee)
     }
 
     @Test
-    fun `prefer person with less new missed contests`() {
+    fun `prefer person with less total missed single contests`() {
         val contest1 = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
-        val contest2 = createContest(30.date, 50.date, RegistrationType.PRE_REGISTRATION)
-        val task1 = createTask(10.date, 15.date)
+        val contest2 = createContest(20.date, 30.date, RegistrationType.PRE_REGISTRATION)
 
-        val person1 = createPerson("missed-1st-contest").apply {
-            tasks(task1)
-            registrations(
+        val personMissedLess = createPerson("miss-1-contest").apply {
+            singleRegistrations(
+                    createSingleRegistration(contest1, null)
+            )
+        }
+        val personMissedMore = createPerson("miss-2-contests").apply {
+            singleRegistrations(
                     createSingleRegistration(contest1, null),
                     createSingleRegistration(contest2, null)
             )
         }
-        val person2 = createPerson("nothing-missed-now").apply {
-            registrations(
+
+        personRepository.setReturnData(personMissedLess, personMissedMore)
+
+        val assignee = forTest.findForTime(15.date, 25.date)
+        assertEquals(personMissedLess, assignee)
+    }
+
+    @Test
+    fun `prefer person with less new missed single contests`() {
+        val contest1 = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
+        val contest2 = createContest(20.date, 30.date, RegistrationType.PRE_REGISTRATION)
+
+        val personMissedLess = createPerson("already-missed-1st-contest-will-miss-2nd").apply {
+            tasks(createTask(10.date, 15.date))
+            singleRegistrations(
+                    createSingleRegistration(contest1, null),
+                    createSingleRegistration(contest2, null)
+            )
+        }
+        val personMissedMore = createPerson("nothing-missed-now-will-miss-1st-and-2nd").apply {
+            singleRegistrations(
                     createSingleRegistration(contest1, null),
                     createSingleRegistration(contest2, null)
             )
         }
 
-        personRepository.setReturnData(person1, person2)
+        personRepository.setReturnData(personMissedLess, personMissedMore)
 
-        val assignee = forTest.findForTime(15.date, 35.date)
-        assertEquals(person1, assignee)
+        val assignee = forTest.findForTime(15.date, 25.date)
+        assertEquals(personMissedLess, assignee)
+    }
+
+    @Test
+    fun `prefer person with less total missed group contests`() {
+        val contest1 = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
+        val contest2 = createContest(20.date, 30.date, RegistrationType.PRE_REGISTRATION)
+
+        val personMissedLess = createPerson("already-missed-contest").apply {
+            groupRegistrations(
+                    createGroupRegistration(contest1, null),
+                    createGroupRegistration(contest2, null)
+            )
+        }
+        val personMissedMore = createPerson("nothing-missed-now-will-miss-contest").apply {
+            groupRegistrations(
+                    createGroupRegistration(contest1, null)
+            )
+        }
+        personRepository.setReturnData(personMissedLess, personMissedMore)
+
+        val assignee = forTest.findForTime(16.date, 20.date)
+        assertEquals(personMissedLess, assignee)
+    }
+
+    @Test
+    fun `prefer person with less new missed group contests`() {
+        val contest1 = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
+        val contest2 = createContest(20.date, 30.date, RegistrationType.PRE_REGISTRATION)
+
+        val personMissedLess = createPerson("already-missed-all-contest").apply {
+            tasks(createTask(10.date, 15.date),
+                    createTask(20.date, 25.date))
+            groupRegistrations(
+                    createGroupRegistration(contest1, null),
+                    createGroupRegistration(contest2, null)
+            )
+        }
+        val personMissedMore = createPerson("nothing-missed-now-will-miss-contest").apply {
+            groupRegistrations(
+                    createGroupRegistration(contest1, null),
+                    createGroupRegistration(contest2, null)
+            )
+        }
+        personRepository.setReturnData(personMissedLess, personMissedMore)
+
+        val assignee = forTest.findForTime(16.date, 19.date)
+        assertEquals(personMissedLess, assignee)
+    }
+
+    @Test
+    fun `group contests has more priority than single contests`() {
+        val contest1 = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
+        val contest2 = createContest(20.date, 30.date, RegistrationType.PRE_REGISTRATION)
+        val contest3 = createContest(40.date, 50.date, RegistrationType.PRE_REGISTRATION)
+
+        val personMissedMore = createPerson("missed-two-single-contests").apply {
+            singleRegistrations(
+                    createSingleRegistration(contest1, null),
+                    createSingleRegistration(contest2, null)
+            )
+        }
+        val personMissedLess = createPerson("missed-one-group-contest").apply {
+            groupRegistrations(
+                    createGroupRegistration(contest3, null)
+            )
+        }
+        personRepository.setReturnData(personMissedMore, personMissedLess)
+        val assignee = forTest.findForTime(15.date, 45.date)
+        assertEquals(personMissedLess, assignee)
+    }
+
+    @Test
+    fun `don't count twice contests overlapped each other`() {
+        val contest1 = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
+        val contest2 = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
+        val contest3 = createContest(10.date, 20.date, RegistrationType.PRE_REGISTRATION)
+        val contest4 = createContest(20.date, 30.date, RegistrationType.PRE_REGISTRATION)
+
+        val personMissedLess = createPerson("missed-one").apply {
+            singleRegistrations(
+                    createSingleRegistration(contest1, null),
+                    createSingleRegistration(contest2, null),
+                    createSingleRegistration(contest3, null)
+            )
+        }
+        val peronMissedMore = createPerson("missed-two").apply {
+            singleRegistrations(
+                    createSingleRegistration(contest1, null),
+                    createSingleRegistration(contest4, null)
+            )
+        }
+        personRepository.setReturnData(personMissedLess, peronMissedMore)
+        val assignee = forTest.findForTime(15.date, 25.date)
+        assertEquals(personMissedLess, assignee)
+    }
+
+    private fun Person.groupRegistrations(vararg registrations: ContestParticipantGroup) {
+        groupRegistrationsRepository.addPersonRegistrations(this, *registrations)
     }
 
     private companion object {
@@ -182,7 +318,7 @@ class BestAssigneeFinderImplTest {
             whenever(assignedTasks).thenReturn(tasks.toSet())
         }
 
-        private fun Person.registrations(vararg registrations: ContestParticipant) {
+        private fun Person.singleRegistrations(vararg registrations: ContestParticipant) {
             whenever(contestRegistrations).thenReturn(registrations.toList())
         }
 
