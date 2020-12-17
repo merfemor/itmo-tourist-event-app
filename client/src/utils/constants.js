@@ -1,1 +1,1 @@
-export const BACKEND_ROOT_PATH="http://10.10.0.102:8080/"
+export const BACKEND_ROOT_PATH="http://localhost:8080/"

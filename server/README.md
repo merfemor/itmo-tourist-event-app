@@ -12,3 +12,15 @@ To run tests execute
 ```
 ./gradlew test
 ```
+
+# How to build jar
+
+Common way is to run
+```
+./gradlew build # [ -x tests ] optional for skip unit tests
+```
+If jar file not created, try manually
+```
+./gradlew bootJar
+```
+
